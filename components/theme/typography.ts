@@ -4,6 +4,7 @@ import { css } from '@emotion/core';
 const baseFont = css`
   font-family: Lato, sans-serif;
 `;
+
 const regular = css`
   ${baseFont}
   font-size: inherit;
