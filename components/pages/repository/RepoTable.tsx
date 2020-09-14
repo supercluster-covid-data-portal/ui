@@ -172,7 +172,7 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
             width: 24px;
             border-radius: 25px;
             text-align: center;
-            padding-top: 5px;
+            padding-top: 3px;
           }
           & .-pagination_button.-current {
             background-color: ${theme.colors.secondary_1};
