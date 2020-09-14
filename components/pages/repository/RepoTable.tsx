@@ -185,7 +185,7 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
           }
           & .-toStart,
           & .-toEnd {
-            letter-spacing: 1px;
+            letter-spacing: -2px;
           }
         }
       }
@@ -219,7 +219,7 @@ const RepoTable = (props: PageContentProps) => {
               Cell: ({ original }: { original: any }) => {
                 if (original.file_access === 'open') {
                   return (
-                    <div>Foo</div>
+                    <div>Open</div>
                     // <Tooltip
                     //   unmountHTMLWhenHide
                     //   position="left"
@@ -240,7 +240,7 @@ const RepoTable = (props: PageContentProps) => {
                   );
                 } else {
                   return (
-                    <div></div>
+                    <div>Controlled</div>
                     // <CustomTooltip
                     //   unmountHTMLWhenHide
                     //   position="left"

@@ -1,6 +1,7 @@
 import React from 'react';
 import { ThemeProvider } from 'emotion-theming';
 import defaultTheme from './theme';
+import Head from './Head';
 
 const Root = ({ children }: { children: React.ReactElement }) => {
   return (
@@ -24,6 +25,7 @@ const Root = ({ children }: { children: React.ReactElement }) => {
         }
       `}
       </style>
+      <Head />
       <ThemeProvider theme={defaultTheme}>{children}</ThemeProvider>
     </>
   );

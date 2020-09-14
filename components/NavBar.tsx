@@ -1,13 +1,12 @@
 import React from 'react';
 import { css } from '@emotion/core';
 
-// import defaultTheme from './theme';
-// import { useTheme } from 'emotion-theming';
+import defaultTheme from './theme';
 
 const NavBar: React.ComponentType<any> = () => {
   return (
     <div
-      css={(theme) => css`
+      css={(theme: typeof defaultTheme) => css`
         display: flex;
         justify-content: space-between;
         height: 50px;

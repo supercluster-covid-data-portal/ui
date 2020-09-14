@@ -114,7 +114,7 @@ const getFacetStyles = (theme: typeof defaultTheme) => css`
           }
         }
         &:last-of-type {
-          padding-bottom: 6px;
+          padding-bottom: 4px;
         }
       }
       & .showMore-wrapper {
