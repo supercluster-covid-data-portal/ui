@@ -1,7 +1,11 @@
-import '../styles/globals.css'
+import Root from '../components/Root';
 
 function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />
+  return (
+    <Root>
+      <Component {...pageProps} />
+    </Root>
+  );
 }
 
-export default MyApp
+export default MyApp;
