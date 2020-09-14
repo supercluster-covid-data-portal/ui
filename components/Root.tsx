@@ -3,7 +3,30 @@ import { ThemeProvider } from 'emotion-theming';
 import defaultTheme from './theme';
 
 const Root = ({ children }: { children: React.ReactElement }) => {
-  return <ThemeProvider theme={defaultTheme}>{children}</ThemeProvider>;
+  return (
+    <>
+      <style>
+        {`
+        body {
+          margin: 0;
+          position: absolute;
+          top: 0px;
+          bottom: 0px;
+          left: 0px;
+          right: 0px;
+        } /* custom! */
+        #__next {
+          position: absolute;
+          top: 0px;
+          bottom: 0px;
+          left: 0px;
+          right: 0px;
+        }
+      `}
+      </style>
+      <ThemeProvider theme={defaultTheme}>{children}</ThemeProvider>
+    </>
+  );
 };
 
 export default Root;
