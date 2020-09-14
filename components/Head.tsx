@@ -4,6 +4,7 @@ import NextHead from 'next/head';
 export default function Head() {
   return (
     <NextHead>
+      {/* TODO: need correct favicon link */}
       <link rel="icon" href="/static/favicon.ico" />
       <link
         href={'https://fonts.googleapis.com/css?family=Lato:300,400,600&display=swap'}

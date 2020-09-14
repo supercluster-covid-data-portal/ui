@@ -35,7 +35,7 @@ const RepositoryPage = () => {
   return (
     <PageLayout>
       <Arranger
-        // these should all come from config
+        // TODO: server settings should come from config
         projectId={'table3_test'}
         graphqlField={'file'}
         index={'file-centric'}

@@ -93,6 +93,7 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
     }
     & .rt-tbody {
       border: 1px solid ${theme.colors.grey_3};
+      border-right: none;
       & .rt-td {
         border-right: 1px solid ${theme.colors.grey_3};
         ${theme.typography.data};
@@ -105,7 +106,6 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
     }
     & .rt-thead {
       border-top: 1px solid ${theme.colors.grey_3};
-      border-right: 1px solid ${theme.colors.grey_3};
       border-left: 1px solid ${theme.colors.grey_3};
       & .rt-tr .rt-th {
         border-right: 1px solid ${theme.colors.grey_3};
@@ -216,6 +216,7 @@ const RepoTable = (props: PageContentProps) => {
             content: {
               Header: 'Actions',
               accessor: 'object_id',
+              // TODO: remove Actions column in CANARIE-83
               Cell: ({ original }: { original: any }) => {
                 if (original.file_access === 'open') {
                   return (
