@@ -210,66 +210,6 @@ const RepoTable = (props: PageContentProps) => {
         showFilterInput={false}
         columnDropdownText={'Columns'}
         exportTSVText={'Download'}
-        customColumns={[
-          {
-            index: 9001,
-            content: {
-              Header: 'Actions',
-              accessor: 'object_id',
-              // TODO: remove Actions column in CANARIE-83
-              Cell: ({ original }: { original: any }) => {
-                if (original.file_access === 'open') {
-                  return (
-                    <div>Open</div>
-                    // <Tooltip
-                    //   unmountHTMLWhenHide
-                    //   position="left"
-                    //   interactive
-                    //   html={<span>Download File</span>}
-                    // >
-                    // <span className="td-actions">
-                    //   <img
-                    //     alt="Download File"
-                    //     src={download}
-                    //     css={css`
-                    //       width: 16px;
-                    //       height: 16px;
-                    //     `}
-                    //   />
-                    // </span>
-                    // {/* </Tooltip> */}
-                  );
-                } else {
-                  return (
-                    <div>Controlled</div>
-                    // <CustomTooltip
-                    //   unmountHTMLWhenHide
-                    //   position="left"
-                    //   interactive
-                    //   html={<span>Please log in to download controlled files</span>}
-                    // >
-                    //   <span className="td-actions">
-                    //     <img
-                    //       alt="Log in to download files"
-                    //       src={lock}
-                    //       css={(theme) => css`
-                    //         fill: ${theme.colors.grey_4};
-                    //         width: 10px;
-                    //         height: 16px;
-                    //       `}
-                    //     />
-                    //   </span>
-                    // </CustomTooltip>
-                  );
-                }
-              },
-              width: 80,
-              sortable: false,
-              resizable: false,
-              textAlign: 'center',
-            },
-          },
-        ]}
       />
     </div>
   );
