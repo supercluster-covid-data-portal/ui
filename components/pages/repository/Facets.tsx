@@ -6,6 +6,7 @@ import defaultTheme from '../../theme';
 
 const Aggregations = dynamic(
   import('@arranger/components/dist/Arranger').then((comp) => comp.Aggregations),
+  { ssr: false },
 ) as any;
 
 const getFacetStyles = (theme: typeof defaultTheme) => css`
