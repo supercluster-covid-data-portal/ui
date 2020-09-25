@@ -1,18 +1,38 @@
 import { css } from '@emotion/core';
+import urlJoin from 'url-join';
 
 import PageLayout from '../../PageLayout';
-import Illustration from '../../theme/icons/illustration';
-import GoogleLogo from '../../theme/icons/google';
-import FacebookLogo from '../../theme/icons/facebook';
-import GitHubLogo from '../../theme/icons/github';
-import OrcidLogo from '../../theme/icons/orcid';
-import LinkedInLogo from '../../theme/icons/linkedin';
-import { IconProps } from '../../theme/icons/types';
+import {
+  GoogleLogo,
+  FacebookLogo,
+  GitHubLogo,
+  OrcidLogo,
+  LinkedInLogo,
+  Illustration,
+} from '../../theme/icons';
 
-const LoginButton = ({ Icon, title }: { Icon: React.ComponentType<IconProps>; title: string }) => {
-  console.log();
+import { IconProps } from '../../theme/icons/types';
+import { getConfig } from '../../../global/config';
+
+const LoginButton = ({
+  Icon,
+  title,
+  path,
+}: {
+  Icon: React.ComponentType<IconProps>;
+  title: string;
+  path: string;
+}) => {
+  const { EGO_API_ROOT, EGO_CLIENT_ID } = getConfig();
+  const url = `${urlJoin(EGO_API_ROOT, '/api/oauth/login', path)}?client_id=${EGO_CLIENT_ID}`;
+  const disabled = !path;
   return (
-    <a>
+    <a
+      href={url}
+      css={css`
+        text-decoration: none;
+      `}
+    >
       <div
         css={(theme) => css`
           display: flex;
@@ -20,7 +40,8 @@ const LoginButton = ({ Icon, title }: { Icon: React.ComponentType<IconProps>; ti
           height: 42px;
           border-radius: 5px;
           border: 1px solid ${theme.colors.accent};
-          cursor: pointer;
+          cursor: ${disabled ? 'not-allowed' : 'pointer'};
+          opacity: ${disabled ? 0.4 : 1};
         `}
       >
         <span
@@ -60,8 +81,8 @@ type ProviderType = {
 };
 
 const providers: ProviderType[] = [
-  { name: 'Google', path: '', icon: GoogleLogo },
-  { name: 'ORCID', path: '', icon: OrcidLogo },
+  { name: 'Google', path: 'google', icon: GoogleLogo },
+  { name: 'ORCiD', path: '', icon: OrcidLogo },
   { name: 'GitHub', path: '', icon: GitHubLogo },
   { name: 'Facebook', path: '', icon: FacebookLogo },
   { name: 'LinkedIn', path: '', icon: LinkedInLogo },
@@ -134,7 +155,7 @@ const LoginPage = () => {
                     list-style: none;
                   `}
                 >
-                  <LoginButton Icon={icon} title={`Log in with ${name}`} path={''} />
+                  <LoginButton Icon={icon} title={`Log in with ${name}`} path={path} />
                 </li>
               );
             })}
