@@ -18,13 +18,6 @@ const PageLayout = ({ children }: { children: React.ReactNode }) => {
     >
       <NavBar />
       {children}
-      <div
-        css={(theme: typeof defaultTheme) => css`
-          height: 50px;
-          background-color: ${theme.colors.white};
-          border-top: 1px solid ${theme.colors.grey_3};
-        `}
-      ></div>
     </div>
   );
 };
