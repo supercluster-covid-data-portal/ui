@@ -3,7 +3,7 @@ import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 
 import defaultTheme from './theme';
-import OvertureLogoWithText from './theme/icons/overture_logo_with_text';
+import { OvertureLogoWithText } from './theme/icons';
 
 const StyledLink = styled('a')`
   color: ${({ theme }: { theme: typeof defaultTheme }) => css(theme.colors.secondary_accessible)};

@@ -21,7 +21,7 @@ const button = css`
   font-weight: bold;
   font-style: normal;
   font-stretch: normal;
-  line-height: 20px;
+  line-height: 18px;
   letter-spacing: normal;
 `;
 

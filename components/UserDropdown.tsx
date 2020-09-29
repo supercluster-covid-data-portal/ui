@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
+import { useTheme } from 'emotion-theming';
 
 import defaultTheme from './theme';
-import Avatar from './theme/icons/avatar';
-import ChevronDown from './theme/icons/chevron_down';
-import { useTheme } from 'emotion-theming';
+import { Avatar, ChevronDown } from './theme/icons';
 
 const CurrentUser = ({ userName = 'TestUser' }: { userName?: string }) => (
   <div

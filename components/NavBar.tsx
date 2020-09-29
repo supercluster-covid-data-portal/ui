@@ -3,7 +3,7 @@ import { css } from '@emotion/core';
 
 import UserDropdown from './UserDropdown';
 import defaultTheme from './theme';
-import OvertureLogo from './theme/icons/overture_logo';
+import { OvertureLogo } from './theme/icons';
 
 const LoginButton = ({ onClick }: { onClick?: () => any }) => {
   return (
