@@ -4,6 +4,8 @@ import PageContent from './PageContent';
 import PageLayout from '../../PageLayout';
 
 import { RepoFiltersType } from './sqonTypes';
+import { getConfig } from '../../../global/config';
+import { css } from '@emotion/core';
 
 const Arranger = dynamic(
   () => import('@arranger/components/dist/Arranger').then((comp) => comp.Arranger),
@@ -32,17 +34,46 @@ export interface PageContentProps {
 }
 
 const RepositoryPage = () => {
+  const { ARRANGER_PROJECT_ID, ARRANGER_GRAPHQL_FIELD, ARRANGER_INDEX } = getConfig();
+
   return (
     <PageLayout>
-      <Arranger
-        // TODO: server settings should come from config
-        projectId={'dev2'}
-        graphqlField={'file'}
-        index={'file-centric'}
-        render={(props: PageContentProps) => {
-          return <PageContent {...props} />;
-        }}
-      />
+      {/* TODO: arranger config error handling tbd */}
+      {!(ARRANGER_PROJECT_ID && ARRANGER_GRAPHQL_FIELD && ARRANGER_INDEX) ? (
+        <div
+          css={css`
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+          `}
+        >
+          <div
+            css={(theme) =>
+              css`
+                ${theme.typography.subheading}
+              `
+            }
+          >
+            Arranger is missing configuration values. Please check your ".env.local" file.
+            <ul>
+              <li>Project ID: {ARRANGER_PROJECT_ID || 'missing'}</li>
+              <li>GraphQL Field: {ARRANGER_GRAPHQL_FIELD || 'missing'}</li>
+              <li>Index: {ARRANGER_INDEX || 'missing'}</li>
+            </ul>
+          </div>
+        </div>
+      ) : (
+        <Arranger
+          projectId={ARRANGER_PROJECT_ID}
+          graphqlField={ARRANGER_GRAPHQL_FIELD}
+          index={ARRANGER_INDEX}
+          render={(props: PageContentProps) => {
+            return <PageContent {...props} />;
+          }}
+        />
+      )}
     </PageLayout>
   );
 };
