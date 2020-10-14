@@ -10,6 +10,9 @@ export const getConfig = () => {
     EGO_FACEBOOK_ID: process.env.NEXT_PUBLIC_EGO_FACEBOOK_ID || 'facebook',
     EGO_GITHUB_ID: process.env.NEXT_PUBLIC_EGO_GITHUB_ID || 'github',
     EGO_ORCID_ID: process.env.NEXT_PUBLIC_EGO_ORCID_ID || 'orcid',
+    ARRANGER_PROJECT_ID: process.env.NEXT_PUBLIC_ARRANGER_PROJECT_ID || '',
+    ARRANGER_GRAPHQL_FIELD: process.env.NEXT_PUBLIC_ARRANGER_GRAPHQL_FIELD || '',
+    ARRANGER_INDEX: process.env.NEXT_PUBLIC_ARRANGER_INDEX || '',
   } as {
     EGO_API_ROOT: string;
     EGO_CLIENT_ID: string;
@@ -19,5 +22,8 @@ export const getConfig = () => {
     EGO_FACEBOOK_ID: string;
     EGO_GITHUB_ID: string;
     EGO_ORCID_ID: string;
+    ARRANGER_PROJECT_ID: string;
+    ARRANGER_GRAPHQL_FIELD: string;
+    ARRANGER_INDEX: string;
   };
 };

@@ -24,7 +24,7 @@ const LoginButton = ({
   path: string;
 }) => {
   const { EGO_API_ROOT, EGO_CLIENT_ID } = getConfig();
-  const url = `${urlJoin(EGO_API_ROOT, '/api/oauth/login', path)}?client_id=${EGO_CLIENT_ID}`;
+  const url = `${urlJoin(EGO_API_ROOT, '/oauth/login', path)}?client_id=${EGO_CLIENT_ID}`;
   const disabled = !path;
   return (
     <a
@@ -82,7 +82,7 @@ type ProviderType = {
 
 const providers: ProviderType[] = [
   { name: 'Google', path: 'google', icon: GoogleLogo },
-  { name: 'ORCiD', path: '', icon: OrcidLogo },
+  { name: 'ORCiD', path: 'orcid', icon: OrcidLogo },
   { name: 'GitHub', path: '', icon: GitHubLogo },
   { name: 'Facebook', path: '', icon: FacebookLogo },
   { name: 'LinkedIn', path: '', icon: LinkedInLogo },
