@@ -13,6 +13,7 @@ export const getConfig = () => {
     ARRANGER_PROJECT_ID: process.env.NEXT_PUBLIC_ARRANGER_PROJECT_ID || '',
     ARRANGER_GRAPHQL_FIELD: process.env.NEXT_PUBLIC_ARRANGER_GRAPHQL_FIELD || '',
     ARRANGER_INDEX: process.env.NEXT_PUBLIC_ARRANGER_INDEX || '',
+    ARRANGER_API: process.env.NEXT_PUBLIC_ARRANGER_API || '',
   } as {
     EGO_API_ROOT: string;
     EGO_CLIENT_ID: string;
@@ -25,5 +26,6 @@ export const getConfig = () => {
     ARRANGER_PROJECT_ID: string;
     ARRANGER_GRAPHQL_FIELD: string;
     ARRANGER_INDEX: string;
+    ARRANGER_API: string;
   };
 };
