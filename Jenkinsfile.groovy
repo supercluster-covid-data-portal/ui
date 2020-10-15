@@ -59,7 +59,6 @@ spec:
             when {
                 anyOf {
                     branch 'develop'
-                    branch 'test-develop'
                 }
             }
             steps {
@@ -79,7 +78,6 @@ spec:
             when {
                 anyOf {
                     branch 'master'
-                    branch 'test-master'
                 }
             }
             steps {
