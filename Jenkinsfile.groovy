@@ -106,7 +106,6 @@ spec:
 				container('helm') {
 					withCredentials([file(credentialsId:'4ed1e45c-b552-466b-8f86-729402993e3b', variable: 'KUBECONFIG')]) {
 						sh 'env'
-						sh 'helm init --client-only'
 						sh "helm ls --kubeconfig $KUBECONFIG"
 						sh "helm repo add overture https://overture-stack.github.io/charts-server/"
 						sh """
