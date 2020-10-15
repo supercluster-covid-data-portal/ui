@@ -13,7 +13,7 @@ kind: Pod
 spec:
   containers:
   - name: node
-    image: node:12.6.0
+    image: node:12.13.1
     tty: true
   - name: docker
     image: docker:18-git
@@ -45,20 +45,15 @@ spec:
                 }
             }
         }
-        //stage('Test') {
-            //steps {
-                //container('node') {
-                    //sh "npm ci"
-                    //sh "npm run type-check"
-                    //sh "npm run build"
-                    //sh "npm run test"
-                    //sh "npm run build-uikit"
-                //}
-                //container('node') {
-                    //sh "GATEWAY_API_ROOT=https://argo-gateway.dev.argo.cancercollaboratory.org/ npm run test-gql-validation"
-                //}
-            //}
-        //}
+
+		stage('Test') {
+			steps {
+				container('node') {
+					sh "npm ci"
+					sh "npm run test"
+				}
+			}
+		}
 
         stage('Build & Publish Develop') {
             when {
