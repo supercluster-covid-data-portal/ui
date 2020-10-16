@@ -22,6 +22,8 @@ const Footer = () => {
         justify-content: flex-end;
         align-items: center;
         padding-right: 18px;
+        ${theme.shadow.default};
+        z-index: 10;
       `}
     >
       <StyledLink

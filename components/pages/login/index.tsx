@@ -97,7 +97,6 @@ const LoginPage = () => {
           flex: 1;
           flex-direction: row;
           position: relative;
-          min-width: 1440px;
         `}
       >
         <div
