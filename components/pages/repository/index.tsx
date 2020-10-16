@@ -6,6 +6,7 @@ import PageLayout from '../../PageLayout';
 import { RepoFiltersType } from './sqonTypes';
 import { getConfig } from '../../../global/config';
 import { css } from '@emotion/core';
+import createArrangerFetcher from '../../utils/arrangerFetcher';
 
 const Arranger = dynamic(
   () => import('@arranger/components/dist/Arranger').then((comp) => comp.Arranger),
@@ -33,9 +34,10 @@ export interface PageContentProps {
   fetchData?: (projectId: string) => Promise<any>;
 }
 
+const arrangerFetcher = createArrangerFetcher({});
+
 const RepositoryPage = () => {
   const { ARRANGER_PROJECT_ID, ARRANGER_GRAPHQL_FIELD, ARRANGER_INDEX } = getConfig();
-
   return (
     <PageLayout>
       {/* TODO: arranger config error handling tbd */}
@@ -56,7 +58,7 @@ const RepositoryPage = () => {
               `
             }
           >
-            Arranger is missing configuration values. Please check your ".env.local" file.
+            Arranger is missing configuration values. Please check your ".env" file.
             <ul>
               <li>Project ID: {ARRANGER_PROJECT_ID || 'missing'}</li>
               <li>GraphQL Field: {ARRANGER_GRAPHQL_FIELD || 'missing'}</li>
@@ -66,6 +68,7 @@ const RepositoryPage = () => {
         </div>
       ) : (
         <Arranger
+          api={arrangerFetcher}
           projectId={ARRANGER_PROJECT_ID}
           graphqlField={ARRANGER_GRAPHQL_FIELD}
           index={ARRANGER_INDEX}
