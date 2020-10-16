@@ -38,7 +38,6 @@ const arrangerFetcher = createArrangerFetcher({});
 
 const RepositoryPage = () => {
   const { ARRANGER_PROJECT_ID, ARRANGER_GRAPHQL_FIELD, ARRANGER_INDEX } = getConfig();
-
   return (
     <PageLayout>
       {/* TODO: arranger config error handling tbd */}
