@@ -103,7 +103,7 @@ spec:
 				branch "test-develop"
 			}
 			steps {
-				build(job: "/provision/helm", parameters: [
+				build(job: "/Overture.bio/provision/helm", parameters: [
 						[$class: 'StringParameterValue', name: 'OVERTURE_ENV', value: 'qa' ],
 						[$class: 'StringParameterValue', name: 'OVERTURE_CHART_NAME', value: 'dms-ui'],
 						[$class: 'StringParameterValue', name: 'OVERTURE_RELEASE_NAME', value: 'dms-ui'],
