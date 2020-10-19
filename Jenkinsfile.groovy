@@ -46,61 +46,61 @@ spec:
             }
         }
 
-//		stage('Test') {
-//			steps {
-//				container('node') {
-//					sh "npm ci"
-//					sh "npm run test"
-//				}
-//			}
-//		}
-//
-//        stage('Build & Publish Develop') {
-//            when {
-//                anyOf {
-//                    branch 'develop'
-//                }
-//            }
-//            steps {
-//                container('docker') {
-//                    withCredentials([usernamePassword(credentialsId:'OvertureDockerHub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-//                        sh 'docker login -u $USERNAME -p $PASSWORD'
-//                    }
-//                    // DNS error if --network is default
-//                    sh "docker build --network=host -f Dockerfile . -t ${dockerHubRepo}:${version}-${commit} -t ${dockerHubRepo}:edge"
-//                    sh "docker push ${dockerHubRepo}:${version}-${commit}"
-//                    sh "docker push ${dockerHubRepo}:edge"
-//                }
-//            }
-//        }
-//
-//        stage('Release & Tag') {
-//            when {
-//                anyOf {
-//                    branch 'master'
-//                }
-//            }
-//            steps {
-//                container('docker') {
-//                    withCredentials([usernamePassword(credentialsId: 'OvertureBioGithub', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-//                        sh "git tag ${version}"
-//                        sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${githubRepo} --tags"
-//                    }
-//                    withCredentials([usernamePassword(credentialsId:'OvertureDockerHub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-//                        sh 'docker login -u $USERNAME -p $PASSWORD'
-//                    }
-//                    // DNS error if --network is default
-//                    sh "docker build --network=host -f Dockerfile . -t ${dockerHubRepo}:${version} -t ${dockerHubRepo}:latest"
-//                    sh "docker push ${dockerHubRepo}:${version}"
-//                    sh "docker push ${dockerHubRepo}:latest"
-//                }
-//            }
-//        }
-//        
+		stage('Test') {
+			steps {
+				container('node') {
+					sh "npm ci"
+					sh "npm run test"
+				}
+			}
+		}
+
+		stage('Build & Publish Develop') {
+			when {
+				anyOf {
+					branch 'develop'
+				}
+			}
+			steps {
+				container('docker') {
+					withCredentials([usernamePassword(credentialsId:'OvertureDockerHub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+						sh 'docker login -u $USERNAME -p $PASSWORD'
+					}
+					// DNS error if --network is default
+					sh "docker build --network=host -f Dockerfile . -t ${dockerHubRepo}:${version}-${commit} -t ${dockerHubRepo}:edge"
+					sh "docker push ${dockerHubRepo}:${version}-${commit}"
+					sh "docker push ${dockerHubRepo}:edge"
+				}
+			}
+		}
+
+		stage('Release & Tag') {
+			when {
+				anyOf {
+					branch 'master'
+				}
+			}
+			steps {
+				container('docker') {
+					withCredentials([usernamePassword(credentialsId: 'OvertureBioGithub', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+						sh "git tag ${version}"
+						sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${githubRepo} --tags"
+					}
+					withCredentials([usernamePassword(credentialsId:'OvertureDockerHub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+						sh 'docker login -u $USERNAME -p $PASSWORD'
+					}
+					// DNS error if --network is default
+					sh "docker build --network=host -f Dockerfile . -t ${dockerHubRepo}:${version} -t ${dockerHubRepo}:latest"
+					sh "docker push ${dockerHubRepo}:${version}"
+					sh "docker push ${dockerHubRepo}:latest"
+				}
+			}
+		}
+		
 
 		stage('Deploy to overture-qa') {
 			when {
-				branch "test-develop"
+				branch "develop"
 			}
 			steps {
 				build(job: "/Overture.bio/provision/helm", parameters: [
@@ -114,25 +114,22 @@ spec:
 			}
 		}
 
-        //stage('Deploy to overture-staging') {
-            //when {
-                //branch "master"
-            //}
-            //steps {
-                //container('helm') {
-                    //withCredentials([file(credentialsId:'4ed1e45c-b552-466b-8f86-729402993e3b', variable: 'KUBECONFIG')]) {
-                        //sh 'env'
-                        //sh 'helm init --client-only'
-                        //sh "helm ls --kubeconfig $KUBECONFIG"
-                        //sh "helm repo add overture https://overture-stack.github.io/charts-server/"
-                        //sh """
-                            //helm upgrade --kubeconfig $KUBECONFIG --install --namespace=overture-qa ego \\
-                            //overture/ego --reuse-values --set-string image.tag=${version}
-                           //"""
-                    //}
-                //}
-            //}
-        //}
+		stage('Deploy to overture-staging') {
+			when {
+				branch "master"
+			}
+			steps {
+				build(job: "/Overture.bio/provision/helm", parameters: [
+						[$class: 'StringParameterValue', name: 'OVERTURE_ENV', value: 'staging' ],
+						[$class: 'StringParameterValue', name: 'OVERTURE_CHART_NAME', value: 'dms-ui'],
+						[$class: 'StringParameterValue', name: 'OVERTURE_RELEASE_NAME', value: 'dms-ui'],
+						[$class: 'StringParameterValue', name: 'OVERTURE_HELM_CHART_VERSION', value: ''], // use latest
+						[$class: 'StringParameterValue', name: 'OVERTURE_HELM_REPO_URL', value: "https://overture-stack.github.io/charts-server/"],
+						[$class: 'StringParameterValue', name: 'OVERTURE_HELM_REUSE_VALUES', value: "false" ]
+				])
+			}
+		}
+
     }
     post {
         unsuccessful {
