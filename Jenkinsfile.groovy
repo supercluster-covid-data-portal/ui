@@ -108,8 +108,6 @@ spec:
 						[$class: 'StringParameterValue', name: 'OVERTURE_CHART_NAME', value: 'dms-ui'],
 						[$class: 'StringParameterValue', name: 'OVERTURE_RELEASE_NAME', value: 'dms-ui'],
 						[$class: 'StringParameterValue', name: 'OVERTURE_HELM_REPO_URL', value: "https://overture-stack.github.io/charts-server/"],
-						[$class: 'StringParameterValue', name: 'OVERTURE_HELM_CHART_VERSION', value: "${chartVersion}"],
-						[$class: 'StringParameterValue', name: 'OVERTURE_HELM_CHART_VERSION', value: "${chartVersion}"],
 						[$class: 'StringParameterValue', name: 'OVERTURE_HELM_REUSE_VALUES', value: "false" ]
 				])
 			}
