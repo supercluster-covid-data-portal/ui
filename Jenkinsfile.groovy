@@ -103,17 +103,15 @@ spec:
 				branch "test-develop"
 			}
 			steps {
-				container('helm') {
-					withCredentials([file(credentialsId:'4ed1e45c-b552-466b-8f86-729402993e3b', variable: 'KUBECONFIG')]) {
-						sh 'env'
-						sh "helm list"
-						sh "helm repo add overture https://overture-stack.github.io/charts-server/"
-						sh """
-							helm upgrade --install --namespace=overture-qa dms-ui \\
-							overture/dms-ui --reuse-values --set-string image.tag=${version}-${commit}
-						   """
-					}
-				}
+				build(job: "/provision/helm", parameters: [
+						[$class: 'StringParameterValue', name: 'OVERTURE_ENV', value: 'qa' ],
+						[$class: 'StringParameterValue', name: 'OVERTURE_CHART_NAME', value: 'dms-ui'],
+						[$class: 'StringParameterValue', name: 'OVERTURE_RELEASE_NAME', value: 'dms-ui'],
+						[$class: 'StringParameterValue', name: 'OVERTURE_HELM_REPO_URL', value: "https://overture-stack.github.io/charts-server/"],
+						[$class: 'StringParameterValue', name: 'OVERTURE_HELM_CHART_VERSION', value: "${chartVersion}"],
+						[$class: 'StringParameterValue', name: 'OVERTURE_HELM_CHART_VERSION', value: "${chartVersion}"],
+						[$class: 'StringParameterValue', name: 'OVERTURE_HELM_REUSE_VALUES', value: "false" ]
+				])
 			}
 		}
 
