@@ -5,4 +5,8 @@ const LoginPage = () => {
   return <Login />;
 };
 
+LoginPage.getInitialProps = ({ Component, ctx }: any) => {
+  return { ctx };
+};
+
 export default LoginPage;
