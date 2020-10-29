@@ -6,8 +6,8 @@ const createArrangerFetcher = ({
   onError = (err: any) => Promise.reject(err),
   defaultHeaders = {},
 } = {}) => ({ method = 'post', body = {}, headers = {} }) => {
-  const { ARRANGER_API, ARRANGER_PROJECT_ID } = getConfig();
-  const uri = urlJoin(ARRANGER_API, ARRANGER_PROJECT_ID, '/graphql');
+  const { NEXT_PUBLIC_ARRANGER_API, NEXT_PUBLIC_ARRANGER_PROJECT_ID } = getConfig();
+  const uri = urlJoin(NEXT_PUBLIC_ARRANGER_API, NEXT_PUBLIC_ARRANGER_PROJECT_ID, '/graphql');
   return ajax
     .post(uri, body, {
       headers: {
