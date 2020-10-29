@@ -10,6 +10,7 @@ import {
   LinkedInLogo,
   Illustration,
 } from '../../theme/icons';
+
 import { IconProps } from '../../theme/icons/types';
 import { getConfig } from '../../../global/config';
 
