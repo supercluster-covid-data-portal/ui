@@ -23,8 +23,12 @@ const LoginButton = ({
   title: string;
   path: string;
 }) => {
-  const { EGO_API_ROOT, EGO_CLIENT_ID } = getConfig();
-  const url = `${urlJoin(EGO_API_ROOT, '/oauth/login', path)}?client_id=${EGO_CLIENT_ID}`;
+  const { NEXT_PUBLIC_EGO_API_ROOT, NEXT_PUBLIC_EGO_CLIENT_ID } = getConfig();
+  const url = `${urlJoin(
+    NEXT_PUBLIC_EGO_API_ROOT,
+    '/oauth/login',
+    path,
+  )}?client_id=${NEXT_PUBLIC_EGO_CLIENT_ID}`;
   const disabled = !path;
   return (
     <a
@@ -97,7 +101,6 @@ const LoginPage = () => {
           flex: 1;
           flex-direction: row;
           position: relative;
-          min-width: 1440px;
         `}
       >
         <div

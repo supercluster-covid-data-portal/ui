@@ -37,8 +37,8 @@ const PageContent = (props: PageContentProps) => {
             min-width: 250px;
             max-width: 270px;
             background-color: ${theme.colors.white};
-            ${theme.shadow.default}
             z-index: 1;
+            ${theme.shadow.right};
           `}
         >
           <Facets {...props} />
@@ -60,7 +60,6 @@ const PageContent = (props: PageContentProps) => {
             <QueryBar {...props} />
             <RepoTable {...props} />
           </div>
-          <Footer />
         </div>
       </div>
     </div>

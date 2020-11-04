@@ -3,6 +3,7 @@ import { css } from '@emotion/core';
 
 import defaultTheme from './theme';
 import NavBar from './NavBar';
+import Footer from './Footer';
 
 const PageLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -18,6 +19,7 @@ const PageLayout = ({ children }: { children: React.ReactNode }) => {
     >
       <NavBar />
       {children}
+      <Footer />
     </div>
   );
 };

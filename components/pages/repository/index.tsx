@@ -6,6 +6,7 @@ import PageLayout from '../../PageLayout';
 import { RepoFiltersType } from './sqonTypes';
 import { getConfig } from '../../../global/config';
 import { css } from '@emotion/core';
+import createArrangerFetcher from '../../utils/arrangerFetcher';
 
 const Arranger = dynamic(
   () => import('@arranger/components/dist/Arranger').then((comp) => comp.Arranger),
@@ -33,13 +34,23 @@ export interface PageContentProps {
   fetchData?: (projectId: string) => Promise<any>;
 }
 
+const arrangerFetcher = createArrangerFetcher({});
+
 const RepositoryPage = () => {
-  const { ARRANGER_PROJECT_ID, ARRANGER_GRAPHQL_FIELD, ARRANGER_INDEX } = getConfig();
+  const {
+    NEXT_PUBLIC_ARRANGER_PROJECT_ID,
+    NEXT_PUBLIC_ARRANGER_GRAPHQL_FIELD,
+    NEXT_PUBLIC_ARRANGER_INDEX,
+  } = getConfig();
 
   return (
     <PageLayout>
       {/* TODO: arranger config error handling tbd */}
-      {!(ARRANGER_PROJECT_ID && ARRANGER_GRAPHQL_FIELD && ARRANGER_INDEX) ? (
+      {!(
+        NEXT_PUBLIC_ARRANGER_PROJECT_ID &&
+        NEXT_PUBLIC_ARRANGER_GRAPHQL_FIELD &&
+        NEXT_PUBLIC_ARRANGER_INDEX
+      ) ? (
         <div
           css={css`
             display: flex;
@@ -56,19 +67,20 @@ const RepositoryPage = () => {
               `
             }
           >
-            Arranger is missing configuration values. Please check your ".env.local" file.
+            Arranger is missing configuration values. Please check your ".env" file.
             <ul>
-              <li>Project ID: {ARRANGER_PROJECT_ID || 'missing'}</li>
-              <li>GraphQL Field: {ARRANGER_GRAPHQL_FIELD || 'missing'}</li>
-              <li>Index: {ARRANGER_INDEX || 'missing'}</li>
+              <li>Project ID: {NEXT_PUBLIC_ARRANGER_PROJECT_ID || 'missing'}</li>
+              <li>GraphQL Field: {NEXT_PUBLIC_ARRANGER_GRAPHQL_FIELD || 'missing'}</li>
+              <li>Index: {NEXT_PUBLIC_ARRANGER_INDEX || 'missing'}</li>
             </ul>
           </div>
         </div>
       ) : (
         <Arranger
-          projectId={ARRANGER_PROJECT_ID}
-          graphqlField={ARRANGER_GRAPHQL_FIELD}
-          index={ARRANGER_INDEX}
+          api={arrangerFetcher}
+          projectId={NEXT_PUBLIC_ARRANGER_PROJECT_ID}
+          graphqlField={NEXT_PUBLIC_ARRANGER_GRAPHQL_FIELD}
+          index={NEXT_PUBLIC_ARRANGER_INDEX}
           render={(props: PageContentProps) => {
             return <PageContent {...props} />;
           }}
