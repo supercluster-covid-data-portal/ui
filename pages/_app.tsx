@@ -1,17 +1,22 @@
 import Root from '../components/Root';
+import { NextPageContext } from 'next';
 
-function MyApp({
+const App = ({
   Component,
   pageProps,
+  egoJwt = '',
+  ctx,
 }: {
   Component: React.ComponentType<any>;
   pageProps: { [k: string]: any };
-}) {
+  egoJwt?: string;
+  ctx: NextPageContext;
+}) => {
   return (
-    <Root>
+    <Root egoJwt={egoJwt}>
       <Component {...pageProps} />
     </Root>
   );
-}
+};
 
-export default MyApp;
+export default App;
