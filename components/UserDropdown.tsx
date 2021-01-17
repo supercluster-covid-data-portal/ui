@@ -130,7 +130,7 @@ const UserDropdown = () => {
           `}
         >
           <li>
-            <StyledListLink href="/profile">Profile & Token</StyledListLink>
+            <StyledListLink href="/user">Profile & Token</StyledListLink>
           </li>
           {/* TODO: implement logout */}
           <li>
