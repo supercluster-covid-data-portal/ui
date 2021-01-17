@@ -1,4 +1,4 @@
-import { css } from '@emotion/core';
+import { css, Global } from '@emotion/core';
 import React from 'react';
 import { capitalize, isEmpty, sample, set } from 'lodash';
 import { useTheme } from 'emotion-theming';
@@ -18,6 +18,8 @@ import defaultTheme from '../../theme';
 import theme from '../../theme';
 import Button from '../../Button';
 import StyledLink from '../../Link';
+import { Tooltip } from 'react-tippy';
+import styled from '@emotion/styled';
 
 type ProviderType = 'GOOGLE' | 'FACEBOOK' | 'GITHUB' | 'LINKEDIN' | 'ORCID';
 type UserType = 'ADMIN' | 'USER';
@@ -157,6 +159,31 @@ const ApiTokenInfo = ({ apiToken }: { apiToken: ApiToken | null }) => {
   const parsedExpiry = apiToken ? parseExpiry(apiToken?.expiryDate) : 0;
   const tokenIsExpired = parsedExpiry <= 0;
 
+  const TooltipContainer = styled('div')`
+    ${css(theme.typography.label as any)}
+    background: ${theme.colors.grey_6};
+    border-radius: 2px;
+    padding: 2px 4px;
+    color: white;
+    font-weight: normal;
+    margin-bottom: 10%;
+    &:before {
+      content: '';
+      display: block;
+      position: absolute;
+      width: 0;
+      height: 0;
+      border: 5px solid transparent;
+      pointer-events: none;
+      right: 50%;
+      top: 79%;
+      border-top-color: ${theme.colors.grey_6};
+      border-right: 5px solid transparent;
+      border-left: 5px solid transparent;
+      margin-right: -5px;
+    }
+  `;
+
   return (
     <div
       css={css`
@@ -282,33 +309,55 @@ const ApiTokenInfo = ({ apiToken }: { apiToken: ApiToken | null }) => {
             {apiToken?.name || 'You have no API token...'}
           </span>
         </div>
-        <Button
-          // isAsync
-          disabled={isEmpty(apiToken) || isCopyingToken || tokenIsExpired}
-          css={() =>
-            css`
-              border-radius: 0px 5px 5px 0px;
-              width: 69px;
-              height: 36px;
-              position: relative;
-            `
-          }
-          onClick={() => (apiToken?.name && !tokenIsExpired ? copyApiToken(apiToken.name) : null)}
-        >
-          {copySuccess ? (
-            <span
-              css={css`
-                position: absolute;
-                top: 8px;
-                left: 22px;
-              `}
+        <>
+          <Global
+            styles={css`
+              .tippy-popper .leave {
+                opacity: 0;
+              }
+            `}
+          />
+          <Tooltip
+            unmountHTMLWhenHide
+            open={copySuccess}
+            arrow
+            html={<TooltipContainer id="tooltip">Copied!</TooltipContainer>}
+            position="top"
+          >
+            <Button
+              disabled={isEmpty(apiToken) || isCopyingToken || tokenIsExpired}
+              css={() =>
+                css`
+                  border-radius: 0px 5px 5px 0px;
+                  width: 69px;
+                  height: 36px;
+                  position: relative;
+                `
+              }
+              onClick={() =>
+                apiToken?.name && !tokenIsExpired ? copyApiToken(apiToken.name) : null
+              }
             >
-              <Checkmark width={20} height={20} fill={theme.colors.white} />
-            </span>
-          ) : (
-            'Copy'
-          )}
-        </Button>
+              <span
+                css={css`
+                  position: absolute;
+                  top: 8px;
+                  left: 22px;
+                  visibility: ${copySuccess ? 'visible' : 'hidden'};
+                `}
+              >
+                <Checkmark width={20} height={20} fill={theme.colors.white} />
+              </span>
+              <span
+                css={css`
+                  visibility: ${copySuccess ? 'hidden' : 'visible'};
+                `}
+              >
+                Copy
+              </span>
+            </Button>
+          </Tooltip>
+        </>
       </div>
 
       <span
