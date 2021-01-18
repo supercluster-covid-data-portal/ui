@@ -1,6 +1,6 @@
 import { css, Global } from '@emotion/core';
 import React from 'react';
-import { capitalize, isEmpty, sample, set } from 'lodash';
+import { capitalize, has, isEmpty, sample, set } from 'lodash';
 import { useTheme } from 'emotion-theming';
 
 import PageLayout from '../../PageLayout';
@@ -56,7 +56,8 @@ const providerIcons: { [k in ProviderType]: React.ElementType } = {
   ORCID: OrcidLogo,
 };
 
-// for testing ui until data hookup is ready
+// for testing ui until auth hookup is ready
+// user info will come from jwt
 const sampleToken: ApiToken = {
   name: 'f4b7ca22-aaaa-4455-86ed-ec2fed727e72',
   scope: ['Test-Policy.WRITE'],
@@ -133,7 +134,6 @@ const ApiTokenInfo = ({ apiToken }: { apiToken: ApiToken | null }) => {
 
   const copyApiToken = (text: string) => {
     setIsCopyingToken(true);
-    console.log('copying token');
     navigator.clipboard
       .writeText(text)
       .then(async () => {
@@ -142,7 +142,7 @@ const ApiTokenInfo = ({ apiToken }: { apiToken: ApiToken | null }) => {
         await sleep();
         setCopySuccess(false);
       })
-      .catch((err) => console.warn('Failed to copy token'));
+      .catch((err) => console.warn('Failed to copy token!'));
   };
 
   const parseExpiry = (exp: string) => {
@@ -156,8 +156,8 @@ const ApiTokenInfo = ({ apiToken }: { apiToken: ApiToken | null }) => {
     return `Expires in: ${days} days`;
   };
 
-  const parsedExpiry = apiToken ? parseExpiry(apiToken?.expiryDate) : 0;
-  const tokenIsExpired = parsedExpiry <= 0;
+  const parsedExpiry: number = apiToken ? parseExpiry(apiToken?.expiryDate) : 0;
+  const tokenIsExpired: boolean = has(apiToken, 'expiryDate') && parsedExpiry <= 0;
 
   const TooltipContainer = styled('div')`
     ${css(theme.typography.label as any)}
@@ -242,6 +242,9 @@ const ApiTokenInfo = ({ apiToken }: { apiToken: ApiToken | null }) => {
               background-color: ${theme.colors.white};
               color: ${theme.colors.accent_dark};
               border: 1px solid ${theme.colors.grey_5};
+              &:hover {
+                background-color: ${theme.colors.accent_1};
+              }
             `
           }
         >
@@ -286,8 +289,7 @@ const ApiTokenInfo = ({ apiToken }: { apiToken: ApiToken | null }) => {
                   ${theme.typography.label}
                   ${tokenIsExpired
                     ? `background-color: ${theme.colors.error_dark}`
-                    : `background-color: ${theme.colors.grey_6};
-                    min-width: 100px;`}
+                    : `background-color: ${theme.colors.grey_6};`}
                 `
               }
             >
@@ -303,7 +305,7 @@ const ApiTokenInfo = ({ apiToken }: { apiToken: ApiToken | null }) => {
               font-weight: normal;
               padding-right: 5px;
               padding-left: 5px;
-              ${tokenIsExpired ? `opacity: 0.3` : ''}
+              ${tokenIsExpired ? 'opacity: 0.3' : ''}
             `}
           >
             {apiToken?.name || 'You have no API token...'}
@@ -342,7 +344,7 @@ const ApiTokenInfo = ({ apiToken }: { apiToken: ApiToken | null }) => {
                 css={css`
                   position: absolute;
                   top: 8px;
-                  left: 22px;
+                  left: 24px;
                   visibility: ${copySuccess ? 'visible' : 'hidden'};
                 `}
               >
@@ -376,7 +378,7 @@ const ApiTokenInfo = ({ apiToken }: { apiToken: ApiToken | null }) => {
   );
 };
 
-const User = ({ provider = 'GOOGLE' }: { provider: ProviderType }) => {
+const User = () => {
   return (
     <PageLayout backgroundColor={theme.colors.white}>
       <div

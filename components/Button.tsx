@@ -3,8 +3,6 @@ import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 
 import defaultTheme from './theme';
-import { useTheme } from 'emotion-theming';
-import theme from './theme';
 import { Spinner } from './theme/icons';
 
 const ButtonElement = styled('button')`
@@ -13,20 +11,23 @@ const ButtonElement = styled('button')`
   ${({ theme }) => css(theme.typography.subheading2)};
   line-height: 24px;
   border-radius: 5px;
-  border: 0px;
+  border: 1px solid ${({ theme }: { theme: typeof defaultTheme }) => css(theme.colors.accent)};
   padding: 6px 15px;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
   position: relative;
-  &:disabled {
+  &:hover {
+    background-color: ${({ theme }: { theme: typeof defaultTheme }) =>
+      css(theme.colors.accent_dark)};
+  }
+  &:disabled,
+  &:disabled:hover {
     background-color: ${({ theme }: { theme: typeof defaultTheme }) => css(theme.colors.grey_4)};
     cursor: not-allowed;
     color: ${({ theme }: { theme: typeof defaultTheme }) => css(theme.colors.white)};
     border: 1px solid ${({ theme }: { theme: typeof defaultTheme }) => css(theme.colors.grey_4)};
-  }
-  &:hover {
   }
 `;
 
@@ -38,21 +39,9 @@ const Button = React.forwardRef<
     onClick?: (
       e: React.SyntheticEvent<HTMLButtonElement>,
     ) => any | ((e: React.SyntheticEvent<HTMLButtonElement>) => Promise<any>);
-    /**
-     * Use with async onClick handlers to set loading indicator
-     */
     isAsync?: boolean;
-
-    /**
-     * DOM pass through
-     */
     className?: string;
-    /**
-     * DOM pass through
-     */
-    id?: string;
     isLoading?: boolean;
-    color?: string;
   }
 >(
   (
@@ -62,9 +51,7 @@ const Button = React.forwardRef<
       disabled = false,
       isAsync = false,
       className,
-      id,
       isLoading: controlledLoadingState,
-      color,
     },
     ref = React.createRef(),
   ) => {
@@ -87,7 +74,6 @@ const Button = React.forwardRef<
         onClick={isAsync ? onClickFn : onClick}
         disabled={disabled || shouldShowLoading}
         className={className}
-        // id={id}
       >
         <span
           css={css`
@@ -101,7 +87,6 @@ const Button = React.forwardRef<
             position: absolute;
             visibility: ${shouldShowLoading ? 'visible' : 'hidden'};
             bottom: 1px;
-            fill: ${color || theme.colors.white};
           `}
         >
           <Spinner height={20} width={20} />
