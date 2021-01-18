@@ -121,6 +121,31 @@ const AuthenticatedBadge = ({ provider }: { provider: ProviderType }) => {
   );
 };
 
+const TooltipContainer = styled('div')`
+  ${css(theme.typography.label as any)}
+  background: ${theme.colors.grey_6};
+  border-radius: 2px;
+  padding: 2px 4px;
+  color: white;
+  font-weight: normal;
+  margin-bottom: 10%;
+  &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    width: 0;
+    height: 0;
+    border: 5px solid transparent;
+    pointer-events: none;
+    right: 50%;
+    top: 79%;
+    border-top-color: ${theme.colors.grey_6};
+    border-right: 5px solid transparent;
+    border-left: 5px solid transparent;
+    margin-right: -5px;
+  }
+`;
+
 const ApiTokenInfo = ({ apiToken }: { apiToken: ApiToken | null }) => {
   const [isCopyingToken, setIsCopyingToken] = React.useState(false);
   const [copySuccess, setCopySuccess] = React.useState(false);
@@ -158,31 +183,6 @@ const ApiTokenInfo = ({ apiToken }: { apiToken: ApiToken | null }) => {
 
   const parsedExpiry: number = apiToken ? parseExpiry(apiToken?.expiryDate) : 0;
   const tokenIsExpired: boolean = has(apiToken, 'expiryDate') && parsedExpiry <= 0;
-
-  const TooltipContainer = styled('div')`
-    ${css(theme.typography.label as any)}
-    background: ${theme.colors.grey_6};
-    border-radius: 2px;
-    padding: 2px 4px;
-    color: white;
-    font-weight: normal;
-    margin-bottom: 10%;
-    &:before {
-      content: '';
-      display: block;
-      position: absolute;
-      width: 0;
-      height: 0;
-      border: 5px solid transparent;
-      pointer-events: none;
-      right: 50%;
-      top: 79%;
-      border-top-color: ${theme.colors.grey_6};
-      border-right: 5px solid transparent;
-      border-left: 5px solid transparent;
-      margin-right: -5px;
-    }
-  `;
 
   return (
     <div
