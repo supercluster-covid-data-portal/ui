@@ -33,21 +33,23 @@ const CurrentUser = ({ userName = 'TestUser' }: { userName?: string }) => (
 );
 
 const StyledListLink = styled('a')`
-  text-decoration: none;
+  ${({ theme }: { theme: typeof defaultTheme }) => css`
+text-decoration: none;
   height: 40px;
   display: flex;
   align-items: center;
-  background: ${({ theme }: { theme: typeof defaultTheme }) => css(theme.colors.white)};
+  background: (theme.colors.white)};
   padding: 6px 12px;
-  color: ${({ theme }: { theme: typeof defaultTheme }) => css(theme.colors.black)};
-  border: 1px solid ${({ theme }: { theme: typeof defaultTheme }) => css(theme.colors.grey_3)};
+  color: ${theme.colors.black};
+  border: 1px solid ${theme.colors.grey_3};
   outline: none;
   font-size: 16px;
   cursor: pointer;
   width: 100%;
   &:hover {
-    background-color: ${({ theme }: { theme: typeof defaultTheme }) => css(theme.colors.grey_1)};
+    background-color: ${theme.colors.grey_1};
   }
+`}
 `;
 
 const UserDropdown = () => {

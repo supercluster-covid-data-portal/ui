@@ -6,29 +6,30 @@ import defaultTheme from './theme';
 import { Spinner } from './theme/icons';
 
 const ButtonElement = styled('button')`
-  color: ${({ theme }: { theme: typeof defaultTheme }) => css(theme.colors.white)};
-  background-color: ${({ theme }: { theme: typeof defaultTheme }) => css(theme.colors.accent)};
-  ${({ theme }) => css(theme.typography.subheading2)};
-  line-height: 24px;
-  border-radius: 5px;
-  border: 1px solid ${({ theme }: { theme: typeof defaultTheme }) => css(theme.colors.accent)};
-  padding: 6px 15px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  position: relative;
-  &:hover {
-    background-color: ${({ theme }: { theme: typeof defaultTheme }) =>
-      css(theme.colors.accent_dark)};
-  }
-  &:disabled,
-  &:disabled:hover {
-    background-color: ${({ theme }: { theme: typeof defaultTheme }) => css(theme.colors.grey_4)};
-    cursor: not-allowed;
-    color: ${({ theme }: { theme: typeof defaultTheme }) => css(theme.colors.white)};
-    border: 1px solid ${({ theme }: { theme: typeof defaultTheme }) => css(theme.colors.grey_4)};
-  }
+  ${({ theme }: { theme: typeof defaultTheme }) => css`
+    color: ${theme.colors.white};
+    background-color: ${theme.colors.accent};
+    ${theme.typography.subheading2};
+    line-height: 24px;
+    border-radius: 5px;
+    border: 1px solid ${theme.colors.accent};
+    padding: 6px 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    &:hover {
+      background-color: ${theme.colors.accent_dark};
+    }
+    &:disabled,
+    &:disabled:hover {
+      background-color: ${theme.colors.grey_4};
+      cursor: not-allowed;
+      color: ${theme.colors.white};
+      border: 1px solid ${theme.colors.grey_4};
+    }
+  `}
 `;
 
 const Button = React.forwardRef<

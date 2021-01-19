@@ -176,8 +176,7 @@ const ApiTokenInfo = ({ apiToken }: { apiToken: ApiToken | null }) => {
   };
 
   const getDayValue = (exp: number) => {
-    // round or floor?
-    const days = Math.round(exp / 1000 / 60 / 60 / 24);
+    const days = Math.floor(exp / 1000 / 60 / 60 / 24);
     return `Expires in: ${days} days`;
   };
 
@@ -378,9 +377,13 @@ const ApiTokenInfo = ({ apiToken }: { apiToken: ApiToken | null }) => {
   );
 };
 
+const StyledPageLayout = styled(PageLayout)`
+  background-color: ${theme.colors.white};
+`;
+
 const User = () => {
   return (
-    <PageLayout backgroundColor={theme.colors.white}>
+    <StyledPageLayout>
       <div
         css={() =>
           css`
@@ -446,7 +449,7 @@ const User = () => {
         </div>
         <ApiTokenInfo apiToken={sampleToken} />
       </div>
-    </PageLayout>
+    </StyledPageLayout>
   );
 };
 

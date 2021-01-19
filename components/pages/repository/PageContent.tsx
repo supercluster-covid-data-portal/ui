@@ -11,9 +11,11 @@ import defaultTheme from '../../theme';
 import Footer from '../../Footer';
 
 export const Collapsible = styled('div')`
-  border-top: 1px solid ${({ theme }: { theme: typeof defaultTheme }) => theme.colors.grey_2};
-  height: 47px;
-  width: 100%;
+  ${({ theme }: { theme: typeof defaultTheme }) => css`
+    border-top: 1px solid ${theme.colors.grey_2};
+    height: 47px;
+    width: 100%;
+  `}
 `;
 
 const PageContent = (props: PageContentProps) => {
