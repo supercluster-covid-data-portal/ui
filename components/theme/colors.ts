@@ -22,7 +22,7 @@ const primary = {
 const accent = {
   accent: '#04518c',
   accent_light: '#4f85ae',
-  accent_dark: '#151c3d',
+  accent_dark: '#003055',
   accent_1: '#e5edf3',
 };
 
