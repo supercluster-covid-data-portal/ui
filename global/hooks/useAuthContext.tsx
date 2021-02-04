@@ -1,39 +1,36 @@
 import React from 'react';
+import Cookies from 'js-cookie';
 
 import { EGO_JWT_KEY } from '../utils/constants';
-// logout
-// update
-// set
 
 type T_AuthContext = {
-  token?: string | null;
+  token?: string;
   logout: () => void;
-  updateToken?: () => Promise<string | void>;
 };
 
 const AuthContext = React.createContext<T_AuthContext>({
   token: undefined,
   logout: () => {},
-  updateToken: async () => {},
 });
 
 export const AuthProvider = ({
   egoJwt,
   children,
 }: {
-  egoJwt: string;
+  egoJwt?: string;
   children: React.ReactElement;
 }) => {
-  const [token, setTokenState] = React.useState<string | null>(egoJwt);
+  const [token, setTokenState] = React.useState<string | undefined>(egoJwt);
 
   const setToken = (token: string) => {
-    localStorage.setItem(EGO_JWT_KEY, token);
+    Cookies.set(EGO_JWT_KEY, token, { secure: true });
     setTokenState(token);
   };
 
   const removeToken = () => {
-    localStorage.removeItem(EGO_JWT_KEY);
-    setTokenState(null);
+    // localStorage.removeItem(EGO_JWT_KEY);
+    Cookies.remove(EGO_JWT_KEY);
+    // setTokenState(null);
   };
 
   const logout = () => {

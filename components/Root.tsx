@@ -4,7 +4,7 @@ import defaultTheme from './theme';
 import Head from './Head';
 import { AuthProvider } from '../global/hooks/useAuthContext';
 
-const Root = ({ children, egoJwt }: { children: React.ReactElement; egoJwt: string }) => {
+const Root = ({ children, egoJwt }: { children: React.ReactElement; egoJwt?: string }) => {
   return (
     <>
       <style>
