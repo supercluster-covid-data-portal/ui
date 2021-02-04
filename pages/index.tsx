@@ -5,7 +5,6 @@ import { createPage } from '../global/utils/pages';
 
 const HomePage = createPage({
   getInitialProps: async (ctx) => {
-    console.log(ctx);
     const { egoJwt, asPath, query } = ctx;
     return { egoJwt, query, asPath };
   },

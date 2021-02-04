@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { createContext, useState } from 'react';
 import Cookies from 'js-cookie';
+import { useRouter } from 'next/router';
 
 import { EGO_JWT_KEY } from '../utils/constants';
 
@@ -8,7 +9,7 @@ type T_AuthContext = {
   logout: () => void;
 };
 
-const AuthContext = React.createContext<T_AuthContext>({
+const AuthContext = createContext<T_AuthContext>({
   token: undefined,
   logout: () => {},
 });
@@ -20,21 +21,27 @@ export const AuthProvider = ({
   egoJwt?: string;
   children: React.ReactElement;
 }) => {
-  const [token, setTokenState] = React.useState<string | undefined>(egoJwt);
+  const router = useRouter();
+  const [token, setTokenState] = useState<string>(egoJwt);
+
+  // need validation
+  if (egoJwt && token !== egoJwt) {
+    setTokenState(egoJwt);
+  }
 
   const setToken = (token: string) => {
-    Cookies.set(EGO_JWT_KEY, token, { secure: true });
+    Cookies.set(EGO_JWT_KEY, token);
     setTokenState(token);
   };
 
   const removeToken = () => {
-    // localStorage.removeItem(EGO_JWT_KEY);
     Cookies.remove(EGO_JWT_KEY);
-    // setTokenState(null);
+    setTokenState(null);
   };
 
   const logout = () => {
     removeToken();
+    router.push('/login');
   };
 
   const authData = {

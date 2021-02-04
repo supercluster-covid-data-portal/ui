@@ -27,8 +27,8 @@ const fetchEgoToken = () => {
       return res.text();
     })
     .then((jwt) => {
-      Cookies.set(EGO_JWT_KEY, jwt, { secure: false });
-      Router.push('/');
+      Cookies.set(EGO_JWT_KEY, jwt);
+      Router.push('/repository');
       // need validity check for jwt
       // if (isValidJwt(egoToken)) {
       //   return egoToken;
@@ -42,7 +42,6 @@ const fetchEgoToken = () => {
 
 const LoginLoaderPage = createPage({
   getInitialProps: async (ctx) => {
-    console.log(ctx);
     const { egoJwt, asPath, query } = ctx;
     return { egoJwt, query, asPath };
   },
@@ -51,6 +50,7 @@ const LoginLoaderPage = createPage({
   useEffect(() => {
     fetchEgoToken();
   });
+  // TODO: add loading animation
   return <div>Loading...</div>;
 });
 

@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { css } from '@emotion/core';
+import Router from 'next/router';
 
 import UserDropdown from './UserDropdown';
 import defaultTheme from './theme';
 import { OvertureLogo } from './theme/icons';
+import useAuthContext from '../global/hooks/useAuthContext';
+import Button from './Button';
 
 const LoginButton = ({ onClick }: { onClick?: () => any }) => {
   return (
@@ -30,8 +33,7 @@ const LoginButton = ({ onClick }: { onClick?: () => any }) => {
 };
 
 const NavBar: React.ComponentType<any> = ({ labName = 'Data Management System', labIcon }) => {
-  // isLoggedIn state will be reimplemented with real auth state
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const { token } = useAuthContext();
   return (
     <div
       css={(theme: typeof defaultTheme) => css`
@@ -113,7 +115,7 @@ const NavBar: React.ComponentType<any> = ({ labName = 'Data Management System', 
             Data Explorer
           </a>
         </div>
-        {isLoggedIn ? (
+        {token ? (
           <div
             css={(theme) => css`
               width: 195px;
@@ -136,7 +138,16 @@ const NavBar: React.ComponentType<any> = ({ labName = 'Data Management System', 
               justify-content: center;
             `}
           >
-            <LoginButton onClick={() => console.log('Logging in')} />
+            <Button
+              css={(theme) => css`
+                width: 90px;
+                ${theme.typography.button};
+                line-height: 20px;
+              `}
+              onClick={() => Router.push('/login')}
+            >
+              Log in
+            </Button>
           </div>
         )}
       </div>

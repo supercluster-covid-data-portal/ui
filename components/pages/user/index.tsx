@@ -1,6 +1,6 @@
 import { css, Global } from '@emotion/core';
 import React from 'react';
-import { capitalize, has, isEmpty, sample, set } from 'lodash';
+import { capitalize, has, isEmpty } from 'lodash';
 import { useTheme } from 'emotion-theming';
 
 import PageLayout from '../../PageLayout';

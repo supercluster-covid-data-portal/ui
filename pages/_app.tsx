@@ -1,23 +1,17 @@
-import { useEffect } from 'react';
 import Root from '../components/Root';
-import { NextPageContext } from 'next';
 import { AppContext } from 'next/app';
-import Router from 'next/router';
-// import nextCookies from 'next-cookies';
+import nextCookies from 'next-cookies';
 
 import { EGO_JWT_KEY } from '../global/utils/constants';
 import { PageWithConfig } from '../global/utils/pages/types';
-import { get } from 'lodash';
 
 const App = ({
   Component,
   pageProps,
-  ctx,
   egoJwt,
 }: {
   Component: React.ComponentType<any>;
   pageProps: { [k: string]: any };
-  ctx: NextPageContext;
   egoJwt?: string;
 }) => {
   return (
@@ -29,7 +23,9 @@ const App = ({
 
 App.getInitialProps = async ({ ctx, Component }: AppContext & { Component: PageWithConfig }) => {
   const { req, res } = ctx;
-  const egoJwt = get(req?.headers.cookie, EGO_JWT_KEY);
+  const egoJwt: string | undefined = nextCookies(ctx)[EGO_JWT_KEY];
+
+  // TODO validate token
 
   if (!egoJwt && !Component.isPublic) {
     // if page is not public, force login

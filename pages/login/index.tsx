@@ -3,12 +3,10 @@ import Login from '../../components/pages/login';
 import { createPage } from '../../global/utils/pages';
 
 const LoginPage = createPage({
-  getInitialProps: async ({ egoJwt, query, pathname }) => {
-    return { egoJwt, query, pathname };
-  },
+  getInitialProps: async () => {},
   isPublic: true,
-})((props) => {
-  return <Login {...props} />;
+})(() => {
+  return <Login />;
 });
 
 export default LoginPage;
