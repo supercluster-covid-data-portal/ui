@@ -1,15 +1,10 @@
 import React from 'react';
 import { css } from '@emotion/core';
-import styled from '@emotion/styled';
 
 import defaultTheme from './theme';
 import { OvertureLogoWithText } from './theme/icons';
 
-const StyledLink = styled('a')`
-  color: ${({ theme }: { theme: typeof defaultTheme }) => css(theme.colors.secondary_accessible)};
-  ${({ theme }) => css(theme.typography.subheading2)};
-  line-height: 24px;
-`;
+import StyledLink from './Link';
 
 const Footer = () => {
   return (
@@ -27,7 +22,8 @@ const Footer = () => {
       `}
     >
       <StyledLink
-        css={css`
+        css={(theme) => css`
+          ${theme.typography.subheading2};
           padding-right: 13px;
         `}
         // TODO: broken link
@@ -38,7 +34,8 @@ const Footer = () => {
       </StyledLink>
       |
       <StyledLink
-        css={css`
+        css={(theme) => css`
+          ${theme.typography.subheading2};
           padding-left: 13px;
           padding-right: 5px;
         `}
