@@ -17,7 +17,6 @@
     "@types/lodash": "^4.14.168",
     "@zeit/next-css": "^1.0.1",
     "axios": "^0.20.0",
-    "cookies": "^0.8.0",
     "emotion-theming": "^10.0.27",
     "js-cookie": "^2.2.1",
     "lodash": "^4.17.20",
