@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
 
 import { EGO_JWT_KEY } from '../utils/constants';
+import { isValidJwt } from '../utils/egoTokenUtils';
 
 type T_AuthContext = {
   token?: string;
@@ -24,16 +25,6 @@ export const AuthProvider = ({
   const router = useRouter();
   const [token, setTokenState] = useState<string>(egoJwt);
 
-  // need validation
-  if (egoJwt && token !== egoJwt) {
-    setTokenState(egoJwt);
-  }
-
-  const setToken = (token: string) => {
-    Cookies.set(EGO_JWT_KEY, token);
-    setTokenState(token);
-  };
-
   const removeToken = () => {
     Cookies.remove(EGO_JWT_KEY);
     setTokenState(null);
@@ -43,6 +34,10 @@ export const AuthProvider = ({
     removeToken();
     router.push('/login');
   };
+
+  if (token !== egoJwt) {
+    setTokenState(egoJwt);
+  }
 
   const authData = {
     token,
