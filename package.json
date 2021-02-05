@@ -16,7 +16,7 @@
     "@icgc-argo/ego-token-utils": "^8.0.0",
     "@types/lodash": "^4.14.168",
     "@zeit/next-css": "^1.0.1",
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
     "emotion-theming": "^10.0.27",
     "js-cookie": "^2.2.1",
     "lodash": "^4.17.20",
