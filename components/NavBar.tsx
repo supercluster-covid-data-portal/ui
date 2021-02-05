@@ -7,6 +7,7 @@ import defaultTheme from './theme';
 import { OvertureLogo } from './theme/icons';
 import useAuthContext from '../global/hooks/useAuthContext';
 import Button from './Button';
+import { StyledLinkAsButton } from './Link';
 
 const LoginButton = ({ onClick }: { onClick?: () => any }) => {
   return (
@@ -138,16 +139,16 @@ const NavBar: React.ComponentType<any> = ({ labName = 'Data Management System', 
               justify-content: center;
             `}
           >
-            <Button
+            <StyledLinkAsButton
               css={(theme) => css`
-                width: 90px;
+                width: 70px;
                 ${theme.typography.button};
                 line-height: 20px;
               `}
-              onClick={() => Router.push('/login')}
+              href="/login"
             >
               Log in
-            </Button>
+            </StyledLinkAsButton>
           </div>
         )}
       </div>

@@ -42,6 +42,7 @@ text-decoration: none;
   background: (theme.colors.white)};
   padding: 6px 12px;
   color: ${theme.colors.black};
+  background-color: ${theme.colors.white};
   border: 1px solid ${theme.colors.grey_3};
   outline: none;
   font-size: 16px;
