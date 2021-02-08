@@ -1,4 +1,5 @@
 import React from 'react';
+
 import User from '../../components/pages/user';
 import { createPage } from '../../global/utils/pages';
 

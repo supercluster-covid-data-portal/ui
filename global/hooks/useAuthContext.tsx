@@ -1,9 +1,7 @@
 import React, { createContext, useState } from 'react';
-import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
 
 import { EGO_JWT_KEY } from '../utils/constants';
-import { isValidJwt } from '../utils/egoTokenUtils';
 
 type T_AuthContext = {
   token?: string;
@@ -26,7 +24,7 @@ export const AuthProvider = ({
   const [token, setTokenState] = useState<string>(egoJwt);
 
   const removeToken = () => {
-    Cookies.remove(EGO_JWT_KEY);
+    localStorage.removeItem(EGO_JWT_KEY);
     setTokenState(null);
   };
 
