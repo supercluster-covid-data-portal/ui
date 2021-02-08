@@ -3,16 +3,19 @@ import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
 
 import { EGO_JWT_KEY } from '../utils/constants';
-import { isValidJwt } from '../utils/egoTokenUtils';
+import { decodeToken, extractUser } from '../utils/egoTokenUtils';
+import { User } from '../../global/types';
 
 type T_AuthContext = {
   token?: string;
   logout: () => void;
+  user?: User;
 };
 
 const AuthContext = createContext<T_AuthContext>({
   token: undefined,
   logout: () => {},
+  user: undefined,
 });
 
 export const AuthProvider = ({
@@ -23,11 +26,11 @@ export const AuthProvider = ({
   children: React.ReactElement;
 }) => {
   const router = useRouter();
-  const [token, setTokenState] = useState<string>(egoJwt);
+  const [token, setTokenState] = useState(egoJwt);
 
   const removeToken = () => {
     Cookies.remove(EGO_JWT_KEY);
-    setTokenState(null);
+    setTokenState(undefined);
   };
 
   const logout = () => {
@@ -39,9 +42,15 @@ export const AuthProvider = ({
     setTokenState(egoJwt);
   }
 
+  const userInfo = token ? decodeToken(token) : null;
+  // ts error on userInfo from type discrepancy between dms and ego-token-utils user.preferredLanguage
+  // dms will need to use token-utils version updated for ego 4.x.x
+  const user = userInfo ? extractUser(userInfo) : {};
+
   const authData = {
     token,
     logout,
+    user,
   };
 
   return <AuthContext.Provider value={authData}>{children}</AuthContext.Provider>;

@@ -7,31 +7,34 @@ import defaultTheme from './theme';
 import { Avatar, ChevronDown } from './theme/icons';
 import useAuthContext from '../global/hooks/useAuthContext';
 
-const CurrentUser = ({ userName = 'TestUser' }: { userName?: string }) => (
-  <div
-    css={(theme) =>
-      css`
-        color: ${theme.colors.accent2_dark};
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      `
-    }
-  >
-    <span
-      css={css`
-        padding-left: 5px;
-        padding-right: 5px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 142px;
-      `}
+const CurrentUser = () => {
+  const { user } = useAuthContext();
+  return (
+    <div
+      css={(theme) =>
+        css`
+          color: ${theme.colors.accent2_dark};
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        `
+      }
     >
-      Hello, {userName}
-    </span>
-  </div>
-);
+      <span
+        css={css`
+          padding-left: 5px;
+          padding-right: 5px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 142px;
+        `}
+      >
+        Hello, {user?.firstName}
+      </span>
+    </div>
+  );
+};
 
 const StyledListLink = styled('a')`
   ${({ theme }: { theme: typeof defaultTheme }) => css`
