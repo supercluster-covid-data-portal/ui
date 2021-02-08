@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { css } from '@emotion/core';
-import Router from 'next/router';
 
 import UserDropdown from './UserDropdown';
 import defaultTheme from './theme';
 import { OvertureLogo } from './theme/icons';
 import useAuthContext from '../global/hooks/useAuthContext';
-import Button from './Button';
 import { StyledLinkAsButton } from './Link';
 
 const LoginButton = ({ onClick }: { onClick?: () => any }) => {
