@@ -20,6 +20,7 @@ import Button from '../../Button';
 import StyledLink from '../../Link';
 import { Tooltip } from 'react-tippy';
 import styled from '@emotion/styled';
+import useAuthContext from '../../../global/hooks/useAuthContext';
 
 type ProviderType = 'GOOGLE' | 'FACEBOOK' | 'GITHUB' | 'LINKEDIN' | 'ORCID';
 type UserType = 'ADMIN' | 'USER';
@@ -382,73 +383,78 @@ const StyledPageLayout = styled(PageLayout)`
 `;
 
 const User = () => {
+  const { token } = useAuthContext();
   return (
     <StyledPageLayout>
-      <div
-        css={() =>
-          css`
-            margin: 1rem 20rem;
-            display: flex;
-            flex-direction: column;
-          `
-        }
-      >
+      {/* checking token here because there is a flash of this page while localStorage is checked in _app.
+      possibly a better way to handle this for all non-public pages? (right now that's just user) */}
+      {token && (
         <div
-          css={css`
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            width: 800px;
-            margin-top: 1.5rem;
-            margin-bottom: 0.5rem;
-            padding-bottom: 2.5rem;
-            border-bottom: 1px solid ${theme.colors.grey_3};
-          `}
+          css={() =>
+            css`
+              margin: 1rem 20rem;
+              display: flex;
+              flex-direction: column;
+            `
+          }
         >
           <div
             css={css`
               display: flex;
               flex-direction: row;
+              justify-content: space-between;
+              width: 800px;
+              margin-top: 1.5rem;
+              margin-bottom: 0.5rem;
+              padding-bottom: 2.5rem;
+              border-bottom: 1px solid ${theme.colors.grey_3};
             `}
           >
-            <OvertureUser width={75} height={84} />
             <div
               css={css`
-                margin-left: 1rem;
+                display: flex;
+                flex-direction: row;
               `}
             >
-              <h1
-                css={(theme) =>
-                  css`
-                    ${theme.typography.regular};
-                    font-size: 30px;
-                    line-height: 36px;
-                    color: ${theme.colors.accent_dark};
-                    margin-bottom: 0.5rem;
-                    margin-top: 0.1rem;
-                  `
-                }
-              >
-                {`${sampleUser.firstName} ${sampleUser.lastName}`}
-              </h1>
+              <OvertureUser width={75} height={84} />
               <div
-                css={(theme) =>
-                  css`
-                    ${theme.typography.subheading};
-                    color: ${theme.colors.accent_dark};
-                    font-weight: normal;
-                    padding-left: 0.2rem;
-                  `
-                }
+                css={css`
+                  margin-left: 1rem;
+                `}
               >
-                {sampleUser.email || ''}
+                <h1
+                  css={(theme) =>
+                    css`
+                      ${theme.typography.regular};
+                      font-size: 30px;
+                      line-height: 36px;
+                      color: ${theme.colors.accent_dark};
+                      margin-bottom: 0.5rem;
+                      margin-top: 0.1rem;
+                    `
+                  }
+                >
+                  {`${sampleUser.firstName} ${sampleUser.lastName}`}
+                </h1>
+                <div
+                  css={(theme) =>
+                    css`
+                      ${theme.typography.subheading};
+                      color: ${theme.colors.accent_dark};
+                      font-weight: normal;
+                      padding-left: 0.2rem;
+                    `
+                  }
+                >
+                  {sampleUser.email || ''}
+                </div>
               </div>
             </div>
+            <AuthenticatedBadge provider={sampleUser.providerType} />
           </div>
-          <AuthenticatedBadge provider={sampleUser.providerType} />
+          <ApiTokenInfo apiToken={sampleToken} />
         </div>
-        <ApiTokenInfo apiToken={sampleToken} />
-      </div>
+      )}
     </StyledPageLayout>
   );
 };
