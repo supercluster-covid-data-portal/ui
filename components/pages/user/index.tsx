@@ -86,7 +86,7 @@ const UserComponent = () => {
             <AuthenticatedBadge provider={user?.providerType} />
           </div>
         )}
-        {!isEmpty(user) && <ApiTokenInfo apiToken={null} />}
+        {!isEmpty(user) && <ApiTokenInfo />}
       </div>
     </StyledPageLayout>
   );

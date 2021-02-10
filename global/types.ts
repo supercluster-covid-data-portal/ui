@@ -49,3 +49,7 @@ export type EgoJwtData = {
     user: User;
   };
 };
+
+export interface UserWithId extends User {
+  id: string;
+}

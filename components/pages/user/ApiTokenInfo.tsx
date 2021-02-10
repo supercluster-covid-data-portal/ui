@@ -2,11 +2,17 @@ import { css, Global } from '@emotion/core';
 import styled from '@emotion/styled';
 import { useTheme } from 'emotion-theming';
 import { has, isEmpty } from 'lodash';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Tooltip } from 'react-tippy';
+
+import { parseExpiry, getDayValue } from '../../../global/utils/apiToken';
+import { getConfig } from '../../../global/config';
+import useAuthContext from '../../../global/hooks/useAuthContext';
+import { EGO_API_KEY_ENDPOINT } from '../../../global/utils/constants';
 
 import Button from '../../Button';
 import StyledLink from '../../Link';
+
 import defaultTheme from '../../theme';
 import { Checkmark } from '../../theme/icons';
 
@@ -20,7 +26,7 @@ interface ApiToken {
 
 const TooltipContainer = styled('div')`
   ${({ theme }: { theme: typeof defaultTheme }) => css`
-    ${css(theme.typography.label as any)}
+    ${theme.typography.label};
     background: ${theme.colors.grey_6};
     border-radius: 2px;
     padding: 2px 4px;
@@ -45,17 +51,72 @@ const TooltipContainer = styled('div')`
   `}
 `;
 
-const ApiTokenInfo = ({ apiToken }: { apiToken: ApiToken | null }) => {
+const sleep = (time: number = 2000) =>
+  new Promise((resolve) => {
+    setTimeout(() => {
+      resolve('');
+    }, time);
+  });
+
+const ApiTokenInfo = () => {
+  const { user, token, fetchWithAuth } = useAuthContext();
+  const [existingApiToken, setExistingApiToken] = useState<ApiToken | null>(null);
   const [isCopyingToken, setIsCopyingToken] = React.useState(false);
   const [copySuccess, setCopySuccess] = React.useState(false);
   const theme: typeof defaultTheme = useTheme();
 
-  const sleep = (time: number = 2000) =>
-    new Promise((resolve) => {
-      setTimeout(() => {
-        resolve('');
-      }, time);
-    });
+  const generateApiToken = async () => {
+    const { NEXT_PUBLIC_EGO_API_ROOT } = getConfig();
+    if (user) {
+      const scopesResult = await fetchWithAuth(
+        `${NEXT_PUBLIC_EGO_API_ROOT}/o/scopes?userId=${user.id}`,
+        { method: 'GET' },
+      )
+        .then((res) => {
+          if (res.status !== 200) {
+            throw new Error('Error fetching scopes, cannot generate api token.');
+          }
+          return res.json();
+        })
+        .then((json) => json.scopes)
+        .catch((err) => console.warn(err));
+
+      if (scopesResult.length) {
+        return fetchWithAuth(
+          `${EGO_API_KEY_ENDPOINT}?scopes=${encodeURIComponent(scopesResult.join())}&user_id=${
+            user.id
+          }`,
+          { method: 'POST' },
+        )
+          .then((res) => {
+            if (res.status !== 200) {
+              throw new Error('Failed to generate api token!');
+            }
+            return res.json();
+          })
+          .then((newApiToken: ApiToken) => {
+            setExistingApiToken(newApiToken);
+          })
+          .catch((err) => {
+            return err;
+          });
+      }
+    }
+  };
+
+  const revokeApiToken = async () => {
+    return (
+      existingApiToken &&
+      fetchWithAuth(`${EGO_API_KEY_ENDPOINT}?apiKey=${existingApiToken.name}`, { method: 'DELETE' })
+        .then((res) => {
+          if (res.status !== 200) {
+            throw new Error('Error revoking api token!');
+          }
+          setExistingApiToken(null);
+        })
+        .catch((err) => console.warn(err))
+    );
+  };
 
   const copyApiToken = (text: string) => {
     setIsCopyingToken(true);
@@ -70,18 +131,28 @@ const ApiTokenInfo = ({ apiToken }: { apiToken: ApiToken | null }) => {
       .catch((err) => console.warn('Failed to copy token!'));
   };
 
-  const parseExpiry = (exp: string) => {
-    const expFromTodayMs = Date.parse(exp) - Date.now();
-    return expFromTodayMs || 0;
-  };
+  const parsedExpiry: number = existingApiToken ? parseExpiry(existingApiToken?.expiryDate) : 0;
+  const tokenIsExpired: boolean = has(existingApiToken, 'expiryDate') && parsedExpiry <= 0;
 
-  const getDayValue = (exp: number) => {
-    const days = Math.floor(exp / 1000 / 60 / 60 / 24);
-    return `Expires in: ${days} days`;
-  };
-
-  const parsedExpiry: number = apiToken ? parseExpiry(apiToken?.expiryDate) : 0;
-  const tokenIsExpired: boolean = has(apiToken, 'expiryDate') && parsedExpiry <= 0;
+  useEffect(() => {
+    user &&
+      fetchWithAuth(`${EGO_API_KEY_ENDPOINT}?user_id=${user.id}`, { method: 'GET' })
+        .then((res) => {
+          if (res.status !== 200) {
+            throw new Error();
+          }
+          return res.json();
+        })
+        .then((json) => {
+          const activeToken = json.resultSet.find((r: ApiToken) => !r.isRevoked);
+          if (activeToken) {
+            setExistingApiToken(activeToken);
+          } else {
+            setExistingApiToken(null);
+          }
+        })
+        .catch((err) => console.warn('Could not get api tokens! ', err));
+  }, [token]);
 
   return (
     <div
@@ -130,11 +201,13 @@ const ApiTokenInfo = ({ apiToken }: { apiToken: ApiToken | null }) => {
           css={css`
             margin-right: 10px;
           `}
+          onClick={() => generateApiToken()}
+          isAsync
         >
           Generate New Token
         </Button>
         <Button
-          disabled={isEmpty(apiToken) || tokenIsExpired}
+          disabled={isEmpty(existingApiToken) || tokenIsExpired}
           isAsync
           css={(theme) =>
             css`
@@ -146,6 +219,7 @@ const ApiTokenInfo = ({ apiToken }: { apiToken: ApiToken | null }) => {
               }
             `
           }
+          onClick={() => revokeApiToken()}
         >
           Revoke Token
         </Button>
@@ -166,7 +240,7 @@ const ApiTokenInfo = ({ apiToken }: { apiToken: ApiToken | null }) => {
               border: 1px solid ${theme.colors.grey_5};
               border-radius: 5px 0px 0px 5px;
               border-right: 0px;
-              color: ${isEmpty(apiToken) ? theme.colors.grey_6 : theme.colors.black};
+              color: ${isEmpty(existingApiToken) ? theme.colors.grey_6 : theme.colors.black};
               width: 100%;
               display: flex;
               align-items: center;
@@ -174,7 +248,7 @@ const ApiTokenInfo = ({ apiToken }: { apiToken: ApiToken | null }) => {
             `
           }
         >
-          {!isEmpty(apiToken) && (
+          {existingApiToken && (
             <div
               css={(theme) =>
                 css`
@@ -207,7 +281,7 @@ const ApiTokenInfo = ({ apiToken }: { apiToken: ApiToken | null }) => {
               ${tokenIsExpired ? 'opacity: 0.3' : ''}
             `}
           >
-            {apiToken?.name || 'You have no API token...'}
+            {existingApiToken?.name || 'You have no API token...'}
           </span>
         </div>
         <>
@@ -222,11 +296,15 @@ const ApiTokenInfo = ({ apiToken }: { apiToken: ApiToken | null }) => {
             unmountHTMLWhenHide
             open={copySuccess}
             arrow
-            html={<TooltipContainer id="tooltip">Copied!</TooltipContainer>}
+            html={
+              <TooltipContainer theme={theme} id="tooltip">
+                Copied!
+              </TooltipContainer>
+            }
             position="top"
           >
             <Button
-              disabled={isEmpty(apiToken) || isCopyingToken || tokenIsExpired}
+              disabled={isEmpty(existingApiToken) || isCopyingToken || tokenIsExpired}
               css={() =>
                 css`
                   border-radius: 0px 5px 5px 0px;
@@ -236,7 +314,9 @@ const ApiTokenInfo = ({ apiToken }: { apiToken: ApiToken | null }) => {
                 `
               }
               onClick={() =>
-                apiToken?.name && !tokenIsExpired ? copyApiToken(apiToken.name) : null
+                existingApiToken?.name && !tokenIsExpired
+                  ? copyApiToken(existingApiToken.name)
+                  : null
               }
             >
               <span
