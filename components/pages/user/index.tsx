@@ -390,13 +390,11 @@ const User = () => {
       possibly a better way to handle this for all non-public pages? (right now that's just user) */}
       {token && (
         <div
-          css={() =>
-            css`
-              margin: 1rem 20rem;
-              display: flex;
-              flex-direction: column;
-            `
-          }
+          css={css`
+            margin: 1rem 20rem;
+            display: flex;
+            flex-direction: column;
+          `}
         >
           <div
             css={css`
