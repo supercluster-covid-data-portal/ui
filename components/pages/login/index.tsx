@@ -46,6 +46,9 @@ const LoginButton = ({
           border: 1px solid ${theme.colors.accent};
           cursor: ${disabled ? 'not-allowed' : 'pointer'};
           opacity: ${disabled ? 0.4 : 1};
+          &:hover {
+            border: 1px solid ${theme.colors.accent_dark};
+          }
         `}
       >
         <span
@@ -68,6 +71,11 @@ const LoginButton = ({
               background-color: ${theme.colors.accent};
               color: ${theme.colors.white};
               ${theme.typography.button}
+              border-radius: 0 3px 3px 0;
+              &:hover {
+                background-color: ${theme.colors.accent_dark};
+                color: ${theme.colors.white};
+              }
             `
           }
         >
@@ -87,9 +95,9 @@ type ProviderType = {
 const providers: ProviderType[] = [
   { name: 'Google', path: 'google', icon: GoogleLogo },
   { name: 'ORCiD', path: 'orcid', icon: OrcidLogo },
-  { name: 'GitHub', path: '', icon: GitHubLogo },
+  { name: 'GitHub', path: 'github', icon: GitHubLogo },
   { name: 'Facebook', path: '', icon: FacebookLogo },
-  { name: 'LinkedIn', path: '', icon: LinkedInLogo },
+  { name: 'LinkedIn', path: 'linkedin', icon: LinkedInLogo },
 ];
 
 const LoginPage = () => {

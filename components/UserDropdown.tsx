@@ -5,6 +5,7 @@ import { useTheme } from 'emotion-theming';
 
 import defaultTheme from './theme';
 import { Avatar, ChevronDown } from './theme/icons';
+import useAuthContext from '../global/hooks/useAuthContext';
 
 const CurrentUser = ({ userName = 'TestUser' }: { userName?: string }) => (
   <div
@@ -41,6 +42,7 @@ text-decoration: none;
   background: (theme.colors.white)};
   padding: 6px 12px;
   color: ${theme.colors.black};
+  background-color: ${theme.colors.white};
   border: 1px solid ${theme.colors.grey_3};
   outline: none;
   font-size: 16px;
@@ -76,6 +78,7 @@ const UserDropdown = () => {
     };
   }, [open]);
   const theme: typeof defaultTheme = useTheme();
+  const { logout } = useAuthContext();
   return (
     <div
       ref={node}
@@ -134,9 +137,8 @@ const UserDropdown = () => {
           <li>
             <StyledListLink href="/user">Profile & Token</StyledListLink>
           </li>
-          {/* TODO: implement logout */}
           <li>
-            <StyledListLink>Logout</StyledListLink>
+            <StyledListLink onClick={() => logout()}>Logout</StyledListLink>
           </li>
         </ul>
       )}

@@ -1,37 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { css } from '@emotion/core';
 
 import UserDropdown from './UserDropdown';
 import defaultTheme from './theme';
 import { OvertureLogo } from './theme/icons';
-
-const LoginButton = ({ onClick }: { onClick?: () => any }) => {
-  return (
-    <button
-      onClick={onClick}
-      css={(theme: typeof defaultTheme) => css`
-        ${theme.typography.button};
-        background-color: ${theme.colors.accent};
-        color: ${theme.colors.white};
-        width: 73px;
-        height: 32px;
-        border: 1px solid ${theme.colors.accent};
-        border-radius: 5px;
-        margin: 0.5rem;
-        cursor: pointer;
-        &:hover {
-          ${theme.shadow.default};
-        }
-      `}
-    >
-      Login
-    </button>
-  );
-};
+import useAuthContext from '../global/hooks/useAuthContext';
+import { StyledLinkAsButton } from './Link';
 
 const NavBar: React.ComponentType<any> = ({ labName = 'Data Management System', labIcon }) => {
-  // isLoggedIn state will be reimplemented with real auth state
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const { token } = useAuthContext();
   return (
     <div
       css={(theme: typeof defaultTheme) => css`
@@ -113,7 +90,7 @@ const NavBar: React.ComponentType<any> = ({ labName = 'Data Management System', 
             Data Explorer
           </a>
         </div>
-        {isLoggedIn ? (
+        {token ? (
           <div
             css={(theme) => css`
               width: 195px;
@@ -136,7 +113,16 @@ const NavBar: React.ComponentType<any> = ({ labName = 'Data Management System', 
               justify-content: center;
             `}
           >
-            <LoginButton onClick={() => console.log('Logging in')} />
+            <StyledLinkAsButton
+              css={(theme) => css`
+                width: 70px;
+                ${theme.typography.button};
+                line-height: 20px;
+              `}
+              href="/login"
+            >
+              Log in
+            </StyledLinkAsButton>
           </div>
         )}
       </div>

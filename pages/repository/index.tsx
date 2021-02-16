@@ -6,6 +6,7 @@ const RepositoryPage = createPage({
   getInitialProps: async ({ query, egoJwt }) => {
     return { query, egoJwt };
   },
+  isPublic: true,
 })(() => {
   return <Repository />;
 });
