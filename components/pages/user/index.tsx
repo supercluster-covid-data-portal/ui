@@ -22,10 +22,29 @@ import { Tooltip } from 'react-tippy';
 import styled from '@emotion/styled';
 import useAuthContext from '../../../global/hooks/useAuthContext';
 
-type ProviderType = 'GOOGLE' | 'FACEBOOK' | 'GITHUB' | 'LINKEDIN' | 'ORCID';
-type UserType = 'ADMIN' | 'USER';
-type UserStatus = 'APPROVED' | 'PENDING' | 'DISABLED' | 'REJECTED';
-type Language = 'English' | 'French' | 'Spanish';
+enum ProviderType {
+  GOOGLE = 'GOOGLE',
+  FACEBOOK = 'FACEBOOK',
+  GITHUB = 'GITHUB',
+  LINKEDIN = 'LINKEDIN',
+  ORCID = 'ORCID',
+}
+
+enum UserType {
+  ADMIN = 'ADMIN',
+  USER = 'USER',
+}
+enum UserStatus {
+  APPROVED = 'APPROVED',
+  PENDING = 'PENDING',
+  DISABLED = 'DISABLED',
+  REJECTED = 'REJECTED',
+}
+enum Language {
+  ENGLISH = 'English',
+  FRENCH = 'French',
+  SPANISH = 'Spanish',
+}
 
 interface ApiToken {
   expiryDate: string;
@@ -71,10 +90,10 @@ const sampleUser: User = {
   email: 'user@example.com',
   firstName: 'User',
   lastName: 'Example',
-  providerType: 'GOOGLE',
+  providerType: ProviderType.GOOGLE,
   providerSubjectId: 'prov-subj-id-0123',
-  status: 'APPROVED',
-  type: 'USER',
+  status: UserStatus.APPROVED,
+  type: UserType.ADMIN,
   createdAt: '2020-02-14T15:58:37.151+0000',
   lastLogin: '2020-02-14T15:58:37.151+0000',
 };
