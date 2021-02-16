@@ -1,37 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { css } from '@emotion/core';
-import Router from 'next/router';
 
 import UserDropdown from './UserDropdown';
 import defaultTheme from './theme';
 import { OvertureLogo } from './theme/icons';
 import useAuthContext from '../global/hooks/useAuthContext';
-import Button from './Button';
 import { StyledLinkAsButton } from './Link';
-
-const LoginButton = ({ onClick }: { onClick?: () => any }) => {
-  return (
-    <button
-      onClick={onClick}
-      css={(theme: typeof defaultTheme) => css`
-        ${theme.typography.button};
-        background-color: ${theme.colors.accent};
-        color: ${theme.colors.white};
-        width: 73px;
-        height: 32px;
-        border: 1px solid ${theme.colors.accent};
-        border-radius: 5px;
-        margin: 0.5rem;
-        cursor: pointer;
-        &:hover {
-          ${theme.shadow.default};
-        }
-      `}
-    >
-      Login
-    </button>
-  );
-};
 
 const NavBar: React.ComponentType<any> = ({ labName = 'Data Management System', labIcon }) => {
   const { token } = useAuthContext();

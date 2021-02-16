@@ -4,10 +4,7 @@ import RepositoryPage from './repository';
 import { createPage } from '../global/utils/pages';
 
 const HomePage = createPage({
-  getInitialProps: async (ctx) => {
-    const { egoJwt, asPath, query } = ctx;
-    return { egoJwt, query, asPath };
-  },
+  getInitialProps: async () => {},
   isPublic: true,
 })(() => {
   return <RepositoryPage />;

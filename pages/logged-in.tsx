@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import urlJoin from 'url-join';
-import Cookies from 'js-cookie';
 import { css } from '@emotion/core';
 
 import { getConfig } from '../global/config';
@@ -31,7 +30,7 @@ const fetchEgoToken = () => {
     })
     .then((jwt) => {
       if (isValidJwt(jwt)) {
-        Cookies.set(EGO_JWT_KEY, jwt);
+        localStorage.setItem(EGO_JWT_KEY, jwt);
         setTimeout(() => Router.push('/repository'), 2000);
       } else {
         throw new Error('Invalid jwt, cannot login.');
@@ -39,11 +38,12 @@ const fetchEgoToken = () => {
     })
     .catch((err) => {
       console.warn(err);
-      Cookies.remove(EGO_JWT_KEY);
+      localStorage.removeItem(EGO_JWT_KEY);
       Router.push('/login');
     });
 };
 
+// TODO: this is a placeholder Loader
 const Loader = () => {
   return (
     <div

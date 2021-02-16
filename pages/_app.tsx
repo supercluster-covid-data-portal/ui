@@ -1,44 +1,36 @@
 import Root from '../components/Root';
 import { AppContext } from 'next/app';
-import nextCookies from 'next-cookies';
 
 import { EGO_JWT_KEY } from '../global/utils/constants';
 import { PageWithConfig } from '../global/utils/pages/types';
-import { isValidJwt } from '../global/utils/egoTokenUtils';
+import { useEffect, useState } from 'react';
+import Router from 'next/router';
 
-const App = ({
+const DMSApp = ({
   Component,
   pageProps,
-  egoJwt,
 }: {
-  Component: React.ComponentType<any>;
+  Component: PageWithConfig;
   pageProps: { [k: string]: any };
-  egoJwt?: string;
 }) => {
+  const [initialToken, setInitialToken] = useState<string>();
+  useEffect(() => {
+    const egoJwt = localStorage.getItem(EGO_JWT_KEY) || undefined;
+    setInitialToken(egoJwt);
+    if (!Component.isPublic && !egoJwt) {
+      Router.push('/login');
+    }
+  });
+
   return (
-    <Root egoJwt={egoJwt}>
+    <Root egoJwt={initialToken}>
       <Component {...pageProps} />
     </Root>
   );
 };
 
-App.getInitialProps = async ({ ctx, Component }: AppContext & { Component: PageWithConfig }) => {
-  const { req, res } = ctx;
-  const egoJwt: string | undefined = nextCookies(ctx)[EGO_JWT_KEY];
-
-  if (!isValidJwt(egoJwt)) {
-    res &&
-      res.setHeader('Set-Cookie', `${EGO_JWT_KEY}=deleted; expires=${new Date(1).toUTCString()}`);
-    // if page is not public, force login
-    if (res && !Component.isPublic) {
-      console.log('not authorized, redirecting to login');
-      res.writeHead(302, {
-        Location: '/login',
-      });
-      res.end();
-    }
-  }
-  const pageProps = await Component.getInitialProps({ ...ctx, egoJwt });
+DMSApp.getInitialProps = async ({ ctx, Component }: AppContext & { Component: PageWithConfig }) => {
+  const pageProps = await Component.getInitialProps({ ...ctx });
 
   return {
     ctx: {
@@ -46,9 +38,8 @@ App.getInitialProps = async ({ ctx, Component }: AppContext & { Component: PageW
       query: ctx.query,
       asPath: ctx.asPath,
     },
-    egoJwt,
     pageProps,
   };
 };
 
-export default App;
+export default DMSApp;

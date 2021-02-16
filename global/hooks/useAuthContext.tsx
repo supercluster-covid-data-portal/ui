@@ -1,5 +1,4 @@
 import React, { createContext, useState } from 'react';
-import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
 
 import { EGO_JWT_KEY } from '../utils/constants';
@@ -28,11 +27,13 @@ export const AuthProvider = ({
   children: React.ReactElement;
 }) => {
   const router = useRouter();
-  const [token, setTokenState] = useState(egoJwt);
+  // TODO: typing this state as `string` causes a compiler error. the same setup exists in argo but does not cause
+  // a type issue. using `any` for now
+  const [token, setTokenState] = useState<any>(egoJwt);
 
   const removeToken = () => {
-    Cookies.remove(EGO_JWT_KEY);
-    setTokenState(undefined);
+    localStorage.removeItem(EGO_JWT_KEY);
+    setTokenState(null);
   };
 
   const logout = () => {
