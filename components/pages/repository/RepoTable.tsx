@@ -1,8 +1,10 @@
 import { css } from '@emotion/core';
 import dynamic from 'next/dynamic';
+import urlJoin from 'url-join';
 
 import { PageContentProps } from './index';
 import defaultTheme from '../../theme';
+import { getConfig } from '../../../global/config';
 
 const Table = dynamic(
   () => import('@arranger/components/dist/Arranger').then((comp) => comp.Table),
@@ -203,6 +205,8 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
 `;
 
 const RepoTable = (props: PageContentProps) => {
+  const { NEXT_PUBLIC_ARRANGER_API, NEXT_PUBLIC_ARRANGER_PROJECT_ID } = getConfig();
+
   return (
     <div css={(theme) => getTableStyle(theme)}>
       <Table
@@ -210,6 +214,7 @@ const RepoTable = (props: PageContentProps) => {
         showFilterInput={false}
         columnDropdownText={'Columns'}
         exportTSVText={'Download'}
+        downloadUrl={urlJoin(NEXT_PUBLIC_ARRANGER_API, NEXT_PUBLIC_ARRANGER_PROJECT_ID, 'download')}
       />
     </div>
   );
