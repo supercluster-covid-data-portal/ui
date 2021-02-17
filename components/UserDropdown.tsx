@@ -38,23 +38,23 @@ const CurrentUser = () => {
 
 const StyledListLink = styled('a')`
   ${({ theme }: { theme: typeof defaultTheme }) => css`
-text-decoration: none;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  background: (theme.colors.white)};
-  padding: 6px 12px;
-  color: ${theme.colors.black};
-  background-color: ${theme.colors.white};
-  border: 1px solid ${theme.colors.grey_3};
-  outline: none;
-  font-size: 16px;
-  cursor: pointer;
-  width: 100%;
-  &:hover {
-    background-color: ${theme.colors.grey_1};
-  }
-`}
+    text-decoration: none;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    background: (theme.colors.white)};
+    padding: 6px 12px;
+    color: ${theme.colors.black};
+    background-color: ${theme.colors.white};
+    border: 1px solid ${theme.colors.grey_3};
+    outline: none;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    &:hover {
+      background-color: ${theme.colors.grey_1};
+    }
+  `}
 `;
 
 const UserDropdown = () => {
