@@ -206,6 +206,7 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
 
 const RepoTable = (props: PageContentProps) => {
   const { NEXT_PUBLIC_ARRANGER_API, NEXT_PUBLIC_ARRANGER_PROJECT_ID } = getConfig();
+
   return (
     <div css={(theme) => getTableStyle(theme)}>
       <Table
