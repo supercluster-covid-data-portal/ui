@@ -9,12 +9,15 @@ const TokenUtils = createEgoUtils(getConfig().NEXT_PUBLIC_EGO_PUBLIC_KEY);
 export const isValidJwt = (egoJwt: string | undefined) => !!egoJwt && TokenUtils.isValidJwt(egoJwt);
 
 export const decodeToken = memoize((egoJwt?: string) =>
-  egoJwt ? TokenUtils.decodeToken(egoJwt) : null,
+  egoJwt && isValidJwt(egoJwt) ? TokenUtils.decodeToken(egoJwt) : null,
 );
 
-export const extractUser: (decodedToken: EgoJwtData) => UserWithId | {} = (decodedToken) => {
+// EgoJwtData will need to be updated in ego-token-utils to include new User type in Ego 4.x.x
+// that includes providerSubjectId and providerType, and removes name
+// matching older version for now
+export const extractUser = (decodedToken: EgoJwtData) => {
   if (decodedToken) {
     return { ...decodedToken?.context.user, id: decodedToken?.sub };
   }
-  return {};
+  return undefined;
 };

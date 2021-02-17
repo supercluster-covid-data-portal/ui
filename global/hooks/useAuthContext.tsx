@@ -2,13 +2,13 @@ import React, { createContext, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { EGO_JWT_KEY } from '../utils/constants';
-import { decodeToken, extractUser, getPermissionsFromToken } from '../utils/egoTokenUtils';
-import { UserWithId } from '../../global/types';
+import { decodeToken, extractUser, isValidJwt } from '../utils/egoTokenUtils';
+import { UserWithId, UserWithProviderInfo } from '../../global/types';
 
 type T_AuthContext = {
   token?: string;
   logout: () => void;
-  user?: UserWithId;
+  user?: any; // will be corrected when new ego-token-utils User type is available
   fetchWithAuth: typeof fetch;
 };
 
@@ -42,13 +42,17 @@ export const AuthProvider = ({
   };
 
   if (token !== egoJwt) {
-    setTokenState(egoJwt);
+    if (isValidJwt(egoJwt)) {
+      setTokenState(egoJwt);
+    } else {
+      setTokenState(null);
+    }
   }
 
-  const fetchWithAuth = (url: string, options: any) => {
+  const fetchWithAuth: T_AuthContext['fetchWithAuth'] = (url, options) => {
     return fetch(url, {
       ...options,
-      headers: { ...options.headers, accept: '*/*', Authorization: `Bearer ${token || ''}` },
+      headers: { ...options?.headers, accept: '*/*', Authorization: `Bearer ${token || ''}` },
       body: null,
     });
   };
@@ -56,7 +60,7 @@ export const AuthProvider = ({
   const userInfo = token ? decodeToken(token) : null;
   // ts error on userInfo from type discrepancy between dms and ego-token-utils user.preferredLanguage
   // dms will need to use token-utils version updated for ego 4.x.x
-  const user = userInfo ? extractUser(userInfo) : {};
+  const user = userInfo ? extractUser(userInfo) : undefined;
   const authData = {
     token,
     logout,

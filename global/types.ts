@@ -32,11 +32,11 @@ export interface User {
   lastName: string;
   createdAt: number;
   lastLogin: number;
-  preferredLanguage?: Language;
-  providerType: ProviderType;
-  providerSubjectId: string;
+  preferredLanguage?: string;
 }
 
+// will update User to include providerSubjectId and providerType once new version of ego-token-utils for Ego 4.x.x is available
+// preferredLanguage can be updated to enum
 export type EgoJwtData = {
   iat: number;
   exp: number;
@@ -52,4 +52,9 @@ export type EgoJwtData = {
 
 export interface UserWithId extends User {
   id: string;
+}
+
+export interface UserWithProviderInfo extends UserWithId {
+  providerType: ProviderType;
+  providerSubjectId: string;
 }
