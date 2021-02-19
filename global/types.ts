@@ -32,7 +32,7 @@ export interface User {
   lastName: string;
   createdAt: number;
   lastLogin: number;
-  preferredLanguage?: string;
+  preferredLanguage?: Language;
   providerType: ProviderType;
   providerSubjectId: string;
 }
