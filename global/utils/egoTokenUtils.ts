@@ -1,21 +1,33 @@
-import createEgoUtils from '@icgc-argo/ego-token-utils';
+import jwtDecode from 'jwt-decode';
 import { memoize } from 'lodash';
+import jwt from 'jsonwebtoken';
 
 import { getConfig } from '../config';
 import { EgoJwtData, UserWithId } from '../types';
 
-const TokenUtils = createEgoUtils(getConfig().NEXT_PUBLIC_EGO_PUBLIC_KEY);
+const { NEXT_PUBLIC_EGO_PUBLIC_KEY } = getConfig();
 
-export const isValidJwt = (egoJwt: string | undefined) => !!egoJwt && TokenUtils.isValidJwt(egoJwt);
+const verifyJwt: (egoPublicKey: string) => (egoJwt?: string) => boolean = (egoPublicKey) => (
+  egoJwt,
+) => {
+  try {
+    if (!egoJwt || !egoPublicKey) {
+      return false;
+    } else {
+      return jwt.verify(egoJwt, egoPublicKey, { algorithms: ['RS256'] }) && true;
+    }
+  } catch (err) {
+    return false;
+  }
+};
 
-export const decodeToken = memoize((egoJwt?: string) =>
-  egoJwt && isValidJwt(egoJwt) ? TokenUtils.decodeToken(egoJwt) : null,
+export const isValidJwt = verifyJwt(NEXT_PUBLIC_EGO_PUBLIC_KEY);
+
+export const decodeToken: (egoJwt?: string) => EgoJwtData | null = memoize((egoJwt) =>
+  egoJwt && isValidJwt(egoJwt) ? jwtDecode(egoJwt) : null,
 );
 
-// EgoJwtData will need to be updated in ego-token-utils to include new User type in Ego 4.x.x
-// that includes providerSubjectId and providerType, and removes name
-// matching older version for now
-export const extractUser = (decodedToken: EgoJwtData) => {
+export const extractUser: (decodedToken: EgoJwtData) => UserWithId | undefined = (decodedToken) => {
   if (decodedToken) {
     return { ...decodedToken?.context.user, id: decodedToken?.sub };
   }

@@ -3,12 +3,12 @@ import { useRouter } from 'next/router';
 
 import { EGO_JWT_KEY } from '../utils/constants';
 import { decodeToken, extractUser, isValidJwt } from '../utils/egoTokenUtils';
-import { UserWithId, UserWithProviderInfo } from '../../global/types';
+import { UserWithId } from '../../global/types';
 
 type T_AuthContext = {
   token?: string;
   logout: () => void;
-  user?: any; // will be corrected when new ego-token-utils User type is available
+  user?: UserWithId;
   fetchWithAuth: typeof fetch;
 };
 
@@ -42,11 +42,11 @@ export const AuthProvider = ({
   };
 
   if (token !== egoJwt) {
-    if (isValidJwt(egoJwt)) {
-      setTokenState(egoJwt);
-    } else {
-      setTokenState(null);
-    }
+    setTokenState(egoJwt);
+  }
+
+  if (token && !isValidJwt(token)) {
+    logout();
   }
 
   const fetchWithAuth: T_AuthContext['fetchWithAuth'] = (url, options) => {
@@ -58,8 +58,6 @@ export const AuthProvider = ({
   };
 
   const userInfo = token ? decodeToken(token) : null;
-  // ts error on userInfo from type discrepancy between dms and ego-token-utils user.preferredLanguage
-  // dms will need to use token-utils version updated for ego 4.x.x
   const user = userInfo ? extractUser(userInfo) : undefined;
   const authData = {
     token,
