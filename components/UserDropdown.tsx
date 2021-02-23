@@ -6,6 +6,21 @@ import { useTheme } from 'emotion-theming';
 import defaultTheme from './theme';
 import { Avatar, ChevronDown } from './theme/icons';
 import useAuthContext from '../global/hooks/useAuthContext';
+import { UserWithId } from '../global/types';
+
+const getDisplayName = (user?: UserWithId) => {
+  const greeting = 'Hello';
+  if (user) {
+    if (user.firstName) {
+      return `${greeting}, ${user.firstName}`;
+    } else if (user.lastName) {
+      return `${greeting}, ${user.lastName}`;
+    } else if (user.email) {
+      return `${greeting}, ${user.email}`;
+    }
+  }
+  return greeting;
+};
 
 const CurrentUser = () => {
   const { user } = useAuthContext();
@@ -30,7 +45,7 @@ const CurrentUser = () => {
           max-width: 142px;
         `}
       >
-        Hello, {user?.firstName}
+        {getDisplayName(user)}
       </span>
     </div>
   );
