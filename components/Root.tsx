@@ -2,8 +2,9 @@ import React from 'react';
 import { ThemeProvider } from 'emotion-theming';
 import defaultTheme from './theme';
 import Head from './Head';
+import { AuthProvider } from '../global/hooks/useAuthContext';
 
-const Root = ({ children }: { children: React.ReactElement }) => {
+const Root = ({ children, egoJwt }: { children: React.ReactElement; egoJwt?: string }) => {
   return (
     <>
       <style>
@@ -26,7 +27,9 @@ const Root = ({ children }: { children: React.ReactElement }) => {
       `}
       </style>
       <Head />
-      <ThemeProvider theme={defaultTheme}>{children}</ThemeProvider>
+      <AuthProvider egoJwt={egoJwt}>
+        <ThemeProvider theme={defaultTheme}>{children}</ThemeProvider>
+      </AuthProvider>
     </>
   );
 };

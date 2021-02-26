@@ -5,51 +5,71 @@ import { useTheme } from 'emotion-theming';
 
 import defaultTheme from './theme';
 import { Avatar, ChevronDown } from './theme/icons';
+import useAuthContext from '../global/hooks/useAuthContext';
+import { UserWithId } from '../global/types';
 
-const CurrentUser = ({ userName = 'TestUser' }: { userName?: string }) => (
-  <div
-    css={(theme) =>
-      css`
-        color: ${theme.colors.accent2_dark};
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      `
+const getDisplayName = (user?: UserWithId) => {
+  const greeting = 'Hello';
+  if (user) {
+    if (user.firstName) {
+      return `${greeting}, ${user.firstName}`;
+    } else if (user.lastName) {
+      return `${greeting}, ${user.lastName}`;
+    } else if (user.email) {
+      return `${greeting}, ${user.email}`;
     }
-  >
-    <span
-      css={css`
-        padding-left: 5px;
-        padding-right: 5px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 142px;
-      `}
+  }
+  return greeting;
+};
+
+const CurrentUser = () => {
+  const { user } = useAuthContext();
+  return (
+    <div
+      css={(theme) =>
+        css`
+          color: ${theme.colors.accent2_dark};
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        `
+      }
     >
-      Hello, {userName}
-    </span>
-  </div>
-);
+      <span
+        css={css`
+          padding-left: 5px;
+          padding-right: 5px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 142px;
+        `}
+      >
+        {getDisplayName(user)}
+      </span>
+    </div>
+  );
+};
 
 const StyledListLink = styled('a')`
   ${({ theme }: { theme: typeof defaultTheme }) => css`
-text-decoration: none;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  background: (theme.colors.white)};
-  padding: 6px 12px;
-  color: ${theme.colors.black};
-  border: 1px solid ${theme.colors.grey_3};
-  outline: none;
-  font-size: 16px;
-  cursor: pointer;
-  width: 100%;
-  &:hover {
-    background-color: ${theme.colors.grey_1};
-  }
-`}
+    text-decoration: none;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    background: (theme.colors.white)};
+    padding: 6px 12px;
+    color: ${theme.colors.black};
+    background-color: ${theme.colors.white};
+    border: 1px solid ${theme.colors.grey_3};
+    outline: none;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    &:hover {
+      background-color: ${theme.colors.grey_1};
+    }
+  `}
 `;
 
 const UserDropdown = () => {
@@ -76,6 +96,7 @@ const UserDropdown = () => {
     };
   }, [open]);
   const theme: typeof defaultTheme = useTheme();
+  const { logout } = useAuthContext();
   return (
     <div
       ref={node}
@@ -134,9 +155,8 @@ const UserDropdown = () => {
           <li>
             <StyledListLink href="/user">Profile & Token</StyledListLink>
           </li>
-          {/* TODO: implement logout */}
           <li>
-            <StyledListLink>Logout</StyledListLink>
+            <StyledListLink onClick={() => logout()}>Logout</StyledListLink>
           </li>
         </ul>
       )}

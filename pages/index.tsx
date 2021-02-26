@@ -1,18 +1,13 @@
-import { css } from '@emotion/core';
-import { useTheme } from 'emotion-theming';
-import defaultTheme from '../components/theme';
+import React from 'react';
 
-const HomePage = () => {
-  const theme: typeof defaultTheme = useTheme();
-  return (
-    <div
-      css={css`
-        ${theme.typography.heading}
-      `}
-    >
-      Home Page
-    </div>
-  );
-};
+import RepositoryPage from './repository';
+import { createPage } from '../global/utils/pages';
+
+const HomePage = createPage({
+  getInitialProps: async () => {},
+  isPublic: true,
+})(() => {
+  return <RepositoryPage />;
+});
 
 export default HomePage;

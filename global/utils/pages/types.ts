@@ -19,6 +19,7 @@ type GetInitialPropsContextWithEgo = GetInitialPropsContext & {
 
 export type PageConfigProps = {
   getInitialProps: (args: GetInitialPropsContextWithEgo) => Promise<any>;
+  isPublic?: boolean;
 };
 
 export type PageWithConfig = PageConfigProps & React.ComponentType<any>;
