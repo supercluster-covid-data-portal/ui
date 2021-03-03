@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { css } from '@emotion/core';
 
 import { Checkmark, Warning } from '../../theme/icons';
@@ -18,42 +19,28 @@ const ArrangerAdminUILink = () => {
   );
 };
 
-const WarningListItem = ({ fieldName }: { fieldName: string }) => (
+const ListItem = ({
+  Icon,
+  value,
+  fieldName,
+}: {
+  Icon?: ReactNode;
+  value: string;
+  fieldName: string;
+}) => (
   <li
     css={(theme) =>
       css`
-        color: ${theme.colors.error_dark};
         display: flex;
         align-items: center;
+        ${value === 'Missing' &&
+        css`
+          color: ${theme.colors.error_dark};
+        `}
       `
     }
   >
-    <Warning height={16} width={16} />
-    <span
-      css={css`
-        padding-left: 6px;
-      `}
-    >
-      {fieldName}:{' '}
-      <span
-        css={css`
-          font-weight: bold;
-        `}
-      >
-        Missing
-      </span>
-    </span>
-  </li>
-);
-
-const ListItem = ({ fieldName, value }: { fieldName: string; value: string }) => (
-  <li
-    css={css`
-      display: flex;
-      align-items: center;
-    `}
-  >
-    <Checkmark height={16} width={16} fill={theme.colors.primary} />
+    {Icon || <Checkmark height={16} width={16} fill={theme.colors.primary} />}
     <span
       css={css`
         padding-left: 6px;
@@ -69,6 +56,10 @@ const ListItem = ({ fieldName, value }: { fieldName: string; value: string }) =>
       </span>
     </span>
   </li>
+);
+
+const WarningListItem = ({ fieldName }: { fieldName: string }) => (
+  <ListItem Icon={<Warning height={16} width={16} />} fieldName={fieldName} value={'Missing'} />
 );
 
 const getConfigError = ({

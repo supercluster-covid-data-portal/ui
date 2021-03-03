@@ -1,4 +1,5 @@
 import dynamic from 'next/dynamic';
+import urlJoin from 'url-join';
 
 import PageContent from './PageContent';
 import PageLayout from '../../PageLayout';
@@ -67,7 +68,8 @@ const RepositoryPage = () => {
 
   const [availableProjects, setAvailableProjects] = useState<Project[]>([]);
   useEffect(() => {
-    fetch(`https://arranger.qa.overture.bio/admin/graphql`, {
+    const { NEXT_PUBLIC_ARRANGER_API } = getConfig();
+    fetch(urlJoin(NEXT_PUBLIC_ARRANGER_API, 'admin/graphql'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
