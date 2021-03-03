@@ -38,7 +38,7 @@ export const AuthProvider = ({
 
   const logout = () => {
     removeToken();
-    router.push('/login');
+    router.push('/repository');
   };
 
   if (token !== egoJwt) {
