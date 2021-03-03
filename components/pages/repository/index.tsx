@@ -1,12 +1,15 @@
 import dynamic from 'next/dynamic';
+import urlJoin from 'url-join';
 
 import PageContent from './PageContent';
 import PageLayout from '../../PageLayout';
 
 import { RepoFiltersType } from './sqonTypes';
 import { getConfig } from '../../../global/config';
-import { css } from '@emotion/core';
 import createArrangerFetcher from '../../utils/arrangerFetcher';
+import { useEffect, useState } from 'react';
+import ErrorContainer from '../../ErrorContainer';
+import getConfigError from './getConfigError';
 
 const Arranger = dynamic(
   () => import('@arranger/components/dist/Arranger').then((comp) => comp.Arranger),
@@ -34,7 +37,27 @@ export interface PageContentProps {
   fetchData?: (projectId: string) => Promise<any>;
 }
 
+export type Project = {
+  id: string;
+  active: boolean;
+  indices: [{ id: string; esIndex: string; graphqlField: string }];
+};
+
 const arrangerFetcher = createArrangerFetcher({});
+
+const projectsQuery = `
+  query {
+    projects {
+      id
+      active
+      indices {
+        id
+        esIndex
+        graphqlField
+      }
+    }
+  }
+`;
 
 const RepositoryPage = () => {
   const {
@@ -43,38 +66,42 @@ const RepositoryPage = () => {
     NEXT_PUBLIC_ARRANGER_INDEX,
   } = getConfig();
 
+  const [availableProjects, setAvailableProjects] = useState<Project[]>([]);
+  useEffect(() => {
+    const { NEXT_PUBLIC_ARRANGER_API } = getConfig();
+    fetch(urlJoin(NEXT_PUBLIC_ARRANGER_API, 'admin/graphql'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        variables: {},
+        query: projectsQuery,
+      }),
+    })
+      .then((res) => {
+        if (res.status !== 200) {
+          throw new Error('Could not retrieve available projects from Arranger server!');
+        }
+        return res.json();
+      })
+      .then(({ data: { projects } }: { data: { projects: Project[] } }) => {
+        setAvailableProjects(projects);
+      })
+      .catch((err) => {
+        console.warn(err);
+      });
+  }, []);
+
+  const ConfigError = getConfigError({
+    availableProjects,
+    projectId: NEXT_PUBLIC_ARRANGER_PROJECT_ID,
+    index: NEXT_PUBLIC_ARRANGER_INDEX,
+    graphqlField: NEXT_PUBLIC_ARRANGER_GRAPHQL_FIELD,
+  });
+
   return (
     <PageLayout>
-      {/* TODO: arranger config error handling tbd */}
-      {!(
-        NEXT_PUBLIC_ARRANGER_PROJECT_ID &&
-        NEXT_PUBLIC_ARRANGER_GRAPHQL_FIELD &&
-        NEXT_PUBLIC_ARRANGER_INDEX
-      ) ? (
-        <div
-          css={css`
-            display: flex;
-            flex: 1;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-          `}
-        >
-          <div
-            css={(theme) =>
-              css`
-                ${theme.typography.subheading}
-              `
-            }
-          >
-            Arranger is missing configuration values. Please check your ".env" file.
-            <ul>
-              <li>Project ID: {NEXT_PUBLIC_ARRANGER_PROJECT_ID || 'missing'}</li>
-              <li>GraphQL Field: {NEXT_PUBLIC_ARRANGER_GRAPHQL_FIELD || 'missing'}</li>
-              <li>Index: {NEXT_PUBLIC_ARRANGER_INDEX || 'missing'}</li>
-            </ul>
-          </div>
-        </div>
+      {ConfigError ? (
+        <ErrorContainer title={'DMS Configuration Error'}>{ConfigError}</ErrorContainer>
       ) : (
         <Arranger
           api={arrangerFetcher}
