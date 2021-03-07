@@ -1,7 +1,9 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
+import Link from 'next/link';
 
 import defaultTheme from './theme';
+import getInternalLink from '../global/utils/getInternalLink';
 
 const StyledLink = styled('a')`
   ${({ theme }: { theme: typeof defaultTheme }) => css`
@@ -30,10 +32,18 @@ export const StyledLinkAsButton = styled(StyledLink)`
     position: relative;
     text-decoration: none;
     &:hover {
-      background-color: ${theme.colors.accent_dark};
       color: ${theme.colors.white};
+      background-color: ${theme.colors.accent_dark};
     }
   `}
 `;
+
+export const InternalLink = ({ path, children }: { path: string; children: React.ReactNode }) => {
+  return (
+    <Link href={getInternalLink({ path })} passHref>
+      {children}
+    </Link>
+  );
+};
 
 export default StyledLink;

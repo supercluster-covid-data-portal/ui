@@ -5,7 +5,7 @@ import UserDropdown from './UserDropdown';
 import defaultTheme from './theme';
 import { OvertureLogo } from './theme/icons';
 import useAuthContext from '../global/hooks/useAuthContext';
-import { StyledLinkAsButton } from './Link';
+import { StyledLinkAsButton, InternalLink as Link } from './Link';
 
 const NavBar: React.ComponentType<any> = ({ labName = 'Data Management System', labIcon }) => {
   const { token } = useAuthContext();
@@ -32,28 +32,29 @@ const NavBar: React.ComponentType<any> = ({ labName = 'Data Management System', 
           cursor: pointer;
         `}
       >
-        <a
-          href="/repository"
-          css={(theme) => css`
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            ${theme.typography.heading};
-            color: ${theme.colors.accent_dark};
-          `}
-        >
-          {labIcon || <OvertureLogo width={35} height={35} />}
-          {/* set to default until labname config is implemented */}
-          {labName && (
-            <span
-              css={css`
-                padding-left: 10px;
-              `}
-            >
-              {labName}
-            </span>
-          )}
-        </a>
+        <Link path="repository">
+          <a
+            css={(theme) => css`
+              display: flex;
+              align-items: center;
+              text-decoration: none;
+              ${theme.typography.heading};
+              color: ${theme.colors.accent_dark};
+            `}
+          >
+            {labIcon || <OvertureLogo width={35} height={35} />}
+            {/* set to default until labname config is implemented */}
+            {labName && (
+              <span
+                css={css`
+                  padding-left: 10px;
+                `}
+              >
+                {labName}
+              </span>
+            )}
+          </a>
+        </Link>
       </div>
       <div
         css={css`
@@ -75,20 +76,22 @@ const NavBar: React.ComponentType<any> = ({ labName = 'Data Management System', 
             border-right: 2px solid ${theme.colors.white};
           `}
         >
-          <a
-            css={(theme) => css`
-              display: flex;
-              flex: 1;
-              height: 100%;
-              justify-content: center;
-              align-items: center;
-              text-decoration: none;
-              color: ${theme.colors.accent2_dark};
-            `}
-            href="/repository"
-          >
-            Data Explorer
-          </a>
+          <Link path="repository">
+            <a
+              css={(theme) => css`
+                display: flex;
+                flex: 1;
+                height: 100%;
+                justify-content: center;
+                align-items: center;
+                text-decoration: none;
+                color: ${theme.colors.accent2_dark};
+                cursor: pointer;
+              `}
+            >
+              Data Explorer
+            </a>
+          </Link>
         </div>
         {token ? (
           <div
@@ -113,16 +116,17 @@ const NavBar: React.ComponentType<any> = ({ labName = 'Data Management System', 
               justify-content: center;
             `}
           >
-            <StyledLinkAsButton
-              css={(theme) => css`
-                width: 70px;
-                ${theme.typography.button};
-                line-height: 20px;
-              `}
-              href="/login"
-            >
-              Log in
-            </StyledLinkAsButton>
+            <Link path="login">
+              <StyledLinkAsButton
+                css={(theme) => css`
+                  width: 70px;
+                  ${theme.typography.button};
+                  line-height: 20px;
+                `}
+              >
+                Log in
+              </StyledLinkAsButton>
+            </Link>
           </div>
         )}
       </div>

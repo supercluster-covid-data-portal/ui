@@ -13,6 +13,7 @@ export const getConfig = () => {
     NEXT_PUBLIC_ARRANGER_GRAPHQL_FIELD: publicConfig.NEXT_PUBLIC_ARRANGER_GRAPHQL_FIELD || '',
     NEXT_PUBLIC_ARRANGER_INDEX: publicConfig.NEXT_PUBLIC_ARRANGER_INDEX || '',
     NEXT_PUBLIC_ARRANGER_API: publicConfig.NEXT_PUBLIC_ARRANGER_API || 'http://localhost:5050',
+    NEXT_PUBLIC_BASE_PATH: publicConfig.NEXT_PUBLIC_BASE_PATH || '',
   } as {
     NEXT_PUBLIC_EGO_API_ROOT: string;
     NEXT_PUBLIC_EGO_CLIENT_ID: string;
@@ -21,5 +22,6 @@ export const getConfig = () => {
     NEXT_PUBLIC_ARRANGER_GRAPHQL_FIELD: string;
     NEXT_PUBLIC_ARRANGER_INDEX: string;
     NEXT_PUBLIC_ARRANGER_API: string;
+    NEXT_PUBLIC_BASE_PATH: string;
   };
 };
