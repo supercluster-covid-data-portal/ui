@@ -32,7 +32,7 @@ const fetchEgoToken = () => {
     .then((jwt) => {
       if (isValidJwt(jwt)) {
         localStorage.setItem(EGO_JWT_KEY, jwt);
-        setTimeout(() => Router.push('/repository'), 2000);
+        setTimeout(() => Router.push(getInternalLink({ path: 'repository' })), 2000);
       } else {
         throw new Error('Invalid jwt, cannot login.');
       }
