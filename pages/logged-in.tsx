@@ -8,6 +8,7 @@ import { EGO_JWT_KEY } from '../global/utils/constants';
 import Router from 'next/router';
 import { isValidJwt } from '../global/utils/egoTokenUtils';
 import PageLayout from '../components/PageLayout';
+import getInternalLink from '../global/utils/getInternalLink';
 
 const fetchEgoToken = () => {
   const { NEXT_PUBLIC_EGO_API_ROOT, NEXT_PUBLIC_EGO_CLIENT_ID } = getConfig();
@@ -31,7 +32,7 @@ const fetchEgoToken = () => {
     .then((jwt) => {
       if (isValidJwt(jwt)) {
         localStorage.setItem(EGO_JWT_KEY, jwt);
-        setTimeout(() => Router.push('/repository'), 2000);
+        setTimeout(() => Router.push(getInternalLink({ path: 'repository' })), 2000);
       } else {
         throw new Error('Invalid jwt, cannot login.');
       }
@@ -39,7 +40,7 @@ const fetchEgoToken = () => {
     .catch((err) => {
       console.warn(err);
       localStorage.removeItem(EGO_JWT_KEY);
-      Router.push('/login');
+      Router.push(getInternalLink({ path: 'login' }));
     });
 };
 
