@@ -7,8 +7,8 @@ import defaultTheme from './theme';
 import { Avatar, ChevronDown } from './theme/icons';
 import useAuthContext from '../global/hooks/useAuthContext';
 import { UserWithId } from '../global/types';
-import Link from 'next/link';
 import getInternalLink from '../global/utils/getInternalLink';
+import { InternalLink as Link } from './Link';
 
 const getDisplayName = (user?: UserWithId) => {
   const greeting = 'Hello';
@@ -155,9 +155,11 @@ const UserDropdown = () => {
           `}
         >
           <li>
-            <StyledListLink href={getInternalLink({ path: 'user' })}>
-              Profile & Token
-            </StyledListLink>
+            <Link path={'user'}>
+              <StyledListLink href={getInternalLink({ path: 'user' })}>
+                Profile & Token
+              </StyledListLink>
+            </Link>
           </li>
           <li>
             <StyledListLink onClick={() => logout()}>Logout</StyledListLink>

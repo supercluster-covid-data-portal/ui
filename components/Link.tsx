@@ -1,7 +1,9 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
+import Link from 'next/link';
 
 import defaultTheme from './theme';
+import getInternalLink from '../global/utils/getInternalLink';
 
 const StyledLink = styled('a')`
   ${({ theme }: { theme: typeof defaultTheme }) => css`
@@ -35,5 +37,11 @@ export const StyledLinkAsButton = styled(StyledLink)`
     }
   `}
 `;
+
+export const InternalLink = ({ children, path }: { children: React.ReactNode; path: string }) => (
+  <Link href={getInternalLink({ path })} passHref>
+    {children}
+  </Link>
+);
 
 export default StyledLink;
