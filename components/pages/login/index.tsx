@@ -96,7 +96,8 @@ const providers: ProviderType[] = [
   { name: 'Google', path: 'google', icon: GoogleLogo },
   { name: 'ORCiD', path: 'orcid', icon: OrcidLogo },
   { name: 'GitHub', path: 'github', icon: GitHubLogo },
-  { name: 'Facebook', path: '', icon: FacebookLogo },
+  // Facebook will be hidden until provider implementation is fixed in Ego https://github.com/overture-stack/ego/issues/555
+  // { name: 'Facebook', path: '', icon: FacebookLogo },
   { name: 'LinkedIn', path: 'linkedin', icon: LinkedInLogo },
 ];
 
