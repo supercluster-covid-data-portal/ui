@@ -7,8 +7,9 @@ import defaultTheme from './theme';
 import { Avatar, ChevronDown } from './theme/icons';
 import useAuthContext from '../global/hooks/useAuthContext';
 import { UserWithId } from '../global/types';
-import getInternalLink from '../global/utils/getInternalLink';
 import { InternalLink as Link } from './Link';
+import { useRouter } from 'next/router';
+import { USER_PATH } from '../global/utils/constants';
 
 const getDisplayName = (user?: UserWithId) => {
   const greeting = 'Hello';
@@ -28,14 +29,11 @@ const CurrentUser = () => {
   const { user } = useAuthContext();
   return (
     <div
-      css={(theme) =>
-        css`
-          color: ${theme.colors.accent2_dark};
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        `
-      }
+      css={css`
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      `}
     >
       <span
         css={css`
@@ -99,6 +97,10 @@ const UserDropdown = () => {
   }, [open]);
   const theme: typeof defaultTheme = useTheme();
   const { logout } = useAuthContext();
+  const router = useRouter();
+  const fillColor =
+    router.pathname === USER_PATH ? theme.colors.accent2_dark : theme.colors.accent_dark;
+
   return (
     <div
       ref={node}
@@ -114,7 +116,7 @@ const UserDropdown = () => {
       onClick={() => setOpen(!open)}
     >
       <Avatar
-        fill={theme.colors.accent2_dark}
+        fill={fillColor}
         width={16}
         height={16}
         style={css`
@@ -125,7 +127,7 @@ const UserDropdown = () => {
       <CurrentUser />
       {open ? (
         <ChevronDown
-          fill={theme.colors.accent2_dark}
+          fill={fillColor}
           width={12}
           height={12}
           style={css`
@@ -134,7 +136,7 @@ const UserDropdown = () => {
         />
       ) : (
         <ChevronDown
-          fill={theme.colors.accent2_dark}
+          fill={fillColor}
           width={12}
           height={12}
           style={css`
@@ -155,10 +157,8 @@ const UserDropdown = () => {
           `}
         >
           <li>
-            <Link path={'user'}>
-              <StyledListLink href={getInternalLink({ path: 'user' })}>
-                Profile & Token
-              </StyledListLink>
+            <Link path={USER_PATH}>
+              <StyledListLink>Profile & Token</StyledListLink>
             </Link>
           </li>
           <li>

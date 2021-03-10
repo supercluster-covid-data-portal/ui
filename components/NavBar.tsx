@@ -1,15 +1,25 @@
 import React from 'react';
 import { css } from '@emotion/core';
+import { useRouter } from 'next/router';
 
 import UserDropdown from './UserDropdown';
 import defaultTheme from './theme';
 import { OvertureLogo } from './theme/icons';
 import useAuthContext from '../global/hooks/useAuthContext';
 import { StyledLinkAsButton, InternalLink as Link } from './Link';
-import getInternalLink from '../global/utils/getInternalLink';
+import { useTheme } from 'emotion-theming';
+import { EXPLORER_PATH, LOGIN_PATH, USER_PATH } from '../global/utils/constants';
 
 const NavBar: React.ComponentType<any> = ({ labName = 'Data Management System', labIcon }) => {
   const { token } = useAuthContext();
+  const router = useRouter();
+  const theme: typeof defaultTheme = useTheme();
+
+  const activeLinkStyle = `
+    background-color: ${theme.colors.grey_2};
+    color: ${theme.colors.accent2_dark};
+  `;
+
   return (
     <div
       css={(theme: typeof defaultTheme) => css`
@@ -33,7 +43,7 @@ const NavBar: React.ComponentType<any> = ({ labName = 'Data Management System', 
           cursor: pointer;
         `}
       >
-        <Link path={'repository'}>
+        <Link path={EXPLORER_PATH}>
           <a
             css={(theme) => css`
               display: flex;
@@ -69,15 +79,15 @@ const NavBar: React.ComponentType<any> = ({ labName = 'Data Management System', 
             align-items: center;
             justify-content: center;
             width: 144px;
-            background-color: ${theme.colors.grey_2};
+            background-color: ${theme.colors.white};
             height: 100%;
             &:hover {
-              background-color: ${theme.colors.grey_3};
+              background-color: ${theme.colors.grey_2};
             }
             border-right: 2px solid ${theme.colors.white};
           `}
         >
-          <Link path={'repository'}>
+          <Link path={EXPLORER_PATH}>
             <a
               css={(theme) => css`
                 display: flex;
@@ -86,8 +96,9 @@ const NavBar: React.ComponentType<any> = ({ labName = 'Data Management System', 
                 justify-content: center;
                 align-items: center;
                 text-decoration: none;
-                color: ${theme.colors.accent2_dark};
+                color: ${theme.colors.accent_dark};
                 cursor: pointer;
+                ${router.pathname === EXPLORER_PATH ? activeLinkStyle : ''}
               `}
             >
               Data Explorer
@@ -100,9 +111,9 @@ const NavBar: React.ComponentType<any> = ({ labName = 'Data Management System', 
               width: 195px;
               height: 100%;
               display: flex;
-              background-color: ${theme.colors.grey_2};
+              ${router.pathname === USER_PATH ? activeLinkStyle : ''}
               &:hover {
-                background-color: ${theme.colors.grey_3};
+                background-color: ${theme.colors.grey_2};
               }
             `}
           >
@@ -117,7 +128,7 @@ const NavBar: React.ComponentType<any> = ({ labName = 'Data Management System', 
               justify-content: center;
             `}
           >
-            <Link path={'login'}>
+            <Link path={LOGIN_PATH}>
               <StyledLinkAsButton
                 css={(theme) => css`
                   width: 70px;

@@ -53,12 +53,15 @@ const Footer = () => {
             line-height: 24px;
             font-weight: normal;
             padding-right: 10px;
+            padding-left: 5px;
           `
         }
       >
         powered by
       </span>
-      <OvertureLogoWithText width={100} height={18} />
+      <a href="https://www.overture.bio/" target="_blank">
+        <OvertureLogoWithText width={100} height={18} />
+      </a>
     </div>
   );
 };

@@ -142,6 +142,7 @@ const LoginPage = () => {
               ${theme.typography.heading}
               color: ${theme.colors.accent_dark};
               margin: 10px 0;
+              font-weight: normal;
             `}
           >
             Please choose one of the following log in methods to access your API token for data
