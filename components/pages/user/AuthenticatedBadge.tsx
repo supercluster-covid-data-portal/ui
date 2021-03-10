@@ -17,7 +17,6 @@ import {
 
 const providerIcons: { [k in ProviderType]: React.ElementType } = {
   GOOGLE: GoogleLogo,
-  FACEBOOK: FacebookLogo,
   GITHUB: GitHubLogo,
   LINKEDIN: LinkedInLogo,
   ORCID: OrcidLogo,
