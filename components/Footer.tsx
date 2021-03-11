@@ -19,6 +19,10 @@ const Footer = () => {
         padding-right: 18px;
         ${theme.shadow.default};
         z-index: 10;
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
       `}
     >
       <StyledLink
