@@ -10,8 +10,6 @@ const Aggregations = dynamic(
 ) as any;
 
 const getFacetStyles = (theme: typeof defaultTheme) => css`
-  height: 100vh;
-  overflow-y: scroll;
   padding-bottom: 2rem;
   .input-range-wrapper div {
     ${theme.typography.label2}

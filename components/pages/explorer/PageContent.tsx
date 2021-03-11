@@ -43,6 +43,8 @@ const PageContent = (props: PageContentProps) => {
             background-color: ${theme.colors.white};
             z-index: 1;
             ${theme.shadow.right};
+            height: calc(100vh - 94px);
+            overflow-y: scroll;
           `}
         >
           <Facets {...props} />
