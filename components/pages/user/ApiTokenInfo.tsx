@@ -155,11 +155,7 @@ const ApiTokenInfo = () => {
   }, [token]);
 
   return (
-    <div
-      css={css`
-        width: 600px;
-      `}
-    >
+    <div>
       <h2
         css={(theme) =>
           css`
@@ -232,6 +228,7 @@ const ApiTokenInfo = () => {
           justify-content: space-between;
           margin-bottom: 2rem;
           margin-top: 1rem;
+          max-width: 600px;
         `}
       >
         <div
