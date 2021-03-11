@@ -1,15 +1,24 @@
 import React from 'react';
 import NextHead from 'next/head';
 
-export default function Head() {
+const Head = () => {
   return (
     <NextHead>
-      {/* TODO: need correct favicon link */}
-      <link rel="icon" href="/static/favicon.ico" />
       <link
         href={'https://fonts.googleapis.com/css?family=Lato:300,400,600&display=swap'}
         rel="stylesheet"
       />
+      <link rel="shortcut icon" href="/images/favicon.ico" />
     </NextHead>
   );
-}
+};
+
+export const PageHead = ({ subtitle }: { subtitle?: string }) => {
+  return (
+    <NextHead>
+      <title>Overture DMS{subtitle ? ` - ${subtitle}` : ''}</title>
+    </NextHead>
+  );
+};
+
+export default Head;

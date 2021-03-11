@@ -102,7 +102,7 @@ const providers: ProviderType[] = [
 
 const LoginPage = () => {
   return (
-    <PageLayout>
+    <PageLayout subtitle="Login">
       <div
         css={css`
           display: flex;
