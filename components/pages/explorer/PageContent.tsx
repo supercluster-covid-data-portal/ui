@@ -44,7 +44,6 @@ const PageContent = (props: PageContentProps) => {
           `}
         >
           <Facets {...props} />
-          <Collapsible />
         </div>
         <div
           css={css`
