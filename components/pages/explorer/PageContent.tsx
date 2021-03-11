@@ -1,24 +1,15 @@
 import { css } from '@emotion/core';
-import { useTheme } from 'emotion-theming';
-import styled from '@emotion/styled';
-
 import RepoTable from './RepoTable';
 import Facets from './Facets';
 import QueryBar from './QueryBar';
 
 import { PageContentProps } from './index';
-import defaultTheme from '../../theme';
-import Footer from '../../Footer';
-
-export const Collapsible = styled('div')`
-  ${({ theme }: { theme: typeof defaultTheme }) => css`
-    border-top: 1px solid ${theme.colors.grey_2};
-    height: 47px;
-    width: 100%;
-  `}
-`;
-
-const FACET_MAX_WIDTH = 270;
+import {
+  FACET_MAX_WIDTH,
+  FACET_MIN_WIDTH,
+  FOOTER_HEIGHT,
+  NAVBAR_HEIGHT,
+} from '../../../global/utils/constants';
 
 const PageContent = (props: PageContentProps) => {
   return (
@@ -38,12 +29,12 @@ const PageContent = (props: PageContentProps) => {
           css={(theme) => css`
             flex: 3;
             flex-direction: column;
-            min-width: 250px;
+            min-width: ${FACET_MIN_WIDTH}px;
             max-width: ${FACET_MAX_WIDTH}px;
             background-color: ${theme.colors.white};
             z-index: 1;
             ${theme.shadow.right};
-            height: calc(100vh - 94px);
+            height: calc(100vh - ${FOOTER_HEIGHT + NAVBAR_HEIGHT}px);
             overflow-y: scroll;
           `}
         >
@@ -54,6 +45,8 @@ const PageContent = (props: PageContentProps) => {
             display: flex;
             flex-direction: column;
             width: 100%;
+            height: calc(100vh - ${FOOTER_HEIGHT + NAVBAR_HEIGHT}px);
+            overflow-y: scroll;
           `}
         >
           <div

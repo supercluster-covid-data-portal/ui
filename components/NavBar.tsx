@@ -8,7 +8,7 @@ import { OvertureLogo } from './theme/icons';
 import useAuthContext from '../global/hooks/useAuthContext';
 import { StyledLinkAsButton, InternalLink as Link } from './Link';
 import { useTheme } from 'emotion-theming';
-import { EXPLORER_PATH, LOGIN_PATH, USER_PATH } from '../global/utils/constants';
+import { EXPLORER_PATH, LOGIN_PATH, NAVBAR_HEIGHT, USER_PATH } from '../global/utils/constants';
 
 const NavBar: React.ComponentType<any> = ({ labName = 'Data Management System', labIcon }) => {
   const { token } = useAuthContext();
@@ -25,7 +25,7 @@ const NavBar: React.ComponentType<any> = ({ labName = 'Data Management System', 
       css={(theme: typeof defaultTheme) => css`
         display: flex;
         justify-content: space-between;
-        height: 50px;
+        height: ${NAVBAR_HEIGHT}px;
         background-color: ${theme.colors.white};
         ${theme.shadow.default};
         position: sticky;
