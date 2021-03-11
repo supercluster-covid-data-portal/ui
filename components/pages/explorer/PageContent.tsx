@@ -18,6 +18,8 @@ export const Collapsible = styled('div')`
   `}
 `;
 
+const FACET_MAX_WIDTH = 270;
+
 const PageContent = (props: PageContentProps) => {
   return (
     <div
@@ -37,7 +39,7 @@ const PageContent = (props: PageContentProps) => {
             flex: 3;
             flex-direction: column;
             min-width: 250px;
-            max-width: 270px;
+            max-width: ${FACET_MAX_WIDTH}px;
             background-color: ${theme.colors.white};
             z-index: 1;
             ${theme.shadow.right};
@@ -56,6 +58,7 @@ const PageContent = (props: PageContentProps) => {
             css={css`
               flex: 8.5;
               margin: 0 15px 0 15px;
+              max-width: calc(100vw - ${FACET_MAX_WIDTH + 10}px);
             `}
           >
             <QueryBar {...props} />
