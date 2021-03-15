@@ -18,7 +18,7 @@ export enum Language {
 
 export enum ProviderType {
   GOOGLE = 'GOOGLE',
-  FACEBOOK = 'FACEBOOK',
+  // FACEBOOK = 'FACEBOOK', // hide from allowed types, related to https://github.com/overture-stack/ego/issues/555
   GITHUB = 'GITHUB',
   LINKEDIN = 'LINKEDIN',
   ORCID = 'ORCID',

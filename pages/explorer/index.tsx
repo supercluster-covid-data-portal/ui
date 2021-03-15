@@ -1,14 +1,14 @@
 import React from 'react';
-import Repository from '../../components/pages/repository';
+import Explorer from '../../components/pages/explorer';
 import { createPage } from '../../global/utils/pages';
 
-const RepositoryPage = createPage({
+const ExplorerPage = createPage({
   getInitialProps: async ({ query, egoJwt }) => {
     return { query, egoJwt };
   },
   isPublic: true,
 })(() => {
-  return <Repository />;
+  return <Explorer />;
 });
 
-export default RepositoryPage;
+export default ExplorerPage;

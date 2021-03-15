@@ -193,11 +193,7 @@ const ApiTokenInfo = () => {
   const userHasScopes = userEffectiveScopes.length > 0;
 
   return (
-    <div
-      css={css`
-        width: 600px;
-      `}
-    >
+    <div>
       <h2
         css={(theme) =>
           css`
@@ -311,6 +307,7 @@ const ApiTokenInfo = () => {
           justify-content: space-between;
           margin-bottom: 1rem;
           margin-top: 1rem;
+          max-width: 600px;
         `}
       >
         <div

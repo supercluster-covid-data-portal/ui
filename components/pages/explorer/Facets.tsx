@@ -10,6 +10,7 @@ const Aggregations = dynamic(
 ) as any;
 
 const getFacetStyles = (theme: typeof defaultTheme) => css`
+  padding-bottom: 2rem;
   .input-range-wrapper div {
     ${theme.typography.label2}
     font-weight: bold;
@@ -61,7 +62,7 @@ const getFacetStyles = (theme: typeof defaultTheme) => css`
           }
           &.collapsed {
             background-color: ${theme.colors.grey_2};
-            margin: -5px -8px -6px -6px;
+            margin: -5px -8px -6px -7px;
             padding: 5px 8px 6px 6px;
           }
           & .title {
