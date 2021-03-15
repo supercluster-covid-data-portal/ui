@@ -15,6 +15,8 @@ import StyledLink from '../../Link';
 
 import defaultTheme from '../../theme';
 import { Checkmark } from '../../theme/icons';
+import { AccessLevel, parseScope, ScopeObj } from '../../../global/utils/egoTokenUtils';
+import ErrorContainer from '../../ErrorContainer';
 
 interface ApiToken {
   expiryDate: string;
@@ -63,8 +65,11 @@ const ApiTokenInfo = () => {
   const [existingApiToken, setExistingApiToken] = useState<ApiToken | null>(null);
   const [isCopyingToken, setIsCopyingToken] = React.useState(false);
   const [copySuccess, setCopySuccess] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState<{ message: string } | null>(null);
   const theme: typeof defaultTheme = useTheme();
 
+  // still need to display any errors for the generate request, as permissions may have changed in between
+  // the time a user signed in and when they attempted to generate a token
   const generateApiToken = async () => {
     const { NEXT_PUBLIC_EGO_API_ROOT } = getConfig();
     if (user) {
@@ -79,27 +84,46 @@ const ApiTokenInfo = () => {
           return res.json();
         })
         .then((json) => json.scopes)
-        .catch((err) => console.warn(err));
+        .catch((err) => {
+          setErrorMessage({ message: err });
+          console.warn(err);
+          return err;
+        });
 
-      if (scopesResult.length) {
+      const filteredScopes = Array.isArray(scopesResult)
+        ? scopesResult
+            .map((s: string) => parseScope(s))
+            .filter((s: ScopeObj) => s.accessLevel !== AccessLevel.DENY)
+        : [];
+
+      if (filteredScopes.length) {
+        const scopeParams = filteredScopes.map((f: ScopeObj) => `${f.policy}.${f.accessLevel}`);
         return fetchWithAuth(
-          `${EGO_API_KEY_ENDPOINT}?scopes=${encodeURIComponent(scopesResult.join())}&user_id=${
+          `${EGO_API_KEY_ENDPOINT}?scopes=${encodeURIComponent(scopeParams.join())}&user_id=${
             user.id
           }`,
           { method: 'POST' },
         )
           .then((res) => {
             if (res.status !== 200) {
-              throw new Error('Failed to generate api token!');
+              throw new Error(
+                'User does not have appropriate permissions. Failed to generate api token!',
+              );
             }
             return res.json();
           })
           .then((newApiToken: ApiToken) => {
             setExistingApiToken(newApiToken);
           })
-          .catch((err) => {
+          .catch(async (err: Error) => {
+            setErrorMessage({ message: err.message });
             return err;
           });
+      } else {
+        // request for apiToken is skipped if filteredScopes is empty
+        setErrorMessage({
+          message: 'Something bad happened here what was it',
+        });
       }
     }
   };
@@ -114,7 +138,10 @@ const ApiTokenInfo = () => {
           }
           setExistingApiToken(null);
         })
-        .catch((err) => console.warn(err))
+        .catch((err) => {
+          setErrorMessage({ message: err });
+          console.warn(err);
+        })
     );
   };
 
@@ -128,7 +155,10 @@ const ApiTokenInfo = () => {
         await sleep();
         setCopySuccess(false);
       })
-      .catch((err) => console.warn('Failed to copy token!'));
+      .catch((err) => {
+        console.warn('Failed to copy token! ', err);
+        setIsCopyingToken(false);
+      });
   };
 
   const parsedExpiry: number = existingApiToken ? parseExpiry(existingApiToken?.expiryDate) : 0;
@@ -154,6 +184,14 @@ const ApiTokenInfo = () => {
         .catch((err) => console.warn('Could not get api tokens! ', err));
   }, [token]);
 
+  const userEffectiveScopes = (user?.scope || [])
+    .map((s) => parseScope(s))
+    .filter((s: ScopeObj) => {
+      return s.accessLevel !== AccessLevel.DENY;
+    });
+
+  const userHasScopes = userEffectiveScopes.length > 0;
+
   return (
     <div
       css={css`
@@ -178,7 +216,7 @@ const ApiTokenInfo = () => {
             ${theme.typography.subheading};
             font-weight: normal;
             color: ${theme.colors.accent_dark};
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
           `
         }
       >
@@ -192,6 +230,46 @@ const ApiTokenInfo = () => {
       </ol>
       <div
         css={css`
+          margin-bottom: 1rem;
+          margin-top: 0.5rem;
+        `}
+      >
+        {!userHasScopes && (
+          <ErrorContainer title="Invalid Permissions" size="md">
+            You do not have permission to generate an API token. Please contact the DMS
+            administrator to gain the correct permission.
+          </ErrorContainer>
+        )}
+      </div>
+
+      {errorMessage && (
+        <div
+          css={css`
+            margin: 1.5rem 0;
+          `}
+        >
+          <ErrorContainer
+            size="sm"
+            css={(theme) => css`
+              background-color: ${theme.colors.error_1};
+              color: ${theme.colors.accent_dark};
+            `}
+            dismissible
+            onDismiss={() => setErrorMessage(null)}
+          >
+            <span
+              css={css`
+                font-size: 14px;
+                display: block;
+              `}
+            >
+              There was a problem generating an API token: {errorMessage.message.toString()}
+            </span>
+          </ErrorContainer>
+        </div>
+      )}
+      <div
+        css={css`
           display: flex;
           flex-direction: row;
           margin-bottom: 10px;
@@ -203,6 +281,7 @@ const ApiTokenInfo = () => {
           `}
           onClick={() => generateApiToken()}
           isAsync
+          disabled={!userHasScopes}
         >
           Generate New Token
         </Button>
@@ -230,7 +309,7 @@ const ApiTokenInfo = () => {
           display: flex;
           flex-direction: row;
           justify-content: space-between;
-          margin-bottom: 2rem;
+          margin-bottom: 1rem;
           margin-top: 1rem;
         `}
       >
@@ -340,19 +419,24 @@ const ApiTokenInfo = () => {
           </Tooltip>
         </>
       </div>
-
-      <span
-        css={(theme) =>
-          css`
-            ${theme.typography.subheading};
-            font-weight: normal;
-            color: ${theme.colors.accent_dark};
-          `
-        }
+      <div
+        css={css`
+          margin-top: 2rem;
+        `}
       >
-        For more information, please read the{' '}
-        <StyledLink href={``}>instructions on how to download data</StyledLink>.
-      </span>
+        <span
+          css={(theme) =>
+            css`
+              ${theme.typography.subheading};
+              font-weight: normal;
+              color: ${theme.colors.accent_dark};
+            `
+          }
+        >
+          For more information, please read the{' '}
+          <StyledLink href={``}>instructions on how to download data</StyledLink>.
+        </span>
+      </div>
     </div>
   );
 };

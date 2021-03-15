@@ -101,7 +101,17 @@ const RepositoryPage = () => {
   return (
     <PageLayout>
       {ConfigError ? (
-        <ErrorContainer title={'DMS Configuration Error'}>{ConfigError}</ErrorContainer>
+        <ErrorContainer
+          title={'DMS Configuration Error'}
+          size="lg"
+          styles={`
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+          `}
+        >
+          {ConfigError}
+        </ErrorContainer>
       ) : (
         <Arranger
           api={arrangerFetcher}
