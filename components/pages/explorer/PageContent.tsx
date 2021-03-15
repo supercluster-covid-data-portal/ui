@@ -4,12 +4,6 @@ import Facets from './Facets';
 import QueryBar from './QueryBar';
 
 import { PageContentProps } from './index';
-import {
-  FACET_MAX_WIDTH,
-  FACET_MIN_WIDTH,
-  FOOTER_HEIGHT,
-  NAVBAR_HEIGHT,
-} from '../../../global/utils/constants';
 
 const PageContent = (props: PageContentProps) => {
   return (
@@ -29,31 +23,35 @@ const PageContent = (props: PageContentProps) => {
           css={(theme) => css`
             flex: 3;
             flex-direction: column;
-            min-width: ${FACET_MIN_WIDTH}px;
-            max-width: ${FACET_MAX_WIDTH}px;
+            min-width: ${theme.dimensions.facets.minWidth}px;
+            max-width: ${theme.dimensions.facets.maxWidth}px;
             background-color: ${theme.colors.white};
             z-index: 1;
             ${theme.shadow.right};
-            height: calc(100vh - ${FOOTER_HEIGHT + NAVBAR_HEIGHT}px);
+            height: calc(
+              100vh - ${theme.dimensions.footer.height + theme.dimensions.navbar.height}px
+            );
             overflow-y: scroll;
           `}
         >
           <Facets {...props} />
         </div>
         <div
-          css={css`
+          css={(theme) => css`
             display: flex;
             flex-direction: column;
             width: 100%;
-            height: calc(100vh - ${FOOTER_HEIGHT + NAVBAR_HEIGHT}px);
+            height: calc(
+              100vh - ${theme.dimensions.footer.height + theme.dimensions.navbar.height}px
+            );
             overflow-y: scroll;
           `}
         >
           <div
-            css={css`
+            css={(theme) => css`
               flex: 8.5;
               margin: 0 15px 0 15px;
-              max-width: calc(100vw - ${FACET_MAX_WIDTH + 10}px);
+              max-width: calc(100vw - ${theme.dimensions.facets.maxWidth + 10}px);
             `}
           >
             <QueryBar {...props} />

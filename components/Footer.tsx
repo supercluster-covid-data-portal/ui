@@ -5,13 +5,12 @@ import defaultTheme from './theme';
 import { OvertureLogoWithText } from './theme/icons';
 
 import StyledLink from './Link';
-import { FOOTER_HEIGHT } from '../global/utils/constants';
 
 const Footer = () => {
   return (
     <div
       css={(theme: typeof defaultTheme) => css`
-        height: ${FOOTER_HEIGHT}px;
+        height: ${theme.dimensions.footer.height}px;
         background-color: ${theme.colors.white};
         border-top: 1px solid ${theme.colors.grey_3};
         display: flex;
