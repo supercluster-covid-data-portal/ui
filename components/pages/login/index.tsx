@@ -151,7 +151,7 @@ const LoginPage = () => {
           </span>
           <ul
             css={css`
-              width: 50%;
+              width: 400px;
               max-height: 400px;
               display: grid;
               grid-template-columns: repeat(2, 1fr);

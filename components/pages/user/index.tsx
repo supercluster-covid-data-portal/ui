@@ -22,71 +22,77 @@ const UserComponent = () => {
   return (
     <StyledPageLayout subtitle="User Profile & Token">
       <div
-        css={() =>
-          css`
-            margin: 1rem 20rem;
+        css={css`
+          display: flex;
+          justify-content: center;
+        `}
+      >
+        <div
+          css={css`
             display: flex;
             flex-direction: column;
-          `
-        }
-      >
-        {!isEmpty(user) && (
-          <div
-            css={(theme) => css`
-              display: flex;
-              flex-direction: row;
-              justify-content: space-between;
-              width: 800px;
-              margin-top: 1.5rem;
-              margin-bottom: 0.5rem;
-              padding-bottom: 2.5rem;
-              border-bottom: 1px solid ${theme.colors.grey_3};
-            `}
-          >
+            margin: 1rem 2rem;
+            width: 800px;
+          `}
+        >
+          {!isEmpty(user) && (
             <div
-              css={css`
+              css={(theme) => css`
                 display: flex;
                 flex-direction: row;
+                justify-content: space-between;
+                width: 800px;
+                margin-top: 1.5rem;
+                margin-bottom: 0.5rem;
+                padding-bottom: 2.5rem;
+                border-bottom: 1px solid ${theme.colors.grey_3};
               `}
             >
-              <OvertureUser width={75} height={84} />
               <div
                 css={css`
-                  margin-left: 1rem;
+                  display: flex;
+                  flex-direction: row;
                 `}
               >
-                <h1
-                  css={(theme) =>
-                    css`
-                      ${theme.typography.regular};
-                      font-size: 30px;
-                      line-height: 36px;
-                      color: ${theme.colors.accent_dark};
-                      margin-bottom: 0.5rem;
-                      margin-top: 0.1rem;
-                    `
-                  }
-                >
-                  {`${user?.firstName} ${user?.lastName}`}
-                </h1>
+                <OvertureUser width={75} height={84} />
                 <div
-                  css={(theme) =>
-                    css`
-                      ${theme.typography.subheading};
-                      color: ${theme.colors.accent_dark};
-                      font-weight: normal;
-                      padding-left: 0.2rem;
-                    `
-                  }
+                  css={css`
+                    margin-left: 1rem;
+                  `}
                 >
-                  {user?.email || ''}
+                  <h1
+                    css={(theme) =>
+                      css`
+                        ${theme.typography.regular};
+                        font-size: 30px;
+                        line-height: 36px;
+                        color: ${theme.colors.accent_dark};
+                        margin-bottom: 0.5rem;
+                        margin-top: 0.1rem;
+                      `
+                    }
+                  >
+                    {`${user?.firstName} ${user?.lastName}`}
+                  </h1>
+                  <div
+                    css={(theme) =>
+                      css`
+                        ${theme.typography.subheading};
+                        color: ${theme.colors.accent_dark};
+                        font-weight: normal;
+                        padding-left: 0.2rem;
+                      `
+                    }
+                  >
+                    {user?.email || ''}
+                  </div>
                 </div>
               </div>
+              <AuthenticatedBadge provider={user?.providerType} />
             </div>
-            <AuthenticatedBadge provider={user?.providerType} />
-          </div>
-        )}
-        {!isEmpty(user) && <ApiTokenInfo />}
+          )}
+          {!isEmpty(user) && <ApiTokenInfo />}
+        </div>
       </div>
     </StyledPageLayout>
   );
