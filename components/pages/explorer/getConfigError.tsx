@@ -2,11 +2,11 @@ import { ReactNode } from 'react';
 import { css } from '@emotion/core';
 
 import { Checkmark, Warning } from '../../theme/icons';
-import theme from '../../theme/';
+import theme from '../../theme';
 import StyledLink from '../../Link';
 
 import { getConfig } from '../../../global/config';
-import { Project } from './';
+import { Project } from '.';
 
 const ArrangerAdminUILink = () => {
   const { NEXT_PUBLIC_ARRANGER_ADMIN_UI } = getConfig();

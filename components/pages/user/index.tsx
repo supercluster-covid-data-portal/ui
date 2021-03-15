@@ -20,7 +20,7 @@ const StyledPageLayout = styled(PageLayout)`
 const UserComponent = () => {
   const { user } = useAuthContext();
   return (
-    <StyledPageLayout>
+    <StyledPageLayout subtitle="User Profile & Token">
       <div
         css={() =>
           css`

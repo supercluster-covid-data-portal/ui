@@ -103,7 +103,7 @@ const providers: ProviderType[] = [
 
 const LoginPage = () => {
   return (
-    <PageLayout>
+    <PageLayout subtitle="Login">
       <div
         css={css`
           display: flex;
@@ -143,6 +143,7 @@ const LoginPage = () => {
               ${theme.typography.heading}
               color: ${theme.colors.accent_dark};
               margin: 10px 0;
+              font-weight: normal;
             `}
           >
             Please choose one of the following log in methods to access your API token for data
@@ -150,7 +151,7 @@ const LoginPage = () => {
           </span>
           <ul
             css={css`
-              max-width: 60%;
+              width: 50%;
               max-height: 400px;
               display: grid;
               grid-template-columns: repeat(2, 1fr);
@@ -174,19 +175,29 @@ const LoginPage = () => {
           </ul>
         </div>
         <div
-          css={(theme) => css`
-            flex: 2;
-            background-color: ${theme.colors.primary};
-          `}
-        ></div>
-        <div
           css={css`
-            position: absolute;
-            right: 190px;
-            top: 50px;
+            display: flex;
+            flex: 2;
+            @media screen and (max-width: 1250px) {
+              display: none;
+            }
           `}
         >
-          <Illustration width={559} height={538} />
+          <div
+            css={(theme) => css`
+              flex: 1;
+              background-color: ${theme.colors.primary};
+            `}
+          />
+          <div
+            css={css`
+              position: absolute;
+              right: 190px;
+              top: 50px;
+            `}
+          >
+            <Illustration width={559} height={538} />
+          </div>
         </div>
       </div>
     </PageLayout>

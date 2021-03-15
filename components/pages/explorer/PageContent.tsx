@@ -1,24 +1,9 @@
 import { css } from '@emotion/core';
-import { useTheme } from 'emotion-theming';
-import styled from '@emotion/styled';
-
 import RepoTable from './RepoTable';
 import Facets from './Facets';
 import QueryBar from './QueryBar';
 
 import { PageContentProps } from './index';
-import defaultTheme from '../../theme';
-import Footer from '../../Footer';
-
-export const Collapsible = styled('div')`
-  ${({ theme }: { theme: typeof defaultTheme }) => css`
-    border-top: 1px solid ${theme.colors.grey_2};
-    height: 47px;
-    width: 100%;
-  `}
-`;
-
-const FACET_MAX_WIDTH = 270;
 
 const PageContent = (props: PageContentProps) => {
   return (
@@ -38,28 +23,35 @@ const PageContent = (props: PageContentProps) => {
           css={(theme) => css`
             flex: 3;
             flex-direction: column;
-            min-width: 250px;
-            max-width: ${FACET_MAX_WIDTH}px;
+            min-width: ${theme.dimensions.facets.minWidth}px;
+            max-width: ${theme.dimensions.facets.maxWidth}px;
             background-color: ${theme.colors.white};
             z-index: 1;
             ${theme.shadow.right};
+            height: calc(
+              100vh - ${theme.dimensions.footer.height + theme.dimensions.navbar.height}px
+            );
+            overflow-y: scroll;
           `}
         >
           <Facets {...props} />
-          <Collapsible />
         </div>
         <div
-          css={css`
+          css={(theme) => css`
             display: flex;
             flex-direction: column;
             width: 100%;
+            height: calc(
+              100vh - ${theme.dimensions.footer.height + theme.dimensions.navbar.height}px
+            );
+            overflow-y: scroll;
           `}
         >
           <div
-            css={css`
+            css={(theme) => css`
               flex: 8.5;
               margin: 0 15px 0 15px;
-              max-width: calc(100vw - ${FACET_MAX_WIDTH + 10}px);
+              max-width: calc(100vw - ${theme.dimensions.facets.maxWidth + 10}px);
             `}
           >
             <QueryBar {...props} />
