@@ -1,10 +1,11 @@
 import Root from '../components/Root';
 import { AppContext } from 'next/app';
 
-import { EGO_JWT_KEY } from '../global/utils/constants';
+import { EGO_JWT_KEY, LOGIN_PATH } from '../global/utils/constants';
 import { PageWithConfig } from '../global/utils/pages/types';
 import { useEffect, useState } from 'react';
 import Router from 'next/router';
+import getInternalLink from '../global/utils/getInternalLink';
 
 const DMSApp = ({
   Component,
@@ -18,7 +19,7 @@ const DMSApp = ({
     const egoJwt = localStorage.getItem(EGO_JWT_KEY) || undefined;
     setInitialToken(egoJwt);
     if (!Component.isPublic && !egoJwt) {
-      Router.push('/login');
+      Router.push(getInternalLink({ path: LOGIN_PATH }));
     }
   });
 

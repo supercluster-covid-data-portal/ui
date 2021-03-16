@@ -10,7 +10,7 @@ const Footer = () => {
   return (
     <div
       css={(theme: typeof defaultTheme) => css`
-        height: 47px;
+        height: ${theme.dimensions.footer.height}px;
         background-color: ${theme.colors.white};
         border-top: 1px solid ${theme.colors.grey_3};
         display: flex;
@@ -19,6 +19,10 @@ const Footer = () => {
         padding-right: 18px;
         ${theme.shadow.default};
         z-index: 10;
+        position: fixed;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
       `}
     >
       <StyledLink
@@ -53,12 +57,15 @@ const Footer = () => {
             line-height: 24px;
             font-weight: normal;
             padding-right: 10px;
+            padding-left: 5px;
           `
         }
       >
         powered by
       </span>
-      <OvertureLogoWithText width={100} height={18} />
+      <a href="https://www.overture.bio/" target="_blank">
+        <OvertureLogoWithText width={100} height={18} />
+      </a>
     </div>
   );
 };

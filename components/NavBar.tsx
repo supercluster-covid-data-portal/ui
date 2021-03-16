@@ -1,20 +1,31 @@
 import React from 'react';
 import { css } from '@emotion/core';
+import { useRouter } from 'next/router';
 
 import UserDropdown from './UserDropdown';
 import defaultTheme from './theme';
 import { OvertureLogo } from './theme/icons';
 import useAuthContext from '../global/hooks/useAuthContext';
-import { StyledLinkAsButton } from './Link';
+import { StyledLinkAsButton, InternalLink as Link } from './Link';
+import { useTheme } from 'emotion-theming';
+import { EXPLORER_PATH, LOGIN_PATH, USER_PATH } from '../global/utils/constants';
 
 const NavBar: React.ComponentType<any> = ({ labName = 'Data Management System', labIcon }) => {
   const { token } = useAuthContext();
+  const router = useRouter();
+  const theme: typeof defaultTheme = useTheme();
+
+  const activeLinkStyle = `
+    background-color: ${theme.colors.grey_2};
+    color: ${theme.colors.accent2_dark};
+  `;
+
   return (
     <div
       css={(theme: typeof defaultTheme) => css`
         display: flex;
         justify-content: space-between;
-        height: 50px;
+        height: ${theme.dimensions.navbar.height}px;
         background-color: ${theme.colors.white};
         ${theme.shadow.default};
         position: sticky;
@@ -32,28 +43,29 @@ const NavBar: React.ComponentType<any> = ({ labName = 'Data Management System', 
           cursor: pointer;
         `}
       >
-        <a
-          href="/repository"
-          css={(theme) => css`
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            ${theme.typography.heading};
-            color: ${theme.colors.accent_dark};
-          `}
-        >
-          {labIcon || <OvertureLogo width={35} height={35} />}
-          {/* set to default until labname config is implemented */}
-          {labName && (
-            <span
-              css={css`
-                padding-left: 10px;
-              `}
-            >
-              {labName}
-            </span>
-          )}
-        </a>
+        <Link path={EXPLORER_PATH}>
+          <a
+            css={(theme) => css`
+              display: flex;
+              align-items: center;
+              text-decoration: none;
+              ${theme.typography.heading};
+              color: ${theme.colors.accent_dark};
+            `}
+          >
+            {labIcon || <OvertureLogo width={35} height={35} />}
+            {/* set to default until labname config is implemented */}
+            {labName && (
+              <span
+                css={css`
+                  padding-left: 10px;
+                `}
+              >
+                {labName}
+              </span>
+            )}
+          </a>
+        </Link>
       </div>
       <div
         css={css`
@@ -67,28 +79,31 @@ const NavBar: React.ComponentType<any> = ({ labName = 'Data Management System', 
             align-items: center;
             justify-content: center;
             width: 144px;
-            background-color: ${theme.colors.grey_2};
+            background-color: ${theme.colors.white};
             height: 100%;
             &:hover {
-              background-color: ${theme.colors.grey_3};
+              background-color: ${theme.colors.grey_2};
             }
             border-right: 2px solid ${theme.colors.white};
           `}
         >
-          <a
-            css={(theme) => css`
-              display: flex;
-              flex: 1;
-              height: 100%;
-              justify-content: center;
-              align-items: center;
-              text-decoration: none;
-              color: ${theme.colors.accent2_dark};
-            `}
-            href="/repository"
-          >
-            Data Explorer
-          </a>
+          <Link path={EXPLORER_PATH}>
+            <a
+              css={(theme) => css`
+                display: flex;
+                flex: 1;
+                height: 100%;
+                justify-content: center;
+                align-items: center;
+                text-decoration: none;
+                color: ${theme.colors.accent_dark};
+                cursor: pointer;
+                ${router.pathname === EXPLORER_PATH ? activeLinkStyle : ''}
+              `}
+            >
+              Data Explorer
+            </a>
+          </Link>
         </div>
         {token ? (
           <div
@@ -96,9 +111,9 @@ const NavBar: React.ComponentType<any> = ({ labName = 'Data Management System', 
               width: 195px;
               height: 100%;
               display: flex;
-              background-color: ${theme.colors.grey_2};
+              ${router.pathname === USER_PATH ? activeLinkStyle : ''}
               &:hover {
-                background-color: ${theme.colors.grey_3};
+                background-color: ${theme.colors.grey_2};
               }
             `}
           >
@@ -113,16 +128,17 @@ const NavBar: React.ComponentType<any> = ({ labName = 'Data Management System', 
               justify-content: center;
             `}
           >
-            <StyledLinkAsButton
-              css={(theme) => css`
-                width: 70px;
-                ${theme.typography.button};
-                line-height: 20px;
-              `}
-              href="/login"
-            >
-              Log in
-            </StyledLinkAsButton>
+            <Link path={LOGIN_PATH}>
+              <StyledLinkAsButton
+                css={(theme) => css`
+                  width: 70px;
+                  ${theme.typography.button};
+                  line-height: 20px;
+                `}
+              >
+                Log in
+              </StyledLinkAsButton>
+            </Link>
           </div>
         )}
       </div>

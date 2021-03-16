@@ -99,7 +99,7 @@ const RepositoryPage = () => {
   });
 
   return (
-    <PageLayout>
+    <PageLayout subtitle="Data Explorer">
       {ConfigError ? (
         <ErrorContainer title={'DMS Configuration Error'}>{ConfigError}</ErrorContainer>
       ) : (

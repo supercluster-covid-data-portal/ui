@@ -2,18 +2,16 @@ import { ReactNode } from 'react';
 import { css } from '@emotion/core';
 
 import { Checkmark, Warning } from '../../theme/icons';
-import theme from '../../theme/';
+import theme from '../../theme';
 import StyledLink from '../../Link';
 
 import { getConfig } from '../../../global/config';
-import { Project } from './';
+import { Project } from '.';
 
 const ArrangerAdminUILink = () => {
-  const { NEXT_PUBLIC_ARRANGER_API } = getConfig();
-  const splitApi: string[] = NEXT_PUBLIC_ARRANGER_API.split('//');
-  const adminUiUrl: string = [splitApi[0], '//ui.', splitApi[1]].join('');
+  const { NEXT_PUBLIC_ARRANGER_ADMIN_UI } = getConfig();
   return (
-    <StyledLink href={adminUiUrl} target="_blank">
+    <StyledLink href={NEXT_PUBLIC_ARRANGER_ADMIN_UI} target="_blank">
       Arranger Admin UI
     </StyledLink>
   );

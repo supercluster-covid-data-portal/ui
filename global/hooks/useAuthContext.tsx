@@ -1,9 +1,10 @@
 import React, { createContext, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { EGO_JWT_KEY } from '../utils/constants';
+import { EGO_JWT_KEY, EXPLORER_PATH } from '../utils/constants';
 import { decodeToken, extractUser, isValidJwt } from '../utils/egoTokenUtils';
 import { UserWithId } from '../../global/types';
+import getInternalLink from '../utils/getInternalLink';
 
 type T_AuthContext = {
   token?: string;
@@ -38,7 +39,7 @@ export const AuthProvider = ({
 
   const logout = () => {
     removeToken();
-    router.push('/repository');
+    router.push(getInternalLink({ path: EXPLORER_PATH }));
   };
 
   if (token !== egoJwt) {
