@@ -115,7 +115,7 @@ const ApiTokenInfo = () => {
           .then((newApiToken: ApiToken) => {
             setExistingApiToken(newApiToken);
           })
-          .catch(async (err: Error) => {
+          .catch((err: Error) => {
             setErrorMessage({ message: err.message });
             return err;
           });
