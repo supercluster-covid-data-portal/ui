@@ -17,77 +17,81 @@ const StyledPageLayout = styled(PageLayout)`
     `}
 `;
 
+const FlexDiv = styled('div')`
+  display: flex;
+`;
+
+const UserInfoContainer = styled(FlexDiv)`
+  ${({ theme }: { theme: typeof defaultTheme }) => css`
+    flex-direction: row;
+    justify-content: space-between;
+    width: 800px;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid ${theme.colors.grey_3};
+  `}
+`;
+
+const UserTitle = styled('h1')`
+  ${({ theme }: { theme: typeof defaultTheme }) => css`
+    ${theme.typography.regular};
+    font-size: 30px;
+    line-height: 36px;
+    color: ${theme.colors.accent_dark};
+    margin-bottom: 0.5rem;
+    margin-top: 0.1rem;
+  `}
+`;
+
+const UserEmail = styled('div')`
+  ${({ theme }: { theme: typeof defaultTheme }) => css`
+    ${theme.typography.subheading};
+    color: ${theme.colors.accent_dark};
+    font-weight: normal;
+    padding-left: 0.2rem;
+  `}
+`;
+
 const UserComponent = () => {
   const { user } = useAuthContext();
   return (
     <StyledPageLayout subtitle="User Profile & Token">
-      <div
-        css={() =>
-          css`
-            margin: 1rem 20rem;
-            display: flex;
-            flex-direction: column;
-          `
-        }
+      <FlexDiv
+        css={css`
+          justify-content: center;
+        `}
       >
-        {!isEmpty(user) && (
-          <div
-            css={(theme) => css`
-              display: flex;
-              flex-direction: row;
-              justify-content: space-between;
-              width: 800px;
-              margin-top: 1.5rem;
-              margin-bottom: 0.5rem;
-              padding-bottom: 2.5rem;
-              border-bottom: 1px solid ${theme.colors.grey_3};
-            `}
-          >
-            <div
-              css={css`
-                display: flex;
-                flex-direction: row;
-              `}
-            >
-              <OvertureUser width={75} height={84} />
-              <div
+        <FlexDiv
+          css={css`
+            flex-direction: column;
+            margin: 1rem 2rem;
+            width: 800px;
+          `}
+        >
+          {!isEmpty(user) && (
+            <UserInfoContainer>
+              <FlexDiv
                 css={css`
-                  margin-left: 1rem;
+                  flex-direction: row;
                 `}
               >
-                <h1
-                  css={(theme) =>
-                    css`
-                      ${theme.typography.regular};
-                      font-size: 30px;
-                      line-height: 36px;
-                      color: ${theme.colors.accent_dark};
-                      margin-bottom: 0.5rem;
-                      margin-top: 0.1rem;
-                    `
-                  }
-                >
-                  {`${user?.firstName} ${user?.lastName}`}
-                </h1>
+                <OvertureUser width={75} height={84} />
                 <div
-                  css={(theme) =>
-                    css`
-                      ${theme.typography.subheading};
-                      color: ${theme.colors.accent_dark};
-                      font-weight: normal;
-                      padding-left: 0.2rem;
-                    `
-                  }
+                  css={css`
+                    margin-left: 1rem;
+                  `}
                 >
-                  {user?.email || ''}
+                  <UserTitle>{`${user?.firstName} ${user?.lastName}`}</UserTitle>
+                  <UserEmail>{user?.email || ''}</UserEmail>
                 </div>
-              </div>
-            </div>
-            <AuthenticatedBadge provider={user?.providerType} />
-          </div>
-        )}
-        {!isEmpty(user) && <ApiTokenInfo />}
-      </div>
+              </FlexDiv>
+              <AuthenticatedBadge provider={user?.providerType} />
+            </UserInfoContainer>
+          )}
+          {!isEmpty(user) && <ApiTokenInfo />}
+        </FlexDiv>
+      </FlexDiv>
     </StyledPageLayout>
   );
 };
