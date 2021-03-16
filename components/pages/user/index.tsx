@@ -17,40 +17,62 @@ const StyledPageLayout = styled(PageLayout)`
     `}
 `;
 
+const FlexDiv = styled('div')`
+  display: flex;
+`;
+
+const UserInfoContainer = styled(FlexDiv)`
+  ${({ theme }: { theme: typeof defaultTheme }) => css`
+    flex-direction: row;
+    justify-content: space-between;
+    width: 800px;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid ${theme.colors.grey_3};
+  `}
+`;
+
+const UserTitle = styled('h1')`
+  ${({ theme }: { theme: typeof defaultTheme }) => css`
+    ${theme.typography.regular};
+    font-size: 30px;
+    line-height: 36px;
+    color: ${theme.colors.accent_dark};
+    margin-bottom: 0.5rem;
+    margin-top: 0.1rem;
+  `}
+`;
+
+const UserEmail = styled('div')`
+  ${({ theme }: { theme: typeof defaultTheme }) => css`
+    ${theme.typography.subheading};
+    color: ${theme.colors.accent_dark};
+    font-weight: normal;
+    padding-left: 0.2rem;
+  `}
+`;
+
 const UserComponent = () => {
   const { user } = useAuthContext();
   return (
     <StyledPageLayout subtitle="User Profile & Token">
-      <div
+      <FlexDiv
         css={css`
-          display: flex;
           justify-content: center;
         `}
       >
-        <div
+        <FlexDiv
           css={css`
-            display: flex;
             flex-direction: column;
             margin: 1rem 2rem;
             width: 800px;
           `}
         >
           {!isEmpty(user) && (
-            <div
-              css={(theme) => css`
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-                width: 800px;
-                margin-top: 1.5rem;
-                margin-bottom: 0.5rem;
-                padding-bottom: 2.5rem;
-                border-bottom: 1px solid ${theme.colors.grey_3};
-              `}
-            >
-              <div
+            <UserInfoContainer>
+              <FlexDiv
                 css={css`
-                  display: flex;
                   flex-direction: row;
                 `}
               >
@@ -60,40 +82,16 @@ const UserComponent = () => {
                     margin-left: 1rem;
                   `}
                 >
-                  <h1
-                    css={(theme) =>
-                      css`
-                        ${theme.typography.regular};
-                        font-size: 30px;
-                        line-height: 36px;
-                        color: ${theme.colors.accent_dark};
-                        margin-bottom: 0.5rem;
-                        margin-top: 0.1rem;
-                      `
-                    }
-                  >
-                    {`${user?.firstName} ${user?.lastName}`}
-                  </h1>
-                  <div
-                    css={(theme) =>
-                      css`
-                        ${theme.typography.subheading};
-                        color: ${theme.colors.accent_dark};
-                        font-weight: normal;
-                        padding-left: 0.2rem;
-                      `
-                    }
-                  >
-                    {user?.email || ''}
-                  </div>
+                  <UserTitle>{`${user?.firstName} ${user?.lastName}`}</UserTitle>
+                  <UserEmail>{user?.email || ''}</UserEmail>
                 </div>
-              </div>
+              </FlexDiv>
               <AuthenticatedBadge provider={user?.providerType} />
-            </div>
+            </UserInfoContainer>
           )}
           {!isEmpty(user) && <ApiTokenInfo />}
-        </div>
-      </div>
+        </FlexDiv>
+      </FlexDiv>
     </StyledPageLayout>
   );
 };
