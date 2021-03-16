@@ -19,7 +19,7 @@ const getIconDimensions = ({ size }: { size: ErrorSize }) =>
   ({
     [ERROR_SIZES.LG]: { width: 26, height: 27 },
     [ERROR_SIZES.MD]: { width: 21, height: 22 },
-    [ERROR_SIZES.SM]: { width: 19, height: 19 },
+    [ERROR_SIZES.SM]: { width: 18, height: 18 },
   }[size]);
 
 const IconButton = ({
@@ -156,12 +156,14 @@ const ErrorNotification = ({
             flex-direction: row;
           `}
         >
-          <ErrorIcon
-            {...getIconDimensions({ size })}
-            style={css`
-              ${getIconStyle({ size })}
-            `}
-          />
+          <span>
+            <ErrorIcon
+              {...getIconDimensions({ size })}
+              style={css`
+                ${getIconStyle({ size })}
+              `}
+            />
+          </span>
           <div
             css={css`
               margin-left: 10px;

@@ -122,7 +122,8 @@ const ApiTokenInfo = () => {
       } else {
         // request for apiToken is skipped if filteredScopes is empty
         setErrorMessage({
-          message: 'User does not have appropriate permissions. Failed to generate api token!',
+          message:
+            'You do not have permissions to generate an API token. Your permissions may have changed recently. Please contact the DMS administrator to gain the correct permissions.',
         });
       }
     }
@@ -234,8 +235,8 @@ const ApiTokenInfo = () => {
       >
         {!userHasScopes && (
           <ErrorNotification title="Invalid Permissions" size="md">
-            You do not have permission to generate an API token. Please contact the DMS
-            administrator to gain the correct permission.
+            You do not have permissions to generate an API token. Please contact the DMS
+            administrator to gain the correct permissions.
           </ErrorNotification>
         )}
       </div>
