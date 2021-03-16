@@ -16,7 +16,7 @@ import StyledLink from '../../Link';
 import defaultTheme from '../../theme';
 import { Checkmark } from '../../theme/icons';
 import { AccessLevel, parseScope, ScopeObj } from '../../../global/utils/egoTokenUtils';
-import ErrorContainer from '../../ErrorContainer';
+import ErrorNotification from '../../ErrorNotification';
 
 interface ApiToken {
   expiryDate: string;
@@ -231,10 +231,10 @@ const ApiTokenInfo = () => {
         `}
       >
         {!userHasScopes && (
-          <ErrorContainer title="Invalid Permissions" size="md">
+          <ErrorNotification title="Invalid Permissions" size="md">
             You do not have permission to generate an API token. Please contact the DMS
             administrator to gain the correct permission.
-          </ErrorContainer>
+          </ErrorNotification>
         )}
       </div>
 
@@ -244,7 +244,7 @@ const ApiTokenInfo = () => {
             margin: 1.5rem 0;
           `}
         >
-          <ErrorContainer
+          <ErrorNotification
             size="sm"
             css={(theme) => css`
               background-color: ${theme.colors.error_1};
@@ -261,7 +261,7 @@ const ApiTokenInfo = () => {
             >
               There was a problem generating an API token: {errorMessage.message.toString()}
             </span>
-          </ErrorContainer>
+          </ErrorNotification>
         </div>
       )}
       <div
