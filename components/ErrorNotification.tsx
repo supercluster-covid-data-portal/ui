@@ -7,17 +7,19 @@ import { Error as ErrorIcon } from './theme/icons';
 import Dismiss from './theme/icons/dismiss';
 import { IconProps } from './theme/icons/types';
 
-enum ErrorSize {
-  LG = 'lg',
-  MD = 'md',
-  SM = 'sm',
-}
+type ErrorSize = 'lg' | 'md' | 'sm';
+
+const ERROR_SIZES = {
+  LG: 'lg' as ErrorSize,
+  MD: 'md' as ErrorSize,
+  SM: 'sm' as ErrorSize,
+};
 
 const getIconDimensions = ({ size }: { size: ErrorSize }) =>
   ({
-    [ErrorSize.LG]: { width: 26, height: 27 },
-    [ErrorSize.MD]: { width: 21, height: 22 },
-    [ErrorSize.SM]: { width: 19, height: 19 },
+    [ERROR_SIZES.LG]: { width: 26, height: 27 },
+    [ERROR_SIZES.MD]: { width: 21, height: 22 },
+    [ERROR_SIZES.SM]: { width: 19, height: 19 },
   }[size]);
 
 const IconButton = ({
@@ -47,15 +49,15 @@ const IconButton = ({
 
 const getContainerStyles = ({ size }: { size: ErrorSize }) =>
   ({
-    [ErrorSize.LG]: `
+    [ERROR_SIZES.LG]: `
       padding: 1rem 2rem;
       line-height: 26px;
     `,
-    [ErrorSize.MD]: `
+    [ERROR_SIZES.MD]: `
       padding: 1rem;
       line-height: 24px;
     `,
-    [ErrorSize.SM]: `
+    [ERROR_SIZES.SM]: `
       padding: 0.5rem;
       line-height: 20px;
       display: flex;
@@ -79,25 +81,25 @@ const ErrorContentContainer = styled('div')`
 
 const getIconStyle = ({ size }: { size: ErrorSize }) =>
   ({
-    [ErrorSize.LG]: 'padding-right: 15px',
-    [ErrorSize.MD]: 'padding-right: 15px',
-    [ErrorSize.SM]: '',
+    [ERROR_SIZES.LG]: 'padding-right: 15px',
+    [ERROR_SIZES.MD]: 'padding-right: 15px',
+    [ERROR_SIZES.SM]: '',
   }[size]);
 
 const getTitleStyle = ({ size }: { size: ErrorSize }) =>
   ({
-    [ErrorSize.LG]: `
+    [ERROR_SIZES.LG]: `
       margin: 0.5rem 0 1rem;
       font-size: 24px;
       line-height: 38px;
     `,
-    [ErrorSize.MD]: `
+    [ERROR_SIZES.MD]: `
       margin: 0rem;
       padding-bottom: 0.4rem;
       font-size: 18px;
       line-height: 20px;
     `,
-    [ErrorSize.SM]: '',
+    [ERROR_SIZES.SM]: '',
   }[size]);
 
 const ErrorTitle = styled('h1')`

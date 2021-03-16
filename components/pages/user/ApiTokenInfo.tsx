@@ -79,13 +79,15 @@ const ApiTokenInfo = () => {
       )
         .then((res) => {
           if (res.status !== 200) {
-            throw new Error('Error fetching scopes, cannot generate api token.');
+            throw new Error(
+              `Error fetching scopes, cannot generate api token. Response Status: ${res.status}`,
+            );
           }
           return res.json();
         })
         .then((json) => json.scopes)
-        .catch((err) => {
-          setErrorMessage({ message: err });
+        .catch((err: Error) => {
+          setErrorMessage({ message: err.message });
           console.warn(err);
           return err;
         });
@@ -106,9 +108,7 @@ const ApiTokenInfo = () => {
         )
           .then((res) => {
             if (res.status !== 200) {
-              throw new Error(
-                'User does not have appropriate permissions. Failed to generate api token!',
-              );
+              throw new Error(`Failed to generate new Api Token. Response Status: ${res.status}`);
             }
             return res.json();
           })
@@ -122,7 +122,7 @@ const ApiTokenInfo = () => {
       } else {
         // request for apiToken is skipped if filteredScopes is empty
         setErrorMessage({
-          message: 'Something bad happened here what was it',
+          message: 'User does not have appropriate permissions. Failed to generate api token!',
         });
       }
     }
@@ -131,15 +131,17 @@ const ApiTokenInfo = () => {
   const revokeApiToken = async () => {
     return (
       existingApiToken &&
-      fetchWithAuth(`${EGO_API_KEY_ENDPOINT}?apiKey=${existingApiToken.name}`, { method: 'DELETE' })
+      fetchWithAuth(`${EGO_API_KEY_ENDPOINT}?apiKey=${existingApiToken.name}`, {
+        method: 'DELETE',
+      })
         .then((res) => {
           if (res.status !== 200) {
-            throw new Error('Error revoking api token!');
+            throw new Error(`Error revoking api token. Response Status: ${res.status}`);
           }
           setExistingApiToken(null);
         })
-        .catch((err) => {
-          setErrorMessage({ message: err });
+        .catch((err: Error) => {
+          setErrorMessage({ message: err.message });
           console.warn(err);
         })
     );
@@ -259,7 +261,7 @@ const ApiTokenInfo = () => {
                 display: block;
               `}
             >
-              There was a problem generating an API token: {errorMessage.message.toString()}
+              There was a problem: {errorMessage.message.toString()}
             </span>
           </ErrorNotification>
         </div>
