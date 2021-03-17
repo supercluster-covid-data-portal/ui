@@ -8,7 +8,7 @@ import { Tooltip } from 'react-tippy';
 import { parseExpiry, getDayValue } from '../../../global/utils/apiToken';
 import { getConfig } from '../../../global/config';
 import useAuthContext from '../../../global/hooks/useAuthContext';
-import { EGO_API_KEY_ENDPOINT } from '../../../global/utils/constants';
+import { EGO_API_KEY_ENDPOINT, GENERIC_API_ERROR_MESSAGE } from '../../../global/utils/constants';
 
 import Button from '../../Button';
 import StyledLink from '../../Link';
@@ -80,7 +80,7 @@ const ApiTokenInfo = () => {
         .then((res) => {
           if (res.status !== 200) {
             throw new Error(
-              `Error fetching scopes, cannot generate api token. Response Status: ${res.status}`,
+              `HTTP error ${res.status}: Error fetching current permissions. Your API token could not be generated. ${GENERIC_API_ERROR_MESSAGE}`,
             );
           }
           return res.json();
@@ -108,7 +108,9 @@ const ApiTokenInfo = () => {
         )
           .then((res) => {
             if (res.status !== 200) {
-              throw new Error(`Failed to generate new Api Token. Response Status: ${res.status}`);
+              throw new Error(
+                `HTTP error ${res.status}: Your API token could not be generated. ${GENERIC_API_ERROR_MESSAGE}`,
+              );
             }
             return res.json();
           })
@@ -137,7 +139,9 @@ const ApiTokenInfo = () => {
       })
         .then((res) => {
           if (res.status !== 200) {
-            throw new Error(`Error revoking api token. Response Status: ${res.status}`);
+            throw new Error(
+              `HTTP error ${res.status}: Your API token could not be revoked. ${GENERIC_API_ERROR_MESSAGE}`,
+            );
           }
           setExistingApiToken(null);
         })
@@ -172,7 +176,9 @@ const ApiTokenInfo = () => {
       fetchWithAuth(`${EGO_API_KEY_ENDPOINT}?user_id=${user.id}`, { method: 'GET' })
         .then((res) => {
           if (res.status !== 200) {
-            throw new Error();
+            throw new Error(
+              `HTTP error ${res.status}: Your existing API tokens could not be fetched. ${GENERIC_API_ERROR_MESSAGE}`,
+            );
           }
           return res.json();
         })
@@ -184,7 +190,10 @@ const ApiTokenInfo = () => {
             setExistingApiToken(null);
           }
         })
-        .catch((err) => console.warn('Could not get api tokens! ', err));
+        .catch((err: Error) => {
+          setErrorMessage({ message: err.message });
+          console.warn(err.message);
+        });
   }, [token]);
 
   const userEffectiveScopes = (user?.scope || [])
@@ -262,7 +271,7 @@ const ApiTokenInfo = () => {
                 display: block;
               `}
             >
-              There was a problem: {errorMessage.message.toString()}
+              {errorMessage.message.toString()}
             </span>
           </ErrorNotification>
         </div>
