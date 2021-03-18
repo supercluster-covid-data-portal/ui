@@ -16,6 +16,8 @@ import StyledLink from '../../Link';
 import defaultTheme from '../../theme';
 import { Checkmark } from '../../theme/icons';
 
+import sleep from '../../utils/sleep';
+
 interface ApiToken {
   expiryDate: string;
   isRevoked: boolean;
@@ -50,13 +52,6 @@ const TooltipContainer = styled('div')`
     }
   `}
 `;
-
-const sleep = (time: number = 2000) =>
-  new Promise((resolve) => {
-    setTimeout(() => {
-      resolve('');
-    }, time);
-  });
 
 const ApiTokenInfo = () => {
   const { user, token, fetchWithAuth } = useAuthContext();
