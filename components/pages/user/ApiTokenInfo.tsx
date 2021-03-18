@@ -100,12 +100,12 @@ const ApiTokenInfo = () => {
 
       if (filteredScopes.length) {
         const scopeParams = filteredScopes.map((f: ScopeObj) => `${f.policy}.${f.accessLevel}`);
-        return fetchWithAuth(
-          `${EGO_API_KEY_ENDPOINT}?scopes=${encodeURIComponent(scopeParams.join())}&user_id=${
-            user.id
-          }`,
-          { method: 'POST' },
-        )
+
+        const apiKeyUrl = new URL(EGO_API_KEY_ENDPOINT);
+        apiKeyUrl.searchParams.append('scopes', encodeURIComponent(scopeParams.join()));
+        apiKeyUrl.searchParams.append('user_id', user.id);
+
+        return fetchWithAuth(apiKeyUrl.href, { method: 'POST' })
           .then((res) => {
             if (res.status !== 200) {
               throw new Error(
@@ -173,7 +173,7 @@ const ApiTokenInfo = () => {
 
   useEffect(() => {
     user &&
-      fetchWithAuth(`${EGO_API_KEY_ENDPOINT}?user_id=${user.id}`, { method: 'GET' })
+      fetchWithAuth(`${EGO_API_KEY_ENDPOINT}?user_id=${user.id}&limit=1000`, { method: 'GET' })
         .then((res) => {
           if (res.status !== 200) {
             throw new Error(
