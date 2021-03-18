@@ -17,6 +17,8 @@ WORKDIR /usr/src
 
 COPY . /usr/src
 
+VOLUME [ "/usr/src/public/static/dms_user_assets" ]
+
 RUN npm ci
 RUN npm run build
 
