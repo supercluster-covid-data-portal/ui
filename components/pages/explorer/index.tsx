@@ -8,7 +8,7 @@ import { RepoFiltersType } from './sqonTypes';
 import { getConfig } from '../../../global/config';
 import createArrangerFetcher from '../../utils/arrangerFetcher';
 import { useEffect, useState } from 'react';
-import ErrorContainer from '../../ErrorContainer';
+import ErrorNotification from '../../ErrorNotification';
 import getConfigError from './getConfigError';
 
 const Arranger = dynamic(
@@ -101,7 +101,17 @@ const RepositoryPage = () => {
   return (
     <PageLayout subtitle="Data Explorer">
       {ConfigError ? (
-        <ErrorContainer title={'DMS Configuration Error'}>{ConfigError}</ErrorContainer>
+        <ErrorNotification
+          title={'DMS Configuration Error'}
+          size="lg"
+          styles={`
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+          `}
+        >
+          {ConfigError}
+        </ErrorNotification>
       ) : (
         <Arranger
           api={arrangerFetcher}

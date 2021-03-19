@@ -35,6 +35,7 @@ export interface User {
   preferredLanguage?: Language;
   providerType: ProviderType;
   providerSubjectId: string;
+  scope: string[];
 }
 
 export type EgoJwtData = {
