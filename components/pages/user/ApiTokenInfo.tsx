@@ -172,8 +172,13 @@ const ApiTokenInfo = () => {
   const tokenIsExpired: boolean = has(existingApiToken, 'expiryDate') && parsedExpiry <= 0;
 
   useEffect(() => {
-    user &&
-      fetchWithAuth(`${EGO_API_KEY_ENDPOINT}?user_id=${user.id}&limit=1000`, { method: 'GET' })
+    if (user) {
+      const fetchApiKeysUrl = new URL(EGO_API_KEY_ENDPOINT);
+      fetchApiKeysUrl.searchParams.append('sort', 'isRevoked');
+      fetchApiKeysUrl.searchParams.append('sortOrder', 'ASC');
+      fetchApiKeysUrl.searchParams.append('user_id', user.id);
+
+      fetchWithAuth(fetchApiKeysUrl.href, { method: 'GET' })
         .then((res) => {
           if (res.status !== 200) {
             throw new Error(
@@ -194,6 +199,7 @@ const ApiTokenInfo = () => {
           setErrorMessage({ message: err.message });
           console.warn(err.message);
         });
+    }
   }, [token]);
 
   const userEffectiveScopes = (user?.scope || [])
