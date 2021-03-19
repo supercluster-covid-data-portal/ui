@@ -89,11 +89,13 @@ const RepositoryPage = () => {
       })
       .then(async ({ data: { projects } }: { data: { projects: Project[] } }) => {
         await setAvailableProjects(projects);
+        // 1s delay so loader doesn't flicker on and off too quickly
         await sleep(1000);
         setLoadingProjects(false);
       })
       .catch(async (err) => {
         console.warn(err);
+        // same as above comment
         await sleep(1000);
         setLoadingProjects(false);
       });
