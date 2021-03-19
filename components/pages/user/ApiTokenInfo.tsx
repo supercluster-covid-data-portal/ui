@@ -102,7 +102,9 @@ const ApiTokenInfo = () => {
         const scopeParams = filteredScopes.map((f: ScopeObj) => `${f.policy}.${f.accessLevel}`);
 
         const apiKeyUrl = new URL(EGO_API_KEY_ENDPOINT);
-        apiKeyUrl.searchParams.append('scopes', encodeURIComponent(scopeParams.join()));
+        scopeParams.map((param) =>
+          apiKeyUrl.searchParams.append('scopes', encodeURIComponent(param)),
+        );
         apiKeyUrl.searchParams.append('user_id', user.id);
 
         return fetchWithAuth(apiKeyUrl.href, { method: 'POST' })
@@ -116,6 +118,7 @@ const ApiTokenInfo = () => {
           })
           .then((newApiToken: ApiToken) => {
             setExistingApiToken(newApiToken);
+            setErrorMessage(null);
           })
           .catch((err: Error) => {
             setErrorMessage({ message: err.message });
@@ -144,6 +147,7 @@ const ApiTokenInfo = () => {
             );
           }
           setExistingApiToken(null);
+          setErrorMessage(null);
         })
         .catch((err: Error) => {
           setErrorMessage({ message: err.message });
