@@ -9,6 +9,10 @@ const dimensions = {
     minWidth: 250,
     maxWidth: 270,
   },
+  labIcon: {
+    height: 35,
+    width: 35,
+  },
 };
 
 export default dimensions;

@@ -8,7 +8,7 @@ import { RepoFiltersType } from './sqonTypes';
 import { getConfig } from '../../../global/config';
 import createArrangerFetcher from '../../utils/arrangerFetcher';
 import { useEffect, useState } from 'react';
-import ErrorContainer from '../../ErrorContainer';
+import ErrorNotification from '../../ErrorNotification';
 import getConfigError from './getConfigError';
 import Loader from '../../Loader';
 import { css } from '@emotion/core';
@@ -123,7 +123,17 @@ const RepositoryPage = () => {
           <Loader />
         </div>
       ) : ConfigError ? (
-        <ErrorContainer title={'DMS Configuration Error'}>{ConfigError}</ErrorContainer>
+        <ErrorNotification
+          title={'DMS Configuration Error'}
+          size="lg"
+          styles={`
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+          `}
+        >
+          {ConfigError}
+        </ErrorNotification>
       ) : (
         <Arranger
           api={arrangerFetcher}
