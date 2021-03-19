@@ -16,7 +16,7 @@ const NavBar: React.ComponentType = () => {
   const router = useRouter();
   const theme: typeof defaultTheme = useTheme();
 
-  const { NEXT_PUBLIC_LAB_NAME, NEXT_PUBLIC_LOGO_FILENAME } = getConfig();
+  const { NEXT_PUBLIC_LAB_NAME, NEXT_PUBLIC_LOGO_FILENAME, NEXT_PUBLIC_BASE_PATH } = getConfig();
 
   const activeLinkStyle = `
     background-color: ${theme.colors.grey_2};
@@ -25,7 +25,7 @@ const NavBar: React.ComponentType = () => {
 
   const labIcon = NEXT_PUBLIC_LOGO_FILENAME ? (
     <img
-      src={`/static/dms_user_assets/${NEXT_PUBLIC_LOGO_FILENAME}`}
+      src={`${NEXT_PUBLIC_BASE_PATH}/static/dms_user_assets/${NEXT_PUBLIC_LOGO_FILENAME}`}
       alt={NEXT_PUBLIC_LAB_NAME}
       width={theme.dimensions.labIcon.width}
       height={theme.dimensions.labIcon.height}
