@@ -10,6 +10,9 @@ import createArrangerFetcher from '../../utils/arrangerFetcher';
 import { useEffect, useState } from 'react';
 import ErrorNotification from '../../ErrorNotification';
 import getConfigError from './getConfigError';
+import Loader from '../../Loader';
+import { css } from '@emotion/core';
+import sleep from '../../utils/sleep';
 
 const Arranger = dynamic(
   () => import('@arranger/components/dist/Arranger').then((comp) => comp.Arranger),
@@ -67,6 +70,7 @@ const RepositoryPage = () => {
   } = getConfig();
 
   const [availableProjects, setAvailableProjects] = useState<Project[]>([]);
+  const [loadingProjects, setLoadingProjects] = useState<boolean>(true);
   useEffect(() => {
     const { NEXT_PUBLIC_ARRANGER_API } = getConfig();
     fetch(urlJoin(NEXT_PUBLIC_ARRANGER_API, 'admin/graphql'), {
@@ -83,11 +87,17 @@ const RepositoryPage = () => {
         }
         return res.json();
       })
-      .then(({ data: { projects } }: { data: { projects: Project[] } }) => {
-        setAvailableProjects(projects);
+      .then(async ({ data: { projects } }: { data: { projects: Project[] } }) => {
+        await setAvailableProjects(projects);
+        // 1s delay so loader doesn't flicker on and off too quickly
+        await sleep(1000);
+        setLoadingProjects(false);
       })
-      .catch((err) => {
+      .catch(async (err) => {
         console.warn(err);
+        // same as above comment
+        await sleep(1000);
+        setLoadingProjects(false);
       });
   }, []);
 
@@ -100,7 +110,21 @@ const RepositoryPage = () => {
 
   return (
     <PageLayout subtitle="Data Explorer">
-      {ConfigError ? (
+      {loadingProjects ? (
+        <div
+          css={(theme) =>
+            css`
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              background-color: ${theme.colors.grey_2};
+            `
+          }
+        >
+          <Loader />
+        </div>
+      ) : ConfigError ? (
         <ErrorNotification
           title={'DMS Configuration Error'}
           size="lg"

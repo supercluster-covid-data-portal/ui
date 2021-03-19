@@ -18,6 +18,8 @@ import { Checkmark } from '../../theme/icons';
 import { AccessLevel, parseScope, ScopeObj } from '../../../global/utils/egoTokenUtils';
 import ErrorNotification from '../../ErrorNotification';
 
+import sleep from '../../utils/sleep';
+
 interface ApiToken {
   expiryDate: string;
   isRevoked: boolean;
@@ -52,13 +54,6 @@ const TooltipContainer = styled('div')`
     }
   `}
 `;
-
-const sleep = (time: number = 2000) =>
-  new Promise((resolve) => {
-    setTimeout(() => {
-      resolve('');
-    }, time);
-  });
 
 const ApiTokenInfo = () => {
   const { user, token, fetchWithAuth } = useAuthContext();
