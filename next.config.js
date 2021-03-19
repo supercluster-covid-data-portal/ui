@@ -13,6 +13,9 @@ module.exports = withCSS({
     // using ASSET_PREFIX for the public runtime BASE_PATH because basePath in the top level config was not working
     // with the dms reverse proxy setup
     NEXT_PUBLIC_BASE_PATH: process.env.ASSET_PREFIX,
+    NEXT_PUBLIC_ADMIN_EMAIL: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
+    NEXT_PUBLIC_LAB_NAME: process.env.NEXT_PUBLIC_LAB_NAME,
+    NEXT_PUBLIC_LOGO_FILENAME: process.env.NEXT_PUBLIC_LOGO_FILENAME,
   },
   assetPrefix: process.env.ASSET_PREFIX || '',
 });
