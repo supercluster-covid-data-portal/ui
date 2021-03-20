@@ -1,7 +1,7 @@
 import { css, Global } from '@emotion/core';
 import styled from '@emotion/styled';
 import { useTheme } from 'emotion-theming';
-import { has, isEmpty } from 'lodash';
+import { has, isEmpty, orderBy } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { Tooltip } from 'react-tippy';
 
@@ -174,8 +174,10 @@ const ApiTokenInfo = () => {
     if (user) {
       const fetchApiKeysUrl = new URL(EGO_API_KEY_ENDPOINT);
       fetchApiKeysUrl.searchParams.append('sort', 'isRevoked');
+      // sort by asc will get isRevoked=false first
       fetchApiKeysUrl.searchParams.append('sortOrder', 'ASC');
       fetchApiKeysUrl.searchParams.append('user_id', user.id);
+      fetchApiKeysUrl.searchParams.append('limit', '1000');
 
       fetchWithAuth(fetchApiKeysUrl.href, { method: 'GET' })
         .then((res) => {
@@ -187,9 +189,19 @@ const ApiTokenInfo = () => {
           return res.json();
         })
         .then((json) => {
-          const activeToken = json.resultSet.find((r: ApiToken) => !r.isRevoked);
-          if (activeToken) {
-            setExistingApiToken(activeToken);
+          // first find all non-revoked tokens
+          const unrevokedTokens = json.resultSet.filter((r: ApiToken) => !r.isRevoked);
+          // then sort by expiry date
+          const unrevokedTokensSortedByExpiry = orderBy(unrevokedTokens, 'expiryDate', ['desc']);
+          // find most recent token that is not revoked and not expired, if it exists
+          const activeToken = unrevokedTokensSortedByExpiry.find((r: ApiToken) => {
+            const expiry = parseExpiry(r.expiryDate) || 0;
+            return expiry > 0;
+          });
+          // display either this activeToken, or the most recently expired non-revoked token
+          const tokenToDisplay = activeToken || unrevokedTokensSortedByExpiry[0];
+          if (tokenToDisplay) {
+            setExistingApiToken(tokenToDisplay);
           } else {
             setExistingApiToken(null);
           }
