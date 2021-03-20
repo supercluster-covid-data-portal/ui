@@ -193,7 +193,6 @@ const ApiTokenInfo = () => {
           const unrevokedTokens = json.resultSet.filter((r: ApiToken) => !r.isRevoked);
           // then sort by expiry date
           const unrevokedTokensSortedByExpiry = orderBy(unrevokedTokens, 'expiryDate', ['desc']);
-          console.log(unrevokedTokensSortedByExpiry);
           // find most recent token that is not revoked and not expired, if it exists
           const activeToken = unrevokedTokensSortedByExpiry.find((r: ApiToken) => {
             const expiry = parseExpiry(r.expiryDate) || 0;
