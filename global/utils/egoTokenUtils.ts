@@ -29,7 +29,38 @@ export const decodeToken: (egoJwt?: string) => EgoJwtData | null = memoize((egoJ
 
 export const extractUser: (decodedToken: EgoJwtData) => UserWithId | undefined = (decodedToken) => {
   if (decodedToken) {
-    return { ...decodedToken?.context.user, id: decodedToken?.sub };
+    return {
+      ...decodedToken?.context.user,
+      scope: decodedToken?.context.scope || [],
+      id: decodedToken?.sub,
+    };
   }
   return undefined;
+};
+
+export enum AccessLevel {
+  READ = 'READ',
+  WRITE = 'WRITE',
+  DENY = 'DENY',
+}
+
+export type ScopeObj = {
+  policy: string;
+  accessLevel: AccessLevel;
+};
+
+export const isAccessLevel = (str: any): str is AccessLevel =>
+  Object.values(AccessLevel).includes(str);
+
+export const parseScope = (scope: string): ScopeObj => {
+  const splitScope = scope.split('.');
+  const accessLevel = splitScope[1];
+  if (isAccessLevel(accessLevel)) {
+    return {
+      policy: splitScope[0],
+      accessLevel,
+    };
+  } else {
+    throw new Error(`invalid scope: ${scope}`);
+  }
 };

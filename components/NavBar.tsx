@@ -9,17 +9,30 @@ import useAuthContext from '../global/hooks/useAuthContext';
 import { StyledLinkAsButton, InternalLink as Link } from './Link';
 import { useTheme } from 'emotion-theming';
 import { EXPLORER_PATH, LOGIN_PATH, USER_PATH } from '../global/utils/constants';
+import { getConfig } from '../global/config';
 
-const NavBar: React.ComponentType<any> = ({ labName = 'Data Management System', labIcon }) => {
+const NavBar: React.ComponentType = () => {
   const { token } = useAuthContext();
   const router = useRouter();
   const theme: typeof defaultTheme = useTheme();
+
+  const { NEXT_PUBLIC_LAB_NAME, NEXT_PUBLIC_LOGO_FILENAME, NEXT_PUBLIC_BASE_PATH } = getConfig();
 
   const activeLinkStyle = `
     background-color: ${theme.colors.grey_2};
     color: ${theme.colors.accent2_dark};
   `;
 
+  const labIcon = NEXT_PUBLIC_LOGO_FILENAME ? (
+    <img
+      src={`${NEXT_PUBLIC_BASE_PATH}/static/dms_user_assets/${NEXT_PUBLIC_LOGO_FILENAME}`}
+      alt={NEXT_PUBLIC_LAB_NAME}
+      width={theme.dimensions.labIcon.width}
+      height={theme.dimensions.labIcon.height}
+    />
+  ) : (
+    <OvertureLogo width={theme.dimensions.labIcon.width} height={theme.dimensions.labIcon.height} />
+  );
   return (
     <div
       css={(theme: typeof defaultTheme) => css`
@@ -53,17 +66,14 @@ const NavBar: React.ComponentType<any> = ({ labName = 'Data Management System', 
               color: ${theme.colors.accent_dark};
             `}
           >
-            {labIcon || <OvertureLogo width={35} height={35} />}
-            {/* set to default until labname config is implemented */}
-            {labName && (
-              <span
-                css={css`
-                  padding-left: 10px;
-                `}
-              >
-                {labName}
-              </span>
-            )}
+            {labIcon}
+            <span
+              css={css`
+                padding-left: 10px;
+              `}
+            >
+              {NEXT_PUBLIC_LAB_NAME}
+            </span>
           </a>
         </Link>
       </div>

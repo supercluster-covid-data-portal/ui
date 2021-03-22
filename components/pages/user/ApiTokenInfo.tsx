@@ -1,20 +1,24 @@
 import { css, Global } from '@emotion/core';
 import styled from '@emotion/styled';
 import { useTheme } from 'emotion-theming';
-import { has, isEmpty } from 'lodash';
+import { has, isEmpty, orderBy } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { Tooltip } from 'react-tippy';
 
 import { parseExpiry, getDayValue } from '../../../global/utils/apiToken';
 import { getConfig } from '../../../global/config';
 import useAuthContext from '../../../global/hooks/useAuthContext';
-import { EGO_API_KEY_ENDPOINT } from '../../../global/utils/constants';
+import { EGO_API_KEY_ENDPOINT, GENERIC_API_ERROR_MESSAGE } from '../../../global/utils/constants';
 
 import Button from '../../Button';
 import StyledLink from '../../Link';
 
 import defaultTheme from '../../theme';
 import { Checkmark } from '../../theme/icons';
+import { AccessLevel, parseScope, ScopeObj } from '../../../global/utils/egoTokenUtils';
+import ErrorNotification from '../../ErrorNotification';
+
+import sleep from '../../utils/sleep';
 
 interface ApiToken {
   expiryDate: string;
@@ -51,20 +55,16 @@ const TooltipContainer = styled('div')`
   `}
 `;
 
-const sleep = (time: number = 2000) =>
-  new Promise((resolve) => {
-    setTimeout(() => {
-      resolve('');
-    }, time);
-  });
-
 const ApiTokenInfo = () => {
   const { user, token, fetchWithAuth } = useAuthContext();
   const [existingApiToken, setExistingApiToken] = useState<ApiToken | null>(null);
   const [isCopyingToken, setIsCopyingToken] = React.useState(false);
   const [copySuccess, setCopySuccess] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState<{ message: string } | null>(null);
   const theme: typeof defaultTheme = useTheme();
 
+  // still need to display any errors for the generate request, as permissions may have changed in between
+  // the time a user signed in and when they attempted to generate a token
   const generateApiToken = async () => {
     const { NEXT_PUBLIC_EGO_API_ROOT } = getConfig();
     if (user) {
@@ -74,32 +74,57 @@ const ApiTokenInfo = () => {
       )
         .then((res) => {
           if (res.status !== 200) {
-            throw new Error('Error fetching scopes, cannot generate api token.');
+            throw new Error(
+              `HTTP error ${res.status}: Error fetching current permissions. Your API token could not be generated. ${GENERIC_API_ERROR_MESSAGE}`,
+            );
           }
           return res.json();
         })
         .then((json) => json.scopes)
-        .catch((err) => console.warn(err));
+        .catch((err: Error) => {
+          setErrorMessage({ message: err.message });
+          console.warn(err);
+          return err;
+        });
 
-      if (scopesResult.length) {
-        return fetchWithAuth(
-          `${EGO_API_KEY_ENDPOINT}?scopes=${encodeURIComponent(scopesResult.join())}&user_id=${
-            user.id
-          }`,
-          { method: 'POST' },
-        )
+      const filteredScopes = Array.isArray(scopesResult)
+        ? scopesResult
+            .map((s: string) => parseScope(s))
+            .filter((s: ScopeObj) => s.accessLevel !== AccessLevel.DENY)
+        : [];
+
+      if (filteredScopes.length) {
+        const scopeParams = filteredScopes.map((f: ScopeObj) => `${f.policy}.${f.accessLevel}`);
+
+        const apiKeyUrl = new URL(EGO_API_KEY_ENDPOINT);
+        scopeParams.map((param) =>
+          apiKeyUrl.searchParams.append('scopes', encodeURIComponent(param)),
+        );
+        apiKeyUrl.searchParams.append('user_id', user.id);
+
+        return fetchWithAuth(apiKeyUrl.href, { method: 'POST' })
           .then((res) => {
             if (res.status !== 200) {
-              throw new Error('Failed to generate api token!');
+              throw new Error(
+                `HTTP error ${res.status}: Your API token could not be generated. ${GENERIC_API_ERROR_MESSAGE}`,
+              );
             }
             return res.json();
           })
           .then((newApiToken: ApiToken) => {
             setExistingApiToken(newApiToken);
+            setErrorMessage(null);
           })
-          .catch((err) => {
+          .catch((err: Error) => {
+            setErrorMessage({ message: err.message });
             return err;
           });
+      } else {
+        // request for apiToken is skipped if filteredScopes is empty
+        setErrorMessage({
+          message:
+            'You do not have permissions to generate an API token. Your permissions may have changed recently. Please contact the DMS administrator to gain the correct permissions.',
+        });
       }
     }
   };
@@ -107,14 +132,22 @@ const ApiTokenInfo = () => {
   const revokeApiToken = async () => {
     return (
       existingApiToken &&
-      fetchWithAuth(`${EGO_API_KEY_ENDPOINT}?apiKey=${existingApiToken.name}`, { method: 'DELETE' })
+      fetchWithAuth(`${EGO_API_KEY_ENDPOINT}?apiKey=${existingApiToken.name}`, {
+        method: 'DELETE',
+      })
         .then((res) => {
           if (res.status !== 200) {
-            throw new Error('Error revoking api token!');
+            throw new Error(
+              `HTTP error ${res.status}: Your API token could not be revoked. ${GENERIC_API_ERROR_MESSAGE}`,
+            );
           }
           setExistingApiToken(null);
+          setErrorMessage(null);
         })
-        .catch((err) => console.warn(err))
+        .catch((err: Error) => {
+          setErrorMessage({ message: err.message });
+          console.warn(err);
+        })
     );
   };
 
@@ -128,31 +161,65 @@ const ApiTokenInfo = () => {
         await sleep();
         setCopySuccess(false);
       })
-      .catch((err) => console.warn('Failed to copy token!'));
+      .catch((err) => {
+        console.warn('Failed to copy token! ', err);
+        setIsCopyingToken(false);
+      });
   };
 
   const parsedExpiry: number = existingApiToken ? parseExpiry(existingApiToken?.expiryDate) : 0;
   const tokenIsExpired: boolean = has(existingApiToken, 'expiryDate') && parsedExpiry <= 0;
 
   useEffect(() => {
-    user &&
-      fetchWithAuth(`${EGO_API_KEY_ENDPOINT}?user_id=${user.id}`, { method: 'GET' })
+    if (user) {
+      const fetchApiKeysUrl = new URL(EGO_API_KEY_ENDPOINT);
+      fetchApiKeysUrl.searchParams.append('sort', 'isRevoked');
+      // sort by asc will get isRevoked=false first
+      fetchApiKeysUrl.searchParams.append('sortOrder', 'ASC');
+      fetchApiKeysUrl.searchParams.append('user_id', user.id);
+      fetchApiKeysUrl.searchParams.append('limit', '1000');
+
+      fetchWithAuth(fetchApiKeysUrl.href, { method: 'GET' })
         .then((res) => {
           if (res.status !== 200) {
-            throw new Error();
+            throw new Error(
+              `HTTP error ${res.status}: Your existing API tokens could not be fetched. ${GENERIC_API_ERROR_MESSAGE}`,
+            );
           }
           return res.json();
         })
         .then((json) => {
-          const activeToken = json.resultSet.find((r: ApiToken) => !r.isRevoked);
-          if (activeToken) {
-            setExistingApiToken(activeToken);
+          // first find all non-revoked tokens
+          const unrevokedTokens = json.resultSet.filter((r: ApiToken) => !r.isRevoked);
+          // then sort by expiry date
+          const unrevokedTokensSortedByExpiry = orderBy(unrevokedTokens, 'expiryDate', ['desc']);
+          // find most recent token that is not revoked and not expired, if it exists
+          const activeToken = unrevokedTokensSortedByExpiry.find((r: ApiToken) => {
+            const expiry = parseExpiry(r.expiryDate) || 0;
+            return expiry > 0;
+          });
+          // display either this activeToken, or the most recently expired non-revoked token
+          const tokenToDisplay = activeToken || unrevokedTokensSortedByExpiry[0];
+          if (tokenToDisplay) {
+            setExistingApiToken(tokenToDisplay);
           } else {
             setExistingApiToken(null);
           }
         })
-        .catch((err) => console.warn('Could not get api tokens! ', err));
+        .catch((err: Error) => {
+          setErrorMessage({ message: err.message });
+          console.warn(err.message);
+        });
+    }
   }, [token]);
+
+  const userEffectiveScopes = (user?.scope || [])
+    .map((s) => parseScope(s))
+    .filter((s: ScopeObj) => {
+      return s.accessLevel !== AccessLevel.DENY;
+    });
+
+  const userHasScopes = userEffectiveScopes.length > 0;
 
   return (
     <div>
@@ -174,7 +241,7 @@ const ApiTokenInfo = () => {
             ${theme.typography.subheading};
             font-weight: normal;
             color: ${theme.colors.accent_dark};
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
           `
         }
       >
@@ -188,6 +255,46 @@ const ApiTokenInfo = () => {
       </ol>
       <div
         css={css`
+          margin-bottom: 1rem;
+          margin-top: 0.5rem;
+        `}
+      >
+        {!userHasScopes && (
+          <ErrorNotification title="Invalid Permissions" size="md">
+            You do not have permissions to generate an API token. Please contact the DMS
+            administrator to gain the correct permissions.
+          </ErrorNotification>
+        )}
+      </div>
+
+      {errorMessage && (
+        <div
+          css={css`
+            margin: 1.5rem 0;
+          `}
+        >
+          <ErrorNotification
+            size="sm"
+            css={(theme) => css`
+              background-color: ${theme.colors.error_1};
+              color: ${theme.colors.accent_dark};
+            `}
+            dismissible
+            onDismiss={() => setErrorMessage(null)}
+          >
+            <span
+              css={css`
+                font-size: 14px;
+                display: block;
+              `}
+            >
+              {errorMessage.message.toString()}
+            </span>
+          </ErrorNotification>
+        </div>
+      )}
+      <div
+        css={css`
           display: flex;
           flex-direction: row;
           margin-bottom: 10px;
@@ -199,6 +306,7 @@ const ApiTokenInfo = () => {
           `}
           onClick={() => generateApiToken()}
           isAsync
+          disabled={!userHasScopes}
         >
           Generate New Token
         </Button>
@@ -226,7 +334,7 @@ const ApiTokenInfo = () => {
           display: flex;
           flex-direction: row;
           justify-content: space-between;
-          margin-bottom: 2rem;
+          margin-bottom: 1rem;
           margin-top: 1rem;
           max-width: 600px;
         `}
@@ -337,19 +445,24 @@ const ApiTokenInfo = () => {
           </Tooltip>
         </>
       </div>
-
-      <span
-        css={(theme) =>
-          css`
-            ${theme.typography.subheading};
-            font-weight: normal;
-            color: ${theme.colors.accent_dark};
-          `
-        }
+      <div
+        css={css`
+          margin-top: 2rem;
+        `}
       >
-        For more information, please read the{' '}
-        <StyledLink href={``}>instructions on how to download data</StyledLink>.
-      </span>
+        <span
+          css={(theme) =>
+            css`
+              ${theme.typography.subheading};
+              font-weight: normal;
+              color: ${theme.colors.accent_dark};
+            `
+          }
+        >
+          For more information, please read the{' '}
+          <StyledLink href={``}>instructions on how to download data</StyledLink>.
+        </span>
+      </div>
     </div>
   );
 };

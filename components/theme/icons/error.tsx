@@ -6,8 +6,8 @@ const Error = ({ height, width, style }: IconProps) => {
     <svg
       css={css`
         ${style};
-        height: ${height};
-        width: ${width};
+        height: ${height}px;
+        width: ${width}px;
       `}
       width={width}
       height={height}
