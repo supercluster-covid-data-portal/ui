@@ -122,7 +122,7 @@ const LoginPage = () => {
   // check configured providers are valid ProviderTypes
   const providers: ProviderDetail[] = configuredProviders
     .filter((p: any) => Object.values(ProviderType).includes(p))
-    .map((provider: ProviderType) => providerMap[provider as ProviderType]);
+    .map((provider: string) => providerMap[provider as ProviderType]);
 
   return (
     <PageLayout subtitle="Login">
