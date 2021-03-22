@@ -116,12 +116,14 @@ const LoginPage = () => {
   const { NEXT_PUBLIC_SSO_PROVIDERS } = getConfig();
 
   const configuredProviders = NEXT_PUBLIC_SSO_PROVIDERS.length
-    ? NEXT_PUBLIC_SSO_PROVIDERS.split(',').map((p) => trim(p))
+    ? NEXT_PUBLIC_SSO_PROVIDERS.split(',').map((p: string) => trim(p))
     : [];
-  const providers: ProviderDetail[] = configuredProviders.map(
-    (provider) => providerMap[provider as ProviderType],
-  );
-  console.log(configuredProviders);
+  // typing p arg as 'any' because typescript complains with 'string'
+  // check configured providers are valid ProviderTypes
+  const providers: ProviderDetail[] = configuredProviders
+    .filter((p: any) => Object.values(ProviderType).includes(p))
+    .map((provider: ProviderType) => providerMap[provider as ProviderType]);
+
   return (
     <PageLayout subtitle="Login">
       <div
