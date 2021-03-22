@@ -13,6 +13,8 @@ import {
 
 import { IconProps } from '../../theme/icons/types';
 import { getConfig } from '../../../global/config';
+import { trim } from 'lodash';
+import ErrorNotification from '../../ErrorNotification';
 
 const LoginButton = ({
   Icon,
@@ -86,22 +88,42 @@ const LoginButton = ({
   );
 };
 
-type ProviderType = {
-  name: string;
+enum ProviderType {
+  GOOGLE = 'GOOGLE',
+  ORCID = 'ORCID',
+  LINKEDIN = 'LINKEDIN',
+  GITHUB = 'GITHUB',
+  // FACEBOOK = 'FACEBOOK'
+}
+
+type ProviderDetail = {
+  displayName: string;
   path: string;
   icon: any;
 };
+type ProviderMap = { [k in ProviderType]: ProviderDetail };
 
-const providers: ProviderType[] = [
-  { name: 'Google', path: 'google', icon: GoogleLogo },
-  { name: 'ORCiD', path: 'orcid', icon: OrcidLogo },
-  { name: 'GitHub', path: 'github', icon: GitHubLogo },
+const providerMap: ProviderMap = {
+  [ProviderType.GOOGLE]: { displayName: 'Google', path: 'google', icon: GoogleLogo },
+  [ProviderType.ORCID]: { displayName: 'ORCiD', path: 'orcid', icon: OrcidLogo },
+  [ProviderType.GITHUB]: { displayName: 'GitHub', path: 'github', icon: GitHubLogo },
+  [ProviderType.LINKEDIN]: { displayName: 'LinkedIn', path: 'linkedin', icon: LinkedInLogo },
   // Facebook will be hidden until provider implementation is fixed in Ego https://github.com/overture-stack/ego/issues/555
-  // { name: 'Facebook', path: '', icon: FacebookLogo },
-  { name: 'LinkedIn', path: 'linkedin', icon: LinkedInLogo },
-];
+  // [ProviderType.FACEBOOK]: { displayName: 'Facebook', path: '', icon: FacebookLogo },
+};
 
 const LoginPage = () => {
+  const { NEXT_PUBLIC_SSO_PROVIDERS } = getConfig();
+
+  const configuredProviders = NEXT_PUBLIC_SSO_PROVIDERS.length
+    ? NEXT_PUBLIC_SSO_PROVIDERS.split(',').map((p: string) => trim(p))
+    : [];
+  // typing p arg as 'any' because typescript complains with 'string'
+  // check configured providers are valid ProviderTypes
+  const providers: ProviderDetail[] = configuredProviders
+    .filter((p: any) => Object.values(ProviderType).includes(p))
+    .map((provider: ProviderType) => providerMap[provider as ProviderType]);
+
   return (
     <PageLayout subtitle="Login">
       <div
@@ -149,30 +171,43 @@ const LoginPage = () => {
             Please choose one of the following log in methods to access your API token for data
             download:
           </span>
-          <ul
-            css={css`
-              width: 400px;
-              max-height: 400px;
-              display: grid;
-              grid-template-columns: repeat(2, 1fr);
-              row-gap: 15px;
-              column-gap: 15px;
-              padding-inline-start: 0;
-            `}
-          >
-            {providers.map(({ name, icon, path }) => {
-              return (
-                <li
-                  key={name}
-                  css={css`
-                    list-style: none;
-                  `}
-                >
-                  <LoginButton Icon={icon} title={`Log in with ${name}`} path={path} />
-                </li>
-              );
-            })}
-          </ul>
+          {providers.length ? (
+            <ul
+              css={css`
+                width: 400px;
+                max-height: 400px;
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                row-gap: 15px;
+                column-gap: 15px;
+                padding-inline-start: 0;
+              `}
+            >
+              {providers.map(({ displayName, icon, path }) => {
+                return (
+                  <li
+                    key={displayName}
+                    css={css`
+                      list-style: none;
+                    `}
+                  >
+                    <LoginButton Icon={icon} title={`Log in with ${displayName}`} path={path} />
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <div
+              css={css`
+                height: 50px;
+                width: 400px;
+              `}
+            >
+              <ErrorNotification size="md" title="No Configured Providers">
+                No identity providers have been configured. Please check you dms configuration file.
+              </ErrorNotification>
+            </div>
+          )}
         </div>
         <div
           css={css`

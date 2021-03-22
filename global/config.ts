@@ -18,6 +18,7 @@ export const getConfig = () => {
     NEXT_PUBLIC_ADMIN_EMAIL: publicConfig.NEXT_PUBLIC_ADMIN_EMAIL,
     NEXT_PUBLIC_LAB_NAME: publicConfig.NEXT_PUBLIC_LAB_NAME || 'Data Management System',
     NEXT_PUBLIC_LOGO_FILENAME: publicConfig.NEXT_PUBLIC_LOGO_FILENAME,
+    NEXT_PUBLIC_SSO_PROVIDERS: publicConfig.NEXT_PUBLIC_SSO_PROVIDERS || '',
   } as {
     NEXT_PUBLIC_EGO_API_ROOT: string;
     NEXT_PUBLIC_EGO_CLIENT_ID: string;
@@ -31,5 +32,6 @@ export const getConfig = () => {
     NEXT_PUBLIC_ADMIN_EMAIL: string;
     NEXT_PUBLIC_LAB_NAME: string;
     NEXT_PUBLIC_LOGO_FILENAME: string;
+    NEXT_PUBLIC_SSO_PROVIDERS: string;
   };
 };
