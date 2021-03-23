@@ -12,7 +12,6 @@ type T_AuthContext = {
   logout: any;
   user?: UserWithId;
   fetchWithAuth: typeof fetch;
-  jwtExpired: boolean;
 };
 
 const AuthContext = createContext<T_AuthContext>({
@@ -20,7 +19,6 @@ const AuthContext = createContext<T_AuthContext>({
   logout: () => {},
   user: undefined,
   fetchWithAuth: fetch,
-  jwtExpired: false,
 });
 
 export const AuthProvider = ({
@@ -34,27 +32,27 @@ export const AuthProvider = ({
   // TODO: typing this state as `string` causes a compiler error. the same setup exists in argo but does not cause
   // a type issue. using `any` for now
   const [token, setTokenState] = useState<any>(egoJwt);
-  const [jwtExpired, setJwtExpired] = useState<boolean>(false);
   const removeToken = () => {
     localStorage.removeItem(EGO_JWT_KEY);
     setTokenState(null);
   };
 
-  const logout = ({ path = EXPLORER_PATH, params }: { path: string; params?: string }) => {
+  const logout = () => {
     removeToken();
-    router.push(getInternalLink({ path, params }));
+    router.push(getInternalLink({ path: EXPLORER_PATH }));
   };
 
-  const logoutToRoot = () => {
-    // router.push(`${LOGIN_PATH}?session_expired=true`, undefined, { shallow: true });
-    logout({ path: LOGIN_PATH, params: 'session_expired=true' });
-  };
-
-  if (!token && isValidJwt(egoJwt)) {
-    setTokenState(egoJwt);
-  } else if (token && !isValidJwt(token)) {
-    if (egoJwt && token === egoJwt) {
-      logoutToRoot();
+  if (!token) {
+    if (isValidJwt(egoJwt)) {
+      setTokenState(egoJwt);
+    }
+  } else {
+    if (!isValidJwt(token)) {
+      if (egoJwt && token === egoJwt) {
+        removeToken();
+      }
+    } else if (!egoJwt) {
+      setTokenState(null);
     }
   }
 
@@ -73,7 +71,6 @@ export const AuthProvider = ({
     logout,
     user,
     fetchWithAuth,
-    jwtExpired,
   };
 
   return <AuthContext.Provider value={authData}>{children}</AuthContext.Provider>;

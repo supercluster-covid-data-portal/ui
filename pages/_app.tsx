@@ -7,7 +7,6 @@ import { useEffect, useState } from 'react';
 import Router from 'next/router';
 import getInternalLink from '../global/utils/getInternalLink';
 import { isValidJwt } from '../global/utils/egoTokenUtils';
-import { has } from 'lodash';
 
 const DMSApp = ({
   Component,
@@ -23,11 +22,16 @@ const DMSApp = ({
     const egoJwt = localStorage.getItem(EGO_JWT_KEY) || undefined;
     if (isValidJwt(egoJwt)) {
       setInitialToken(egoJwt);
+    } else {
+      setInitialToken(undefined);
     }
-    if (!Component.isPublic && !egoJwt) {
-      if (!has(ctx.query, 'session_expired')) {
-        console.log('here');
-        Router.push(getInternalLink({ path: LOGIN_PATH }));
+
+    if (!Component.isPublic) {
+      if (!egoJwt || !isValidJwt(egoJwt)) {
+        Router.push({
+          pathname: getInternalLink({ path: LOGIN_PATH }),
+          query: { session_expired: true },
+        });
       }
     }
   });
