@@ -13,6 +13,11 @@ import {
 
 import { IconProps } from '../../theme/icons/types';
 import { getConfig } from '../../../global/config';
+import { useRouter } from 'next/router';
+import useAuthContext from '../../../global/hooks/useAuthContext';
+import ErrorNotification from '../../ErrorNotification';
+import { has } from 'lodash';
+import usePageContext from '../../../global/hooks/usePageContext';
 
 const LoginButton = ({
   Icon,
@@ -102,6 +107,7 @@ const providers: ProviderType[] = [
 ];
 
 const LoginPage = () => {
+  const { query } = usePageContext();
   return (
     <PageLayout subtitle="Login">
       <div
@@ -136,6 +142,18 @@ const LoginPage = () => {
           >
             Log in
           </h1>
+          {query.session_expired && (
+            <div
+              css={css`
+                height: 70px;
+                margin: 1rem 0;
+              `}
+            >
+              <ErrorNotification size="md" title="Session Expired">
+                Your session has expired. Please log in.
+              </ErrorNotification>
+            </div>
+          )}
           <span
             css={(theme) => css`
               display: block;

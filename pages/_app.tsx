@@ -6,25 +6,34 @@ import { PageWithConfig } from '../global/utils/pages/types';
 import { useEffect, useState } from 'react';
 import Router from 'next/router';
 import getInternalLink from '../global/utils/getInternalLink';
+import { isValidJwt } from '../global/utils/egoTokenUtils';
+import { has } from 'lodash';
 
 const DMSApp = ({
   Component,
   pageProps,
+  ctx,
 }: {
   Component: PageWithConfig;
   pageProps: { [k: string]: any };
+  ctx: any;
 }) => {
   const [initialToken, setInitialToken] = useState<string>();
   useEffect(() => {
     const egoJwt = localStorage.getItem(EGO_JWT_KEY) || undefined;
-    setInitialToken(egoJwt);
+    if (isValidJwt(egoJwt)) {
+      setInitialToken(egoJwt);
+    }
     if (!Component.isPublic && !egoJwt) {
-      Router.push(getInternalLink({ path: LOGIN_PATH }));
+      if (!has(ctx.query, 'session_expired')) {
+        console.log('here');
+        Router.push(getInternalLink({ path: LOGIN_PATH }));
+      }
     }
   });
 
   return (
-    <Root egoJwt={initialToken}>
+    <Root pageContext={ctx} egoJwt={initialToken}>
       <Component {...pageProps} />
     </Root>
   );
@@ -32,7 +41,6 @@ const DMSApp = ({
 
 DMSApp.getInitialProps = async ({ ctx, Component }: AppContext & { Component: PageWithConfig }) => {
   const pageProps = await Component.getInitialProps({ ...ctx });
-
   return {
     ctx: {
       pathname: ctx.pathname,
