@@ -14,9 +14,6 @@ import {
 import { IconProps } from '../../theme/icons/types';
 import { getConfig } from '../../../global/config';
 
-import { useRouter } from 'next/router';
-import useAuthContext from '../../../global/hooks/useAuthContext';
-import { has } from 'lodash';
 import usePageContext from '../../../global/hooks/usePageContext';
 import { trim } from 'lodash';
 import ErrorNotification from '../../ErrorNotification';
