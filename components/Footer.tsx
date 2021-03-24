@@ -5,6 +5,7 @@ import defaultTheme from './theme';
 import { OvertureLogoWithText } from './theme/icons';
 
 import StyledLink from './Link';
+import { DMS_HELP_URL, DMS_INSTALLATION_URL } from '../global/utils/constants';
 
 const Footer = () => {
   return (
@@ -30,7 +31,7 @@ const Footer = () => {
           ${theme.typography.subheading2};
           padding-right: 13px;
         `}
-        href="https://overture.bio/documentation/dms/user-guide/data-explorer"
+        href={DMS_HELP_URL}
         target="_blank"
       >
         Help
@@ -42,7 +43,7 @@ const Footer = () => {
           padding-left: 13px;
           padding-right: 5px;
         `}
-        href="https://overture.bio/documentation/dms/installation"
+        href={DMS_INSTALLATION_URL}
         target="_blank"
       >
         DMS
