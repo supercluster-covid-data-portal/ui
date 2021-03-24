@@ -30,8 +30,7 @@ const Footer = () => {
           ${theme.typography.subheading2};
           padding-right: 13px;
         `}
-        // TODO: broken link
-        href="https://overture.bio/Documentation/DMS/For-users/DataExplorer"
+        href="https://overture.bio/documentation/dms/user-guide/data-explorer"
         target="_blank"
       >
         Help
@@ -43,8 +42,7 @@ const Footer = () => {
           padding-left: 13px;
           padding-right: 5px;
         `}
-        // TODO: broken link
-        href="https://overture.bio/Documentation/DMS/For-admins/howtoinstalldms"
+        href="https://overture.bio/documentation/dms/installation"
         target="_blank"
       >
         DMS
