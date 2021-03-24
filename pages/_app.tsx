@@ -24,10 +24,8 @@ const DMSApp = ({
       setInitialToken(egoJwt);
     } else {
       setInitialToken(undefined);
-    }
-
-    if (!Component.isPublic) {
-      if (!egoJwt || !isValidJwt(egoJwt)) {
+      // redirect to logout when token is expired/missing only if user is on a non-public page
+      if (!Component.isPublic) {
         Router.push({
           pathname: getInternalLink({ path: LOGIN_PATH }),
           query: { session_expired: true },
