@@ -1,29 +1,14 @@
 import React from 'react';
 import { css } from '@emotion/core';
-import { capitalize } from 'lodash';
 import { useTheme } from 'emotion-theming';
 
-import { ProviderType } from '../../../global/types';
-
 import defaultTheme from '../../theme';
-import {
-  GoogleLogo,
-  FacebookLogo,
-  GitHubLogo,
-  OrcidLogo,
-  LinkedInLogo,
-  Checkmark,
-} from '../../theme/icons';
+import { Checkmark } from '../../theme/icons';
+import { ProviderType } from '../../../global/types';
+import providerMap from '../../../global/utils/providerTypeMap';
 
-const providerIcons: { [k in ProviderType]: React.ElementType } = {
-  GOOGLE: GoogleLogo,
-  GITHUB: GitHubLogo,
-  LINKEDIN: LinkedInLogo,
-  ORCID: OrcidLogo,
-};
-
-const AuthenticatedBadge = ({ provider }: { provider?: ProviderType }) => {
-  const IconComponent = provider ? providerIcons[provider] : null;
+const AuthenticatedBadge = ({ provider }: { provider: ProviderType }) => {
+  const IconComponent = providerMap[provider].icon;
   const theme: typeof defaultTheme = useTheme();
   return (
     <div
@@ -58,7 +43,7 @@ const AuthenticatedBadge = ({ provider }: { provider?: ProviderType }) => {
           color: ${theme.colors.accent_dark};
         `}
       >
-        Authenticated with {capitalize(provider)}
+        Authenticated with {providerMap[provider].displayName}
       </span>
       <Checkmark height={15} width={15} fill={theme.colors.primary} />
     </div>

@@ -31,7 +31,6 @@ export const AuthProvider = ({
   // TODO: typing this state as `string` causes a compiler error. the same setup exists in argo but does not cause
   // a type issue. using `any` for now
   const [token, setTokenState] = useState<any>(egoJwt);
-
   const removeToken = () => {
     localStorage.removeItem(EGO_JWT_KEY);
     setTokenState(null);
@@ -42,12 +41,18 @@ export const AuthProvider = ({
     router.push(getInternalLink({ path: EXPLORER_PATH }));
   };
 
-  if (token !== egoJwt) {
-    setTokenState(egoJwt);
-  }
-
-  if (token && !isValidJwt(token)) {
-    logout();
+  if (!token) {
+    if (isValidJwt(egoJwt)) {
+      setTokenState(egoJwt);
+    }
+  } else {
+    if (!isValidJwt(token)) {
+      if (egoJwt && token === egoJwt) {
+        removeToken();
+      }
+    } else if (!egoJwt) {
+      setTokenState(null);
+    }
   }
 
   const fetchWithAuth: T_AuthContext['fetchWithAuth'] = (url, options) => {
