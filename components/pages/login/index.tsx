@@ -14,7 +14,7 @@ import {
 import { IconProps } from '../../theme/icons/types';
 import { getConfig } from '../../../global/config';
 
-import usePageContext from '../../../global/hooks/usePageContext';
+import { usePageQuery } from '../../../global/hooks/usePageContext';
 import { trim } from 'lodash';
 import ErrorNotification from '../../ErrorNotification';
 
@@ -115,7 +115,7 @@ const providerMap: ProviderMap = {
 };
 
 const LoginPage = () => {
-  const { query } = usePageContext();
+  const query = usePageQuery();
   const { NEXT_PUBLIC_SSO_PROVIDERS } = getConfig();
 
   const configuredProviders = NEXT_PUBLIC_SSO_PROVIDERS.length
