@@ -13,6 +13,8 @@ import {
 
 import { IconProps } from '../../theme/icons/types';
 import { getConfig } from '../../../global/config';
+
+import { usePageQuery } from '../../../global/hooks/usePageContext';
 import { trim } from 'lodash';
 import ErrorNotification from '../../ErrorNotification';
 
@@ -113,6 +115,7 @@ const providerMap: ProviderMap = {
 };
 
 const LoginPage = () => {
+  const query = usePageQuery();
   const { NEXT_PUBLIC_SSO_PROVIDERS } = getConfig();
 
   const configuredProviders = NEXT_PUBLIC_SSO_PROVIDERS.length
@@ -158,6 +161,18 @@ const LoginPage = () => {
           >
             Log in
           </h1>
+          {query.session_expired && (
+            <div
+              css={css`
+                height: 70px;
+                margin: 1rem 0;
+              `}
+            >
+              <ErrorNotification size="md" title="Session Expired">
+                Your session has expired. Please log in.
+              </ErrorNotification>
+            </div>
+          )}
           <span
             css={(theme) => css`
               display: block;

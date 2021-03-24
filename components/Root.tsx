@@ -3,8 +3,18 @@ import { ThemeProvider } from 'emotion-theming';
 import defaultTheme from './theme';
 import Head from './Head';
 import { AuthProvider } from '../global/hooks/useAuthContext';
+import { PageContext } from '../global/hooks/usePageContext';
+import { ClientSideGetInitialPropsContext } from '../global/utils/pages/types';
 
-const Root = ({ children, egoJwt }: { children: React.ReactElement; egoJwt?: string }) => {
+const Root = ({
+  children,
+  egoJwt,
+  pageContext,
+}: {
+  children: React.ReactElement;
+  egoJwt?: string;
+  pageContext: ClientSideGetInitialPropsContext;
+}) => {
   return (
     <>
       <style>
@@ -28,7 +38,9 @@ const Root = ({ children, egoJwt }: { children: React.ReactElement; egoJwt?: str
       </style>
       <Head />
       <AuthProvider egoJwt={egoJwt}>
-        <ThemeProvider theme={defaultTheme}>{children}</ThemeProvider>
+        <PageContext.Provider value={pageContext}>
+          <ThemeProvider theme={defaultTheme}>{children}</ThemeProvider>
+        </PageContext.Provider>
       </AuthProvider>
     </>
   );
