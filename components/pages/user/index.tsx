@@ -62,14 +62,14 @@ const UserComponent = () => {
           justify-content: center;
         `}
       >
-        <FlexDiv
-          css={css`
-            flex-direction: column;
-            margin: 1rem 2rem;
-            width: 800px;
-          `}
-        >
-          {!isEmpty(user) && (
+        {user && (
+          <FlexDiv
+            css={css`
+              flex-direction: column;
+              margin: 1rem 2rem;
+              width: 800px;
+            `}
+          >
             <UserInfoContainer>
               <FlexDiv
                 css={css`
@@ -82,15 +82,15 @@ const UserComponent = () => {
                     margin-left: 1rem;
                   `}
                 >
-                  <UserTitle>{`${user?.firstName} ${user?.lastName}`}</UserTitle>
-                  <UserEmail>{user?.email || ''}</UserEmail>
+                  <UserTitle>{`${user.firstName} ${user.lastName}`}</UserTitle>
+                  <UserEmail>{user.email || ''}</UserEmail>
                 </div>
               </FlexDiv>
-              <AuthenticatedBadge provider={user?.providerType} />
+              <AuthenticatedBadge provider={user.providerType} />
             </UserInfoContainer>
-          )}
-          {!isEmpty(user) && <ApiTokenInfo />}
-        </FlexDiv>
+            <ApiTokenInfo />
+          </FlexDiv>
+        )}
       </FlexDiv>
     </StyledPageLayout>
   );
