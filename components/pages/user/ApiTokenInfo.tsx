@@ -8,7 +8,7 @@ import { Tooltip } from 'react-tippy';
 import { parseExpiry, getDayValue } from '../../../global/utils/apiToken';
 import { getConfig } from '../../../global/config';
 import useAuthContext from '../../../global/hooks/useAuthContext';
-import { EGO_API_KEY_ENDPOINT, GENERIC_API_ERROR_MESSAGE } from '../../../global/utils/constants';
+import { EGO_API_KEY_ENDPOINT } from '../../../global/utils/constants';
 
 import Button from '../../Button';
 import StyledLink from '../../Link';
@@ -19,6 +19,7 @@ import { AccessLevel, parseScope, ScopeObj } from '../../../global/utils/egoToke
 import ErrorNotification from '../../ErrorNotification';
 
 import sleep from '../../utils/sleep';
+import DMSAdminContact, { GenericHelpMessage } from '../../DMSAdminContact';
 
 interface ApiToken {
   expiryDate: string;
@@ -60,7 +61,7 @@ const ApiTokenInfo = () => {
   const [existingApiToken, setExistingApiToken] = useState<ApiToken | null>(null);
   const [isCopyingToken, setIsCopyingToken] = React.useState(false);
   const [copySuccess, setCopySuccess] = React.useState(false);
-  const [errorMessage, setErrorMessage] = React.useState<{ message: string } | null>(null);
+  const [errorMessage, setErrorMessage] = React.useState<string | React.ReactNode | null>(null);
   const theme: typeof defaultTheme = useTheme();
 
   // still need to display any errors for the generate request, as permissions may have changed in between
@@ -75,23 +76,26 @@ const ApiTokenInfo = () => {
         .then((res) => {
           if (res.status !== 200) {
             throw new Error(
-              `HTTP error ${res.status}: Error fetching current permissions. Your API token could not be generated. ${GENERIC_API_ERROR_MESSAGE}`,
+              `HTTP error ${res.status}: Error fetching current permissions. Your API token could not be generated. `,
             );
           }
           return res.json();
         })
         .then((json) => json.scopes)
         .catch((err: Error) => {
-          setErrorMessage({ message: err.message });
+          setErrorMessage(err.message);
           console.warn(err);
           return err;
         });
 
-      const filteredScopes = Array.isArray(scopesResult)
-        ? scopesResult
-            .map((s: string) => parseScope(s))
-            .filter((s: ScopeObj) => s.accessLevel !== AccessLevel.DENY)
-        : [];
+      // prevent api token request if scopes request fails
+      if (!Array.isArray(scopesResult)) {
+        return;
+      }
+
+      const filteredScopes = scopesResult
+        .map((s: string) => parseScope(s))
+        .filter((s: ScopeObj) => s.accessLevel !== AccessLevel.DENY);
 
       if (filteredScopes.length) {
         const scopeParams = filteredScopes.map((f: ScopeObj) => `${f.policy}.${f.accessLevel}`);
@@ -105,9 +109,7 @@ const ApiTokenInfo = () => {
         return fetchWithAuth(apiKeyUrl.href, { method: 'POST' })
           .then((res) => {
             if (res.status !== 200) {
-              throw new Error(
-                `HTTP error ${res.status}: Your API token could not be generated. ${GENERIC_API_ERROR_MESSAGE}`,
-              );
+              throw new Error(`HTTP error ${res.status}: Your API token could not be generated. `);
             }
             return res.json();
           })
@@ -116,15 +118,18 @@ const ApiTokenInfo = () => {
             setErrorMessage(null);
           })
           .catch((err: Error) => {
-            setErrorMessage({ message: err.message });
+            setErrorMessage(err.message);
             return err;
           });
       } else {
+        const messageSpan = (
+          <span>
+            You do not have permissions to generate an API token. Your permissions may have changed
+            recently. Please contact the <DMSAdminContact /> to gain the correct permissions.
+          </span>
+        );
         // request for apiToken is skipped if filteredScopes is empty
-        setErrorMessage({
-          message:
-            'You do not have permissions to generate an API token. Your permissions may have changed recently. Please contact the DMS administrator to gain the correct permissions.',
-        });
+        setErrorMessage(messageSpan);
       }
     }
   };
@@ -137,15 +142,13 @@ const ApiTokenInfo = () => {
       })
         .then((res) => {
           if (res.status !== 200) {
-            throw new Error(
-              `HTTP error ${res.status}: Your API token could not be revoked. ${GENERIC_API_ERROR_MESSAGE}`,
-            );
+            throw new Error(`HTTP error ${res.status}: Your API token could not be revoked. `);
           }
           setExistingApiToken(null);
           setErrorMessage(null);
         })
         .catch((err: Error) => {
-          setErrorMessage({ message: err.message });
+          setErrorMessage(err.message);
           console.warn(err);
         })
     );
@@ -183,7 +186,7 @@ const ApiTokenInfo = () => {
         .then((res) => {
           if (res.status !== 200) {
             throw new Error(
-              `HTTP error ${res.status}: Your existing API tokens could not be fetched. ${GENERIC_API_ERROR_MESSAGE}`,
+              `HTTP error ${res.status}: Your existing API tokens could not be fetched. `,
             );
           }
           return res.json();
@@ -207,7 +210,7 @@ const ApiTokenInfo = () => {
           }
         })
         .catch((err: Error) => {
-          setErrorMessage({ message: err.message });
+          setErrorMessage(err.message);
           console.warn(err.message);
         });
     }
@@ -261,8 +264,8 @@ const ApiTokenInfo = () => {
       >
         {!userHasScopes && (
           <ErrorNotification title="Invalid Permissions" size="md">
-            You do not have permissions to generate an API token. Please contact the DMS
-            administrator to gain the correct permissions.
+            You do not have permissions to generate an API token. Please contact the{' '}
+            <DMSAdminContact /> to gain the correct permissions.
           </ErrorNotification>
         )}
       </div>
@@ -288,7 +291,14 @@ const ApiTokenInfo = () => {
                 display: block;
               `}
             >
-              {errorMessage.message.toString()}
+              {typeof errorMessage === 'string' ? (
+                <span>
+                  {errorMessage}
+                  <GenericHelpMessage />
+                </span>
+              ) : (
+                errorMessage
+              )}
             </span>
           </ErrorNotification>
         </div>
