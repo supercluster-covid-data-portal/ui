@@ -1,15 +1,14 @@
 import React, { createContext, useState } from 'react';
-import Router, { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 
-import { EGO_JWT_KEY, EXPLORER_PATH, LOGIN_PATH } from '../utils/constants';
+import { EGO_JWT_KEY, EXPLORER_PATH } from '../utils/constants';
 import { decodeToken, extractUser, isValidJwt } from '../utils/egoTokenUtils';
 import { UserWithId } from '../../global/types';
 import getInternalLink from '../utils/getInternalLink';
 
 type T_AuthContext = {
   token?: string;
-  // logout: () => void;
-  logout: any;
+  logout: () => void;
   user?: UserWithId;
   fetchWithAuth: typeof fetch;
 };

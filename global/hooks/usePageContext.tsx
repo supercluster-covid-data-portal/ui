@@ -1,7 +1,6 @@
 import React from 'react';
 import { ClientSideGetInitialPropsContext } from '../utils/pages/types';
 
-import {} from '../types';
 export const PageContext = React.createContext<ClientSideGetInitialPropsContext>({
   pathname: '',
   query: {},
