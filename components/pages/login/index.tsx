@@ -140,7 +140,7 @@ const LoginPage = () => {
               `}
             >
               <ErrorNotification size="md" title="Session Expired">
-                Your session has expired. Please log in.
+                Your session has expired. Please log in again.
               </ErrorNotification>
             </div>
           )}

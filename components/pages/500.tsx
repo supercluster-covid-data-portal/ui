@@ -1,22 +1,13 @@
 import React from 'react';
-import ErrorNotification from '../ErrorNotification';
-import PageLayout from '../PageLayout';
+import DMSAdminContact from '../DMSAdminContact';
+import { ErrorPageLayout } from '../PageLayout';
 
 const Error500 = () => {
   return (
-    <PageLayout subtitle={`Error - 500`}>
-      <ErrorNotification
-        size="lg"
-        title="Something went wrong"
-        styles={`
-              flex-direction: column;
-              justify-content: center;
-              align-items: center;
-            `}
-      >
-        Sorry, something went wrong!
-      </ErrorNotification>
-    </PageLayout>
+    <ErrorPageLayout errorTitle="500: Server Error" subtitle="Error 500 - Server Error">
+      The page you requested could not be accessed due to a server error. If the problem persists,
+      please contact the <DMSAdminContact /> for help.
+    </ErrorPageLayout>
   );
 };
 

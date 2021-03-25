@@ -1,6 +1,6 @@
 import { get } from 'lodash';
 import React from 'react';
-import ErrorNotification from '../components/ErrorNotification';
+import ClientError from '../components/ClientError';
 
 import Error403 from '../components/pages/403';
 import Error404 from '../components/pages/404';
@@ -33,8 +33,7 @@ const Error = createPage({
     case 500:
       return <Error500 />;
     default:
-      // need generic client error page
-      return <div>There was an Error</div>;
+      return <ClientError />;
   }
 });
 
