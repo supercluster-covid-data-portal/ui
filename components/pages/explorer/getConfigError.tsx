@@ -7,6 +7,7 @@ import StyledLink from '../../Link';
 
 import { getConfig } from '../../../global/config';
 import { Project } from '.';
+import { GenericHelpMessage } from '../../DMSAdminContact';
 
 const ArrangerAdminUILink = () => {
   const { NEXT_PUBLIC_ARRANGER_ADMIN_UI } = getConfig();
@@ -84,7 +85,7 @@ const getConfigError = ({
           config.yaml
         </span>{' '}
         file during installation and have been used to create your project in the{' '}
-        <ArrangerAdminUILink />.
+        <ArrangerAdminUILink />. <GenericHelpMessage />
         <ul
           css={css`
             list-style-type: none;
@@ -119,7 +120,8 @@ const getConfigError = ({
         >
           config.yaml
         </span>{' '}
-        file during installation has been created in the <ArrangerAdminUILink />.
+        file during installation has been created in the <ArrangerAdminUILink />.{' '}
+        <GenericHelpMessage />
       </span>
     );
   }
@@ -147,7 +149,8 @@ const getConfigError = ({
         >
           config.yaml
         </span>{' '}
-        file during installation has been created in the <ArrangerAdminUILink />.
+        file during installation has been created in the <ArrangerAdminUILink />.{' '}
+        <GenericHelpMessage />
       </span>
     );
   }
@@ -191,7 +194,7 @@ const getConfigError = ({
           config.yaml
         </span>{' '}
         file during installation has been used to create your project in the <ArrangerAdminUILink />
-        .
+        . <GenericHelpMessage />
       </div>
     );
   }

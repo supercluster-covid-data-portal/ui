@@ -74,7 +74,10 @@ const getTitleStyle = (size: ErrorSize) =>
       font-size: 18px;
       line-height: 20px;
     `,
-    [ERROR_SIZES.SM]: '',
+    [ERROR_SIZES.SM]: `
+      margin: 0rem,
+      line-height: 16px;
+    `,
   }[size]);
 
 const ErrorTitle = styled('h1')`

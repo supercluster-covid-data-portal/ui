@@ -2,19 +2,16 @@ import { css } from '@emotion/core';
 import urlJoin from 'url-join';
 
 import PageLayout from '../../PageLayout';
-import {
-  GoogleLogo,
-  FacebookLogo,
-  GitHubLogo,
-  OrcidLogo,
-  LinkedInLogo,
-  Illustration,
-} from '../../theme/icons';
+import { Illustration } from '../../theme/icons';
 
 import { IconProps } from '../../theme/icons/types';
 import { getConfig } from '../../../global/config';
+
+import { usePageQuery } from '../../../global/hooks/usePageContext';
 import { trim } from 'lodash';
 import ErrorNotification from '../../ErrorNotification';
+import providerMap, { ProviderDetail } from '../../../global/utils/providerTypeMap';
+import { ProviderType } from '../../../global/types';
 
 const LoginButton = ({
   Icon,
@@ -88,31 +85,8 @@ const LoginButton = ({
   );
 };
 
-enum ProviderType {
-  GOOGLE = 'GOOGLE',
-  ORCID = 'ORCID',
-  LINKEDIN = 'LINKEDIN',
-  GITHUB = 'GITHUB',
-  // FACEBOOK = 'FACEBOOK'
-}
-
-type ProviderDetail = {
-  displayName: string;
-  path: string;
-  icon: any;
-};
-type ProviderMap = { [k in ProviderType]: ProviderDetail };
-
-const providerMap: ProviderMap = {
-  [ProviderType.GOOGLE]: { displayName: 'Google', path: 'google', icon: GoogleLogo },
-  [ProviderType.ORCID]: { displayName: 'ORCiD', path: 'orcid', icon: OrcidLogo },
-  [ProviderType.GITHUB]: { displayName: 'GitHub', path: 'github', icon: GitHubLogo },
-  [ProviderType.LINKEDIN]: { displayName: 'LinkedIn', path: 'linkedin', icon: LinkedInLogo },
-  // Facebook will be hidden until provider implementation is fixed in Ego https://github.com/overture-stack/ego/issues/555
-  // [ProviderType.FACEBOOK]: { displayName: 'Facebook', path: '', icon: FacebookLogo },
-};
-
 const LoginPage = () => {
+  const query = usePageQuery();
   const { NEXT_PUBLIC_SSO_PROVIDERS } = getConfig();
 
   const configuredProviders = NEXT_PUBLIC_SSO_PROVIDERS.length
@@ -158,6 +132,18 @@ const LoginPage = () => {
           >
             Log in
           </h1>
+          {query.session_expired && (
+            <div
+              css={css`
+                height: 70px;
+                margin: 1rem 0;
+              `}
+            >
+              <ErrorNotification size="md" title="Session Expired">
+                Your session has expired. Please log in again.
+              </ErrorNotification>
+            </div>
+          )}
           <span
             css={(theme) => css`
               display: block;
