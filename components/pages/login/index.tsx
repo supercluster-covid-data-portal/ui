@@ -2,17 +2,16 @@ import { css } from '@emotion/core';
 import urlJoin from 'url-join';
 
 import PageLayout from '../../PageLayout';
-import {
-  GoogleLogo,
-  FacebookLogo,
-  GitHubLogo,
-  OrcidLogo,
-  LinkedInLogo,
-  Illustration,
-} from '../../theme/icons';
+import { Illustration } from '../../theme/icons';
 
 import { IconProps } from '../../theme/icons/types';
 import { getConfig } from '../../../global/config';
+
+import { usePageQuery } from '../../../global/hooks/usePageContext';
+import { trim } from 'lodash';
+import ErrorNotification from '../../ErrorNotification';
+import providerMap, { ProviderDetail } from '../../../global/utils/providerTypeMap';
+import { ProviderType } from '../../../global/types';
 
 const LoginButton = ({
   Icon,
@@ -86,22 +85,19 @@ const LoginButton = ({
   );
 };
 
-type ProviderType = {
-  name: string;
-  path: string;
-  icon: any;
-};
-
-const providers: ProviderType[] = [
-  { name: 'Google', path: 'google', icon: GoogleLogo },
-  { name: 'ORCiD', path: 'orcid', icon: OrcidLogo },
-  { name: 'GitHub', path: 'github', icon: GitHubLogo },
-  // Facebook will be hidden until provider implementation is fixed in Ego https://github.com/overture-stack/ego/issues/555
-  // { name: 'Facebook', path: '', icon: FacebookLogo },
-  { name: 'LinkedIn', path: 'linkedin', icon: LinkedInLogo },
-];
-
 const LoginPage = () => {
+  const query = usePageQuery();
+  const { NEXT_PUBLIC_SSO_PROVIDERS } = getConfig();
+
+  const configuredProviders = NEXT_PUBLIC_SSO_PROVIDERS.length
+    ? NEXT_PUBLIC_SSO_PROVIDERS.split(',').map((p: string) => trim(p))
+    : [];
+  // typing p arg as 'any' because typescript complains with 'string'
+  // check configured providers are valid ProviderTypes
+  const providers: ProviderDetail[] = configuredProviders
+    .filter((p: any) => Object.values(ProviderType).includes(p))
+    .map((provider: string) => providerMap[provider as ProviderType]);
+
   return (
     <PageLayout subtitle="Login">
       <div
@@ -136,6 +132,18 @@ const LoginPage = () => {
           >
             Log in
           </h1>
+          {query.session_expired && (
+            <div
+              css={css`
+                height: 70px;
+                margin: 1rem 0;
+              `}
+            >
+              <ErrorNotification size="md" title="Session Expired">
+                Your session has expired. Please log in.
+              </ErrorNotification>
+            </div>
+          )}
           <span
             css={(theme) => css`
               display: block;
@@ -149,30 +157,43 @@ const LoginPage = () => {
             Please choose one of the following log in methods to access your API token for data
             download:
           </span>
-          <ul
-            css={css`
-              width: 400px;
-              max-height: 400px;
-              display: grid;
-              grid-template-columns: repeat(2, 1fr);
-              row-gap: 15px;
-              column-gap: 15px;
-              padding-inline-start: 0;
-            `}
-          >
-            {providers.map(({ name, icon, path }) => {
-              return (
-                <li
-                  key={name}
-                  css={css`
-                    list-style: none;
-                  `}
-                >
-                  <LoginButton Icon={icon} title={`Log in with ${name}`} path={path} />
-                </li>
-              );
-            })}
-          </ul>
+          {providers.length ? (
+            <ul
+              css={css`
+                width: 400px;
+                max-height: 400px;
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                row-gap: 15px;
+                column-gap: 15px;
+                padding-inline-start: 0;
+              `}
+            >
+              {providers.map(({ displayName, icon, path }) => {
+                return (
+                  <li
+                    key={displayName}
+                    css={css`
+                      list-style: none;
+                    `}
+                  >
+                    <LoginButton Icon={icon} title={`Log in with ${displayName}`} path={path} />
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <div
+              css={css`
+                height: 50px;
+                width: 400px;
+              `}
+            >
+              <ErrorNotification size="md" title="No Configured Providers">
+                No identity providers have been configured. Please check you dms configuration file.
+              </ErrorNotification>
+            </div>
+          )}
         </div>
         <div
           css={css`
