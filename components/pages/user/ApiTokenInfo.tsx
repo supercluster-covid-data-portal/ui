@@ -8,7 +8,7 @@ import { Tooltip } from 'react-tippy';
 import { parseExpiry, getDayValue } from '../../../global/utils/apiToken';
 import { getConfig } from '../../../global/config';
 import useAuthContext from '../../../global/hooks/useAuthContext';
-import { EGO_API_KEY_ENDPOINT, GENERIC_API_ERROR_MESSAGE } from '../../../global/utils/constants';
+import { EGO_API_KEY_ENDPOINT } from '../../../global/utils/constants';
 
 import Button from '../../Button';
 import StyledLink from '../../Link';
@@ -19,6 +19,7 @@ import { AccessLevel, parseScope, ScopeObj } from '../../../global/utils/egoToke
 import ErrorNotification from '../../ErrorNotification';
 
 import sleep from '../../utils/sleep';
+import DMSAdminContact, { GenericHelpMessage } from '../../DMSAdminContact';
 
 interface ApiToken {
   expiryDate: string;
@@ -55,12 +56,72 @@ const TooltipContainer = styled('div')`
   `}
 `;
 
+enum ApiTokenErrorType {
+  SCOPES_ERROR = 'scopes_error',
+  GENERATE_TOKEN_ERROR = 'generate_token_error',
+  REVOKE_TOKEN_ERROR = 'revoke_token_error',
+  FETCH_TOKENS_ERROR = 'fetch_tokens_error',
+  NO_VALID_PERMISSIONS_ERROR = 'no_valid_permissions_error',
+}
+
+type ErrorResponse = {
+  type: ApiTokenErrorType;
+  statusCode?: number;
+};
+
+const WithGenericHelpMessage = ({ requestError }: { requestError: string }) => {
+  return (
+    <span>
+      {requestError}
+      <GenericHelpMessage />
+    </span>
+  );
+};
+
+const getErrorMessage = ({ type, statusCode }: ErrorResponse) => {
+  switch (type) {
+    case ApiTokenErrorType.SCOPES_ERROR:
+      return (
+        <WithGenericHelpMessage
+          requestError={`HTTP error ${statusCode}: Error fetching current permissions. Your API token could not be generated. `}
+        />
+      );
+    case ApiTokenErrorType.GENERATE_TOKEN_ERROR:
+      return (
+        <WithGenericHelpMessage
+          requestError={`HTTP error ${statusCode}: Your API token could not be generated. `}
+        />
+      );
+    case ApiTokenErrorType.REVOKE_TOKEN_ERROR:
+      return (
+        <WithGenericHelpMessage
+          requestError={`HTTP error ${statusCode}: Your API token could not be revoked. `}
+        />
+      );
+    case ApiTokenErrorType.FETCH_TOKENS_ERROR:
+      return (
+        <WithGenericHelpMessage
+          requestError={`HTTP error ${statusCode}: Your existing API tokens could not be fetched. `}
+        />
+      );
+    case ApiTokenErrorType.NO_VALID_PERMISSIONS_ERROR:
+      return (
+        <span>
+          You do not have permissions to generate an API token. Your permissions may have changed
+          recently. Please contact the <DMSAdminContact /> to gain the correct permissions.
+        </span>
+      );
+    default:
+      return <WithGenericHelpMessage requestError={`Your request could not be completed. `} />;
+  }
+};
+
 const ApiTokenInfo = () => {
   const { user, token, fetchWithAuth } = useAuthContext();
   const [existingApiToken, setExistingApiToken] = useState<ApiToken | null>(null);
   const [isCopyingToken, setIsCopyingToken] = React.useState(false);
   const [copySuccess, setCopySuccess] = React.useState(false);
-  const [errorMessage, setErrorMessage] = React.useState<{ message: string } | null>(null);
+  const [requestError, setRequestError] = React.useState<ErrorResponse | null>(null);
   const theme: typeof defaultTheme = useTheme();
 
   // still need to display any errors for the generate request, as permissions may have changed in between
@@ -74,24 +135,25 @@ const ApiTokenInfo = () => {
       )
         .then((res) => {
           if (res.status !== 200) {
-            throw new Error(
-              `HTTP error ${res.status}: Error fetching current permissions. Your API token could not be generated. ${GENERIC_API_ERROR_MESSAGE}`,
-            );
+            setRequestError({ type: ApiTokenErrorType.SCOPES_ERROR, statusCode: res.status });
+            throw new Error(`${res.status}: ${ApiTokenErrorType.SCOPES_ERROR}`);
           }
           return res.json();
         })
         .then((json) => json.scopes)
         .catch((err: Error) => {
-          setErrorMessage({ message: err.message });
           console.warn(err);
           return err;
         });
 
-      const filteredScopes = Array.isArray(scopesResult)
-        ? scopesResult
-            .map((s: string) => parseScope(s))
-            .filter((s: ScopeObj) => s.accessLevel !== AccessLevel.DENY)
-        : [];
+      // prevent api token request if scopes request fails
+      if (!Array.isArray(scopesResult)) {
+        return;
+      }
+
+      const filteredScopes = scopesResult
+        .map((s: string) => parseScope(s))
+        .filter((s: ScopeObj) => s.accessLevel !== AccessLevel.DENY);
 
       if (filteredScopes.length) {
         const scopeParams = filteredScopes.map((f: ScopeObj) => `${f.policy}.${f.accessLevel}`);
@@ -105,26 +167,25 @@ const ApiTokenInfo = () => {
         return fetchWithAuth(apiKeyUrl.href, { method: 'POST' })
           .then((res) => {
             if (res.status !== 200) {
-              throw new Error(
-                `HTTP error ${res.status}: Your API token could not be generated. ${GENERIC_API_ERROR_MESSAGE}`,
-              );
+              setRequestError({
+                type: ApiTokenErrorType.GENERATE_TOKEN_ERROR,
+                statusCode: res.status,
+              });
+              throw new Error(`${res.status}: ${ApiTokenErrorType.GENERATE_TOKEN_ERROR}`);
             }
             return res.json();
           })
           .then((newApiToken: ApiToken) => {
             setExistingApiToken(newApiToken);
-            setErrorMessage(null);
+            setRequestError(null);
           })
           .catch((err: Error) => {
-            setErrorMessage({ message: err.message });
+            console.warn(err.message);
             return err;
           });
       } else {
         // request for apiToken is skipped if filteredScopes is empty
-        setErrorMessage({
-          message:
-            'You do not have permissions to generate an API token. Your permissions may have changed recently. Please contact the DMS administrator to gain the correct permissions.',
-        });
+        setRequestError({ type: ApiTokenErrorType.NO_VALID_PERMISSIONS_ERROR });
       }
     }
   };
@@ -137,15 +198,13 @@ const ApiTokenInfo = () => {
       })
         .then((res) => {
           if (res.status !== 200) {
-            throw new Error(
-              `HTTP error ${res.status}: Your API token could not be revoked. ${GENERIC_API_ERROR_MESSAGE}`,
-            );
+            setRequestError({ type: ApiTokenErrorType.REVOKE_TOKEN_ERROR, statusCode: res.status });
+            throw new Error(`${res.status}: ${ApiTokenErrorType.REVOKE_TOKEN_ERROR}`);
           }
           setExistingApiToken(null);
-          setErrorMessage(null);
+          setRequestError(null);
         })
         .catch((err: Error) => {
-          setErrorMessage({ message: err.message });
           console.warn(err);
         })
     );
@@ -182,13 +241,13 @@ const ApiTokenInfo = () => {
       fetchWithAuth(fetchApiKeysUrl.href, { method: 'GET' })
         .then((res) => {
           if (res.status !== 200) {
-            throw new Error(
-              `HTTP error ${res.status}: Your existing API tokens could not be fetched. ${GENERIC_API_ERROR_MESSAGE}`,
-            );
+            setRequestError({ type: ApiTokenErrorType.FETCH_TOKENS_ERROR, statusCode: res.status });
+            throw new Error(`${res.status}: ${ApiTokenErrorType.FETCH_TOKENS_ERROR}`);
           }
           return res.json();
         })
         .then((json) => {
+          setRequestError(null);
           // first find all non-revoked tokens
           const unrevokedTokens = json.resultSet.filter((r: ApiToken) => !r.isRevoked);
           // then sort by expiry date
@@ -207,7 +266,6 @@ const ApiTokenInfo = () => {
           }
         })
         .catch((err: Error) => {
-          setErrorMessage({ message: err.message });
           console.warn(err.message);
         });
     }
@@ -261,13 +319,12 @@ const ApiTokenInfo = () => {
       >
         {!userHasScopes && (
           <ErrorNotification title="Invalid Permissions" size="md">
-            You do not have permissions to generate an API token. Please contact the DMS
-            administrator to gain the correct permissions.
+            You do not have permissions to generate an API token. Please contact the{' '}
+            <DMSAdminContact /> to gain the correct permissions.
           </ErrorNotification>
         )}
       </div>
-
-      {errorMessage && (
+      {requestError?.type && (
         <div
           css={css`
             margin: 1.5rem 0;
@@ -280,7 +337,7 @@ const ApiTokenInfo = () => {
               color: ${theme.colors.accent_dark};
             `}
             dismissible
-            onDismiss={() => setErrorMessage(null)}
+            onDismiss={() => setRequestError(null)}
           >
             <span
               css={css`
@@ -288,7 +345,7 @@ const ApiTokenInfo = () => {
                 display: block;
               `}
             >
-              {errorMessage.message.toString()}
+              {getErrorMessage(requestError)}
             </span>
           </ErrorNotification>
         </div>
