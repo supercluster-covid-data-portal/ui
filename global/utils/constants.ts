@@ -15,6 +15,3 @@ export const LOGIN_PATH = '/login';
 const OVERTURE_DMS_DOCS_ROOT = 'https://overture.bio/documentation/dms/';
 export const DMS_HELP_URL = urlJoin(OVERTURE_DMS_DOCS_ROOT, 'user-guide/data-explorer');
 export const DMS_INSTALLATION_URL = urlJoin(OVERTURE_DMS_DOCS_ROOT, 'installation');
-
-export const GENERIC_API_ERROR_MESSAGE =
-  'Please try again.  If the problem persists, please contact the DMS administrator for help troubleshooting the issue.';
