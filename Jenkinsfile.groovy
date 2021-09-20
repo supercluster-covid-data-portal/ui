@@ -1,4 +1,5 @@
 def dockerHubRepo = "overture/dms-ui"
+def gitHubRegistry = "ghcr.io"
 def githubRepo = "overture-stack/dms-ui"
 def commit = "UNKNOWN"
 def version = "UNKNOWN"
@@ -80,6 +81,24 @@ spec:
 					sh "docker build --network=host -f Dockerfile . -t ${dockerHubRepo}:${version}-${commit} -t ${dockerHubRepo}:edge"
 					sh "docker push ${dockerHubRepo}:${version}-${commit}"
 					sh "docker push ${dockerHubRepo}:edge"
+				}
+			}
+		}
+
+		stage('Build arranger rewrite images') {
+			when {
+				anyOf {
+					branch 'arranger-rewrite'
+				}
+			}
+			steps {
+				container('docker') {
+					withCredentials([usernamePassword(credentialsId:'OvertureDockerHub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+						sh "docker login ${gitHubRegistry} -u $USERNAME -p $PASSWORD"
+					}
+					// DNS error if --network is default
+					sh "docker build --network=host -f Dockerfile . -t ${gitHubRegistry}/${gitHubRepo}:arranger-rewrite"
+					sh "docker push ${gitHubRegistry}/${gitHubRepo}:arranger-rewrite"
 				}
 			}
 		}
