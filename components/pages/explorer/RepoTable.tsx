@@ -30,7 +30,7 @@ import defaultTheme from '../../theme';
 import { getConfig } from '../../../global/config';
 
 const Table = dynamic(
-  () => import('@arranger/components/dist/Arranger').then((comp) => comp.Table),
+  () => import('@caravinci/arranger-components/dist/Arranger').then((comp) => comp.Table),
   { ssr: false },
 ) as any;
 

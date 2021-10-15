@@ -27,7 +27,7 @@ import defaultTheme from '../../theme';
 import { PageContentProps } from '.';
 
 const CurrentSQON = dynamic(
-  import('@arranger/components/dist/Arranger').then((comp) => comp.CurrentSQON),
+  import('@caravinci/arranger-components/dist/Arranger').then((comp) => comp.CurrentSQON),
   { ssr: false },
 ) as any;
 

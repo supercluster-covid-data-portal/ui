@@ -1,6 +1,6 @@
 def dockerHubRepo = "overture/dms-ui"
 def gitHubRegistry = "ghcr.io"
-def githubRepo = "overture-stack/dms-ui"
+def gitHubRepo = "overture-stack/dms-ui"
 def commit = "UNKNOWN"
 def version = "UNKNOWN"
 
@@ -93,11 +93,12 @@ spec:
 			}
 			steps {
 				container('docker') {
-					withCredentials([usernamePassword(credentialsId:'OvertureDockerHub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+					withCredentials([usernamePassword(credentialsId:'OvertureBioGithub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
 						sh "docker login ${gitHubRegistry} -u $USERNAME -p $PASSWORD"
 					}
 					// DNS error if --network is default
-					sh "docker build --network=host -f Dockerfile . -t ${gitHubRegistry}/${gitHubRepo}:arranger-rewrite"
+					sh "docker build --network=host -f Dockerfile . -t ${gitHubRegistry}/${gitHubRepo}:arranger-rewrite -t ${gitHubRegistry}/${gitHubRepo}:arranger-rewrite-${commit}"
+					sh "docker push ${gitHubRegistry}/${gitHubRepo}:arranger-rewrite-${commit}"
 					sh "docker push ${gitHubRegistry}/${gitHubRepo}:arranger-rewrite"
 				}
 			}
@@ -113,7 +114,7 @@ spec:
 				container('docker') {
 					withCredentials([usernamePassword(credentialsId: 'OvertureBioGithub', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
 						sh "git tag ${version}"
-						sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${githubRepo} --tags"
+						sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${gitHubRepo} --tags"
 					}
 					withCredentials([usernamePassword(credentialsId:'OvertureDockerHub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
 						sh 'docker login -u $USERNAME -p $PASSWORD'

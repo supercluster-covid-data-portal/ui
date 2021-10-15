@@ -36,7 +36,7 @@ import { css } from '@emotion/core';
 import sleep from '../../utils/sleep';
 
 const Arranger = dynamic(
-  () => import('@arranger/components/dist/Arranger').then((comp) => comp.Arranger),
+  () => import('@caravinci/arranger-components/dist/Arranger').then((comp) => comp.Arranger),
   { ssr: false },
 ) as any;
 
@@ -104,7 +104,6 @@ const RepositoryPage = () => {
         await sleep(1000);
         setLoadingArrangerConfig(false);
       });
-    setLoadingArrangerConfig(false);
   }, []);
 
   const ConfigError = getConfigError({
