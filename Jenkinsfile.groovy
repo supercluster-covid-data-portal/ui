@@ -76,12 +76,12 @@ spec:
       }
       steps {
         container('docker') {
-          withCredentials([usernamePassword(credentialsId:'argoContainers', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-            sh 'docker login ghcr.io -u $USERNAME -p $PASSWORD'
+          withCredentials([usernamePassword(credentialsId:'argoContainers', usernameVariable: 'GITHUB_APP', passwordVariable: 'GITHUB_ACCESS_TOKEN', )]) {
+            sh 'echo $GITHUB_ACCESS_TOKEN | docker login ghcr.io -u $GITHUB_APP --password-stdin'
           }
-          sh "docker build --network=host -f Dockerfile . -t ${gitHubRegistry}/${gitHubRepo}:${commit} -t ${gitHubRegistry}/${gitHubRepo}:edge"
-          sh "docker push ${gitHubRegistry}/${gitHubRepo}:${commit}"
-          sh "docker push ${gitHubRegistry}/${gitHubRepo}:edge"
+          sh "docker build --network=host -f Dockerfile . -t ${githubRegistry}/${githubRepo}:${commit} -t ${githubRegistry}/${githubRepo}:edge"
+          sh "docker push ${githubRegistry}/${githubRepo}:${commit}"
+          sh "docker push ${githubRegistry}/${githubRepo}:edge"
         }
       }
     }
@@ -107,16 +107,16 @@ spec:
       }
       steps {
         container('docker') {
-          withCredentials([usernamePassword(credentialsId: 'argoGithub', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+          withCredentials([usernamePassword(credentialsId: 'supercluster-jenkins', passwordVariable: 'GITHUB_ACCESS_TOKEN', usernameVariable: 'GITHUB_APP')]) {
             sh "git tag ${version}"
             sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${githubRepo} --tags"
           }
-          withCredentials([usernamePassword(credentialsId:'argoContainers', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-            sh 'docker login ghcr.io -u $USERNAME -p $PASSWORD'
+          withCredentials([usernamePassword(credentialsId:'argoContainers', passwordVariable: 'GITHUB_ACCESS_TOKEN', usernameVariable: 'GITHUB_APP', )]) {
+            sh 'echo $GITHUB_ACCESS_TOKEN | docker login ghcr.io -u $GITHUB_APP --password-stdin'
           }
-          sh "docker build --network=host -f Dockerfile . -t ${gitHubRegistry}/${gitHubRepo}:${version} -t ${gitHubRegistry}/${gitHubRepo}:latest"
-          sh "docker push ${gitHubRegistry}/${gitHubRepo}:${version}"
-          sh "docker push ${gitHubRegistry}/${gitHubRepo}:latest"
+          sh "docker build --network=host -f Dockerfile . -t ${githubRegistry}/${githubRepo}:${version} -t ${githubRegistry}/${githubRepo}:latest"
+          sh "docker push ${githubRegistry}/${githubRepo}:${version}"
+          sh "docker push ${githubRegistry}/${githubRepo}:latest"
         }
       }
     }
