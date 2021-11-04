@@ -231,7 +231,7 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
 
 const RepoTable = (props: PageContentProps) => {
   const theme: typeof defaultTheme = useTheme();
-  const { NEXT_PUBLIC_ARRANGER_API, NEXT_PUBLIC_ARRANGER_MANIFEST_COLUMNS } = getConfig();
+  const { NEXT_PUBLIC_ARRANGER_MANIFEST_COLUMNS } = getConfig();
   const manifestColumns = NEXT_PUBLIC_ARRANGER_MANIFEST_COLUMNS.split(',')
     .filter((field) => field.trim()) // break it into arrays, and ensure there's no empty field names
     .map((fieldName) => fieldName.replace(/['"]+/g, '').trim());
@@ -279,7 +279,7 @@ const RepoTable = (props: PageContentProps) => {
         showFilterInput={false}
         columnDropdownText={'Columns'}
         exporter={customExporters}
-        downloadUrl={urlJoin(NEXT_PUBLIC_ARRANGER_API, 'download')}
+        downloadUrl={urlJoin('api', 'download')}
       />
     </div>
   );
