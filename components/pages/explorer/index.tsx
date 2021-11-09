@@ -69,12 +69,16 @@ const configsQuery = `
 `;
 
 const RepositoryPage = () => {
-  const { NEXT_PUBLIC_ARRANGER_GRAPHQL_FIELD, NEXT_PUBLIC_ARRANGER_INDEX } = getConfig();
+  const {
+    NEXT_PUBLIC_ARRANGER_API_URL,
+    NEXT_PUBLIC_ARRANGER_GRAPHQL_FIELD,
+    NEXT_PUBLIC_ARRANGER_INDEX,
+  } = getConfig();
   const [arrangerHasConfig, setArrangerHasConfig] = useState<boolean>(false);
   const [loadingArrangerConfig, setLoadingArrangerConfig] = useState<boolean>(true);
 
   useEffect(() => {
-    fetch(urlJoin('api', 'graphql'), {
+    fetch(urlJoin(NEXT_PUBLIC_ARRANGER_API_URL, 'api', 'graphql'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

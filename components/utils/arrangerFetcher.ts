@@ -23,10 +23,15 @@ import urlJoin from 'url-join';
 import { getConfig } from '../../global/config';
 import ajax from './ajax';
 
-const createArrangerFetcher =
-  ({ onError = (err: any) => Promise.reject(err), defaultHeaders = {} } = {}) =>
-  ({ method = 'post', body = {}, headers = {} }) => {
-    const uri = urlJoin('api', 'graphql');
+const createArrangerFetcher = ({
+  onError = (err: any) => Promise.reject(err),
+  defaultHeaders = {},
+} = {}) => {
+  const { NEXT_PUBLIC_ARRANGER_API_URL } = getConfig();
+
+  return ({ method = 'post', body = {}, headers = {} }) => {
+    const uri = urlJoin(NEXT_PUBLIC_ARRANGER_API_URL, 'api', 'graphql');
+
     return ajax
       .post(uri, body, {
         headers: {
@@ -42,5 +47,6 @@ const createArrangerFetcher =
         return onError(err);
       });
   };
+};
 
 export default createArrangerFetcher;
