@@ -22,7 +22,8 @@ module.exports = withCSS({
     return [
       {
         source: '/api/:path*',
-        destination: `${process.env.NEXT_PUBLIC_ARRANGER_API_URL || ''}/api/:path*`, // Proxy to Backend
+        destination: `https://api.dev.supercluster.cancercollaboratory.org/api/:path*`, // Proxy to Backend
+        // destination: `${process.env.NEXT_PUBLIC_ARRANGER_API_URL || ''}/api/:path*`, // Proxy to Backend
       },
     ];
   },
