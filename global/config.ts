@@ -29,6 +29,7 @@ export const getConfig = () => {
     NEXT_PUBLIC_AUTH_CLIENT_ID: publicConfig.NEXT_PUBLIC_AUTH_CLIENT_ID,
     NEXT_PUBLIC_AUTH_REDIRECT_URI:
       publicConfig.NEXT_PUBLIC_AUTH_REDIRECT_URI || 'http://localhost:3000',
+    NEXT_PUBLIC_AUTH_SCOPES: publicConfig.NEXT_PUBLIC_AUTH_SCOPES || 'openid',
     NEXT_PUBLIC_ARRANGER_API_URL:
       publicConfig.NEXT_PUBLIC_ARRANGER_API_URL || 'http://localhost:8080/api',
     NEXT_PUBLIC_ARRANGER_PROJECT_ID: publicConfig.NEXT_PUBLIC_ARRANGER_PROJECT_ID || '',
@@ -45,6 +46,7 @@ export const getConfig = () => {
     NEXT_PUBLIC_AUTH_API_ROOT: string;
     NEXT_PUBLIC_AUTH_CLIENT_ID: string;
     NEXT_PUBLIC_AUTH_REDIRECT_URI: string;
+    NEXT_PUBLIC_AUTH_SCOPES: string;
     NEXT_PUBLIC_ARRANGER_API_URL: string;
     NEXT_PUBLIC_ARRANGER_PROJECT_ID: string;
     NEXT_PUBLIC_ARRANGER_GRAPHQL_FIELD: string;
