@@ -26,14 +26,17 @@ import Head from './Head';
 import { AuthProvider } from '../global/hooks/useAuthContext';
 import { PageContext } from '../global/hooks/usePageContext';
 import { ClientSideGetInitialPropsContext } from '../global/utils/pages/types';
+import { WalletUser } from '../global/types';
 
 const Root = ({
   children,
-  egoJwt,
+  sessionToken,
+  initialUser,
   pageContext,
 }: {
   children: React.ReactElement;
-  egoJwt?: string;
+  sessionToken?: string;
+  initialUser?: WalletUser;
   pageContext: ClientSideGetInitialPropsContext;
 }) => {
   return (
@@ -58,7 +61,7 @@ const Root = ({
       `}
       </style>
       <Head />
-      <AuthProvider egoJwt={egoJwt}>
+      <AuthProvider sessionToken={sessionToken} initialUser={initialUser}>
         <PageContext.Provider value={pageContext}>
           <ThemeProvider theme={defaultTheme}>{children}</ThemeProvider>
         </PageContext.Provider>

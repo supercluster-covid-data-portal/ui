@@ -29,8 +29,9 @@ import { OvertureLogo } from './theme/icons';
 import useAuthContext from '../global/hooks/useAuthContext';
 import { StyledLinkAsButton, InternalLink as Link } from './Link';
 import { useTheme } from 'emotion-theming';
-import { EXPLORER_PATH, LOGIN_PATH, USER_PATH } from '../global/utils/constants';
+import { EXPLORER_PATH, USER_PATH } from '../global/utils/constants';
 import { getConfig } from '../global/config';
+import LoginButton from './LoginButton';
 
 const NavBar: React.ComponentType = () => {
   const { token } = useAuthContext();
@@ -159,17 +160,7 @@ const NavBar: React.ComponentType = () => {
               justify-content: center;
             `}
           >
-            <Link path={LOGIN_PATH}>
-              <StyledLinkAsButton
-                css={(theme) => css`
-                  width: 70px;
-                  ${theme.typography.button};
-                  line-height: 20px;
-                `}
-              >
-                Log in
-              </StyledLinkAsButton>
-            </Link>
+            <LoginButton title="Log in" />
           </div>
         )}
       </div>

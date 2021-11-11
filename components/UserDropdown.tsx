@@ -27,18 +27,15 @@ import { useTheme } from 'emotion-theming';
 import defaultTheme from './theme';
 import { Avatar, ChevronDown } from './theme/icons';
 import useAuthContext from '../global/hooks/useAuthContext';
-import { UserWithId } from '../global/types';
-import { InternalLink as Link } from './Link';
 import { useRouter } from 'next/router';
 import { USER_PATH } from '../global/utils/constants';
+import { WalletUser } from '../global/types';
 
-const getDisplayName = (user?: UserWithId) => {
+const getDisplayName = (user?: WalletUser) => {
   const greeting = 'Hello';
   if (user) {
-    if (user.firstName) {
-      return `${greeting}, ${user.firstName}`;
-    } else if (user.lastName) {
-      return `${greeting}, ${user.lastName}`;
+    if (user.name.length) {
+      return `${greeting}, ${user.name.split(' ')[0]}`;
     } else if (user.email) {
       return `${greeting}, ${user.email}`;
     }
@@ -177,11 +174,6 @@ const UserDropdown = () => {
             margin: 0;
           `}
         >
-          <li>
-            <Link path={USER_PATH}>
-              <StyledListLink>Profile & Token</StyledListLink>
-            </Link>
-          </li>
           <li>
             <StyledListLink onClick={() => logout()}>Logout</StyledListLink>
           </li>
