@@ -54,7 +54,7 @@ const DMSApp = ({
         .then(async (res) => {
           if (res.ok) {
             const userData = await res.json();
-            setInitialUser(validateUser(userData));
+            return setInitialUser(validateUser(userData));
           }
           throw new Error(res.statusText);
         })
