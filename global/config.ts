@@ -21,7 +21,24 @@
 
 import getNextConfig from 'next/config';
 
-export const getConfig = () => {
+type AppConfig = {
+  NEXT_PUBLIC_AUTH_API_ROOT: string;
+  NEXT_PUBLIC_AUTH_CLIENT_ID: string;
+  NEXT_PUBLIC_AUTH_REDIRECT_URI: string;
+  NEXT_PUBLIC_AUTH_SCOPES: string;
+  NEXT_PUBLIC_ARRANGER_API_URL: string;
+  NEXT_PUBLIC_ARRANGER_GRAPHQL_FIELD: string;
+  NEXT_PUBLIC_ARRANGER_INDEX: string;
+  NEXT_PUBLIC_ARRANGER_ADMIN_UI: string;
+  NEXT_PUBLIC_ARRANGER_MANIFEST_COLUMNS: string;
+  NEXT_PUBLIC_BASE_PATH: string;
+  NEXT_PUBLIC_ADMIN_EMAIL: string;
+  NEXT_PUBLIC_LAB_NAME: string;
+  NEXT_PUBLIC_LOGO_FILENAME: string;
+  NEXT_PUBLIC_SSO_PROVIDERS: string;
+};
+
+export const getConfig: () => AppConfig = () => {
   const publicConfig: { [k: string]: string } = getNextConfig()?.publicRuntimeConfig || {};
 
   return {
@@ -41,20 +58,5 @@ export const getConfig = () => {
     NEXT_PUBLIC_LAB_NAME: publicConfig.NEXT_PUBLIC_LAB_NAME || 'Data Management System',
     NEXT_PUBLIC_LOGO_FILENAME: publicConfig.NEXT_PUBLIC_LOGO_FILENAME,
     NEXT_PUBLIC_SSO_PROVIDERS: publicConfig.NEXT_PUBLIC_SSO_PROVIDERS || '',
-  } as {
-    NEXT_PUBLIC_AUTH_API_ROOT: string;
-    NEXT_PUBLIC_AUTH_CLIENT_ID: string;
-    NEXT_PUBLIC_AUTH_REDIRECT_URI: string;
-    NEXT_PUBLIC_AUTH_SCOPES: string;
-    NEXT_PUBLIC_ARRANGER_API_URL: string;
-    NEXT_PUBLIC_ARRANGER_GRAPHQL_FIELD: string;
-    NEXT_PUBLIC_ARRANGER_INDEX: string;
-    NEXT_PUBLIC_ARRANGER_ADMIN_UI: string;
-    NEXT_PUBLIC_ARRANGER_MANIFEST_COLUMNS: string;
-    NEXT_PUBLIC_BASE_PATH: string;
-    NEXT_PUBLIC_ADMIN_EMAIL: string;
-    NEXT_PUBLIC_LAB_NAME: string;
-    NEXT_PUBLIC_LOGO_FILENAME: string;
-    NEXT_PUBLIC_SSO_PROVIDERS: string;
   };
 };

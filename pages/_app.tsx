@@ -29,6 +29,8 @@ import urlJoin from 'url-join';
 import { USERINFO_ENDPOINT, WALLET_SESSION_KEY } from '../global/utils/constants';
 import { PageWithConfig } from '../global/utils/pages/types';
 import Loader from '../components/Loader';
+import validateUser from '../global/utils/validateUser';
+import { WalletUser } from '../global/types';
 
 const DMSApp = ({
   Component,
@@ -42,16 +44,19 @@ const DMSApp = ({
   walletToken: string;
 }) => {
   const [loadingUser, setLoadingUser] = useState(true);
-  const [initialUser, setInitialUser] = useState(undefined);
+  const [initialUser, setInitialUser] = useState<WalletUser | undefined>(undefined);
   const { NEXT_PUBLIC_ARRANGER_API_URL } = getConfig();
 
   useEffect(() => {
     if (!initialUser && walletToken) {
-      console.log('Fetching user info');
+      console.info('Fetching user info');
       fetch(urlJoin(NEXT_PUBLIC_ARRANGER_API_URL, USERINFO_ENDPOINT), { credentials: 'include' })
         .then(async (res) => {
-          const userData = await res.json();
-          setInitialUser(userData);
+          if (res.ok) {
+            const userData = await res.json();
+            setInitialUser(validateUser(userData));
+          }
+          throw new Error(res.statusText);
         })
         .catch((err) => console.warn('Could not fetch user info: ', err))
         .finally(() => setLoadingUser(false));

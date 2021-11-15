@@ -30,6 +30,8 @@ import { getConfig } from '../global/config';
 import { EXPLORER_PATH, TOKEN_ENDPOINT } from '../global/utils/constants';
 import { useRouter } from 'next/router';
 import useAuthContext from '../global/hooks/useAuthContext';
+import { WalletUser } from '../global/types';
+import validateUser from '../global/utils/validateUser';
 
 const LoginLoaderPage = createPage({
   getInitialProps: async (ctx) => {
@@ -54,7 +56,7 @@ const LoginLoaderPage = createPage({
           }
           // set userinfo in auth context
           const userData = await res.json();
-          setUser(userData);
+          setUser(validateUser(userData));
           router.push(EXPLORER_PATH);
         })
         .catch((err) => {
@@ -62,7 +64,7 @@ const LoginLoaderPage = createPage({
           router.push('/');
         });
     }
-  });
+  }, []);
 
   return (
     <PageLayout>

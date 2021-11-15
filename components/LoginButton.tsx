@@ -38,7 +38,8 @@ const LoginButton = ({ Icon, title }: { Icon?: React.ComponentType<IconProps>; t
   url.searchParams.append('client_id', NEXT_PUBLIC_AUTH_CLIENT_ID);
   url.searchParams.append('redirect_uri', NEXT_PUBLIC_AUTH_REDIRECT_URI);
   url.searchParams.append('response_type', 'code');
-  url.searchParams.append('resource', `${window.origin}&scope=${NEXT_PUBLIC_AUTH_SCOPES}`);
+  url.searchParams.append('resource', window.origin);
+  url.searchParams.append('scope', NEXT_PUBLIC_AUTH_SCOPES);
 
   return (
     <a
