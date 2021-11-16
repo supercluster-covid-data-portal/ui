@@ -32,7 +32,6 @@ export const DMS_INSTALLATION_URL = urlJoin(OVERTURE_DMS_DOCS_ROOT, 'installatio
 export const DMS_EMAIL_SETTING_URL = urlJoin(DMS_INSTALLATION_URL, 'configuration/prereq/emails');
 
 // wallet + auth
-export const WALLET_SESSION_KEY = 'wallet-session-token';
 export const AUTH_ENDPOINT = 'auth';
 export const TOKEN_ENDPOINT = urlJoin(AUTH_ENDPOINT, 'token');
 export const USERINFO_ENDPOINT = urlJoin(AUTH_ENDPOINT, 'user-info');

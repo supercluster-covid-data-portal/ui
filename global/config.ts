@@ -36,6 +36,7 @@ type AppConfig = {
   NEXT_PUBLIC_LAB_NAME: string;
   NEXT_PUBLIC_LOGO_FILENAME: string;
   NEXT_PUBLIC_SSO_PROVIDERS: string;
+  NEXT_PUBLIC_SESSION_TOKEN_KEY: string;
 };
 
 export const getConfig: () => AppConfig = () => {
@@ -47,6 +48,8 @@ export const getConfig: () => AppConfig = () => {
     NEXT_PUBLIC_AUTH_REDIRECT_URI:
       publicConfig.NEXT_PUBLIC_AUTH_REDIRECT_URI || 'http://localhost:3000',
     NEXT_PUBLIC_AUTH_SCOPES: publicConfig.NEXT_PUBLIC_AUTH_SCOPES || 'openid',
+    NEXT_PUBLIC_SESSION_TOKEN_KEY:
+      publicConfig.NEXT_PUBLIC_SESSION_TOKEN_KEY || 'wallet-session-token',
     NEXT_PUBLIC_ARRANGER_GRAPHQL_FIELD: publicConfig.NEXT_PUBLIC_ARRANGER_GRAPHQL_FIELD || '',
     NEXT_PUBLIC_ARRANGER_INDEX: publicConfig.NEXT_PUBLIC_ARRANGER_INDEX || '',
     NEXT_PUBLIC_ARRANGER_ADMIN_UI: publicConfig.NEXT_PUBLIC_ARRANGER_ADMIN_UI,

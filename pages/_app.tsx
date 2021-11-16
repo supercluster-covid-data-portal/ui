@@ -26,7 +26,7 @@ import nextCookies from 'next-cookies';
 import { getConfig } from '../global/config';
 import urlJoin from 'url-join';
 
-import { USERINFO_ENDPOINT, WALLET_SESSION_KEY } from '../global/utils/constants';
+import { USERINFO_ENDPOINT } from '../global/utils/constants';
 import { PageWithConfig } from '../global/utils/pages/types';
 import Loader from '../components/Loader';
 import validateUser from '../global/utils/validateUser';
@@ -76,13 +76,14 @@ const DMSApp = ({
 DMSApp.getInitialProps = async ({ ctx, Component }: AppContext & { Component: PageWithConfig }) => {
   const pageProps = await Component.getInitialProps({ ...ctx });
   const cookies = nextCookies(ctx);
+  const { NEXT_PUBLIC_SESSION_TOKEN_KEY } = getConfig();
   return {
     ctx: {
       pathname: ctx.pathname,
       query: ctx.query,
       asPath: ctx.asPath,
     },
-    walletToken: cookies[WALLET_SESSION_KEY],
+    walletToken: cookies[NEXT_PUBLIC_SESSION_TOKEN_KEY],
     pageProps,
   };
 };
