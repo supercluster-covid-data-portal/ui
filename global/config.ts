@@ -36,6 +36,7 @@ type AppConfig = {
   NEXT_PUBLIC_LAB_NAME: string;
   NEXT_PUBLIC_LOGO_FILENAME: string;
   NEXT_PUBLIC_SSO_PROVIDERS: string;
+  NEXT_PUBLIC_SESSION_TOKEN_KEY: string;
   NEXT_PUBLIC_GOOGLE_ANALYTICS_ID: string;
 };
 
@@ -48,6 +49,8 @@ export const getConfig: () => AppConfig = () => {
     NEXT_PUBLIC_AUTH_REDIRECT_URI:
       publicConfig.NEXT_PUBLIC_AUTH_REDIRECT_URI || 'http://localhost:3000',
     NEXT_PUBLIC_AUTH_SCOPES: publicConfig.NEXT_PUBLIC_AUTH_SCOPES || 'openid',
+    NEXT_PUBLIC_SESSION_TOKEN_KEY:
+      publicConfig.NEXT_PUBLIC_SESSION_TOKEN_KEY || 'wallet-session-token',
     NEXT_PUBLIC_ARRANGER_API_URL:
       publicConfig.NEXT_PUBLIC_ARRANGER_API_URL || 'http://localhost:8080/api',
     NEXT_PUBLIC_ARRANGER_GRAPHQL_FIELD: publicConfig.NEXT_PUBLIC_ARRANGER_GRAPHQL_FIELD || '',

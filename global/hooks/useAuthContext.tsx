@@ -23,9 +23,10 @@ import React, { createContext, useState } from 'react';
 import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
 
-import { EXPLORER_PATH, WALLET_SESSION_KEY } from '../utils/constants';
+import { EXPLORER_PATH } from '../utils/constants';
 import getInternalLink from '../utils/getInternalLink';
 import { WalletUser } from '../types';
+import { getConfig } from '../config';
 
 type T_AuthContext = {
   token?: string;
@@ -53,10 +54,11 @@ export const AuthProvider = ({
   children: React.ReactElement;
 }) => {
   const router = useRouter();
+  const { NEXT_PUBLIC_SESSION_TOKEN_KEY } = getConfig();
   const [token, setTokenState] = useState<string | undefined>(sessionToken);
   const [userState, setUserState] = useState<WalletUser | undefined>(initialUser);
   const removeToken = () => {
-    Cookies.remove(WALLET_SESSION_KEY);
+    Cookies.remove(NEXT_PUBLIC_SESSION_TOKEN_KEY);
     setTokenState(undefined);
     setUserState(undefined);
   };
