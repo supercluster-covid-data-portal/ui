@@ -25,6 +25,7 @@ import defaultTheme from './theme';
 import Head from './Head';
 import { AuthProvider } from '../global/hooks/useAuthContext';
 import { PageContext } from '../global/hooks/usePageContext';
+import { TrackingProvider } from '../global/hooks/useTrackingContext';
 import { ClientSideGetInitialPropsContext } from '../global/utils/pages/types';
 import { WalletUser } from '../global/types';
 
@@ -63,7 +64,9 @@ const Root = ({
       <Head />
       <AuthProvider sessionToken={sessionToken} initialUser={initialUser}>
         <PageContext.Provider value={pageContext}>
-          <ThemeProvider theme={defaultTheme}>{children}</ThemeProvider>
+          <TrackingProvider>
+            <ThemeProvider theme={defaultTheme}>{children}</ThemeProvider>
+          </TrackingProvider>
         </PageContext.Provider>
       </AuthProvider>
     </>
