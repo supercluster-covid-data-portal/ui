@@ -10,6 +10,7 @@ module.exports = withCSS({
     NEXT_PUBLIC_ARRANGER_GRAPHQL_FIELD: process.env.NEXT_PUBLIC_ARRANGER_GRAPHQL_FIELD,
     NEXT_PUBLIC_ARRANGER_INDEX: process.env.NEXT_PUBLIC_ARRANGER_INDEX,
     NEXT_PUBLIC_ARRANGER_ADMIN_UI: process.env.NEXT_PUBLIC_ARRANGER_ADMIN_UI_URL,
+    NEXT_PUBLIC_ARRANGER_API_URL: process.env.NEXT_PUBLIC_ARRANGER_API_URL,
     NEXT_PUBLIC_ARRANGER_MANIFEST_COLUMNS: process.env.NEXT_PUBLIC_ARRANGER_MANIFEST_COLUMNS || '',
     // using ASSET_PREFIX for the public runtime BASE_PATH because basePath in the top level config was not working
     // with the dms reverse proxy setup
@@ -20,13 +21,4 @@ module.exports = withCSS({
     NEXT_PUBLIC_SSO_PROVIDERS: process.env.NEXT_PUBLIC_SSO_PROVIDERS,
   },
   assetPrefix: process.env.ASSET_PREFIX || '',
-  async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: `https://api.dev.supercluster.cancercollaboratory.org/api/:path*`, // Proxy to Backend
-        // destination: `${process.env.NEXT_PUBLIC_ARRANGER_API_URL || ''}/api/:path*`, // Proxy to Backend
-      },
-    ];
-  },
 });
