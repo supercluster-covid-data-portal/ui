@@ -47,8 +47,6 @@ export const getConfig: () => AppConfig = () => {
     NEXT_PUBLIC_AUTH_REDIRECT_URI:
       publicConfig.NEXT_PUBLIC_AUTH_REDIRECT_URI || 'http://localhost:3000',
     NEXT_PUBLIC_AUTH_SCOPES: publicConfig.NEXT_PUBLIC_AUTH_SCOPES || 'openid',
-    NEXT_PUBLIC_ARRANGER_API_URL:
-      publicConfig.NEXT_PUBLIC_ARRANGER_API_URL || 'http://localhost:8080/api',
     NEXT_PUBLIC_ARRANGER_GRAPHQL_FIELD: publicConfig.NEXT_PUBLIC_ARRANGER_GRAPHQL_FIELD || '',
     NEXT_PUBLIC_ARRANGER_INDEX: publicConfig.NEXT_PUBLIC_ARRANGER_INDEX || '',
     NEXT_PUBLIC_ARRANGER_ADMIN_UI: publicConfig.NEXT_PUBLIC_ARRANGER_ADMIN_UI,
