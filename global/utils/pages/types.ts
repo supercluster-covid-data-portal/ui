@@ -35,7 +35,7 @@ export type ClientSideGetInitialPropsContext = {
 };
 
 type GetInitialPropsContextWithEgo = GetInitialPropsContext & {
-  egoJwt?: string;
+  walletToken?: string;
 };
 
 export type PageConfigProps = {
