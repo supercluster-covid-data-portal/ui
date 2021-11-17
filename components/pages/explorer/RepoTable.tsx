@@ -279,7 +279,7 @@ const RepoTable = (props: PageContentProps) => {
         showFilterInput={false}
         columnDropdownText={'Columns'}
         exporter={customExporters}
-        downloadUrl={urlJoin(NEXT_PUBLIC_ARRANGER_API_URL, 'api', 'download')}
+        downloadUrl={urlJoin(NEXT_PUBLIC_ARRANGER_API_URL, 'download')}
       />
     </div>
   );
