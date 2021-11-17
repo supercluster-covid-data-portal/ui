@@ -39,11 +39,12 @@ const LoginButton = ({ Icon, title }: { Icon?: React.ComponentType<IconProps>; t
   url.searchParams.append('redirect_uri', NEXT_PUBLIC_AUTH_REDIRECT_URI);
   url.searchParams.append('response_type', 'code');
   url.searchParams.append('resource', window.origin);
-  url.searchParams.append('scope', NEXT_PUBLIC_AUTH_SCOPES);
+  url.searchParams.append('scope', encodeURI(NEXT_PUBLIC_AUTH_SCOPES));
 
   return (
     <a
-      href={url.href}
+      // to respect '+' signs, as they break when using the `searchParams` API
+      href={url.href.replaceAll('%2B', '+')}
       css={css`
         text-decoration: none;
       `}
