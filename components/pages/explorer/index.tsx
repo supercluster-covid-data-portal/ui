@@ -78,7 +78,7 @@ const RepositoryPage = () => {
   const [loadingArrangerConfig, setLoadingArrangerConfig] = useState<boolean>(true);
 
   useEffect(() => {
-    fetch(urlJoin(NEXT_PUBLIC_ARRANGER_API_URL, 'api', 'graphql'), {
+    fetch(urlJoin(NEXT_PUBLIC_ARRANGER_API_URL, 'graphql'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

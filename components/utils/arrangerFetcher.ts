@@ -30,7 +30,7 @@ const createArrangerFetcher = ({
   const { NEXT_PUBLIC_ARRANGER_API_URL } = getConfig();
 
   return ({ method = 'post', body = {}, headers = {} }) => {
-    const uri = urlJoin(NEXT_PUBLIC_ARRANGER_API_URL, 'api', 'graphql');
+    const uri = urlJoin(NEXT_PUBLIC_ARRANGER_API_URL, 'graphql');
 
     return ajax
       .post(uri, body, {
