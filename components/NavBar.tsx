@@ -21,14 +21,15 @@
 
 import React from 'react';
 import { css } from '@emotion/core';
+import { useTheme } from 'emotion-theming';
 import { useRouter } from 'next/router';
+import urlJoin from 'url-join';
 
 import UserDropdown from './UserDropdown';
 import defaultTheme from './theme';
 import { OvertureLogo } from './theme/icons';
 import useAuthContext from '../global/hooks/useAuthContext';
 import { StyledLinkAsButton, InternalLink as Link } from './Link';
-import { useTheme } from 'emotion-theming';
 import { EXPLORER_PATH, USER_PATH } from '../global/utils/constants';
 import { getConfig } from '../global/config';
 import LoginButton from './LoginButton';
@@ -45,15 +46,13 @@ const NavBar: React.ComponentType = () => {
     color: ${theme.colors.accent2_dark};
   `;
 
-  const labIcon = NEXT_PUBLIC_LOGO_FILENAME ? (
+  const labIcon = (
     <img
-      src={`${NEXT_PUBLIC_BASE_PATH}/static/dms_user_assets/${NEXT_PUBLIC_LOGO_FILENAME}`}
+      src={urlJoin(NEXT_PUBLIC_BASE_PATH, 'images/logo-covid-cloud.png')}
       alt={NEXT_PUBLIC_LAB_NAME}
       width={theme.dimensions.labIcon.width}
       height={theme.dimensions.labIcon.height}
     />
-  ) : (
-    <OvertureLogo width={theme.dimensions.labIcon.width} height={theme.dimensions.labIcon.height} />
   );
   return (
     <div
@@ -84,18 +83,12 @@ const NavBar: React.ComponentType = () => {
               display: flex;
               align-items: center;
               text-decoration: none;
+              height: 100%;
               ${theme.typography.heading};
               color: ${theme.colors.accent_dark};
             `}
           >
             {labIcon}
-            <span
-              css={css`
-                padding-left: 10px;
-              `}
-            >
-              {NEXT_PUBLIC_LAB_NAME}
-            </span>
           </a>
         </Link>
       </div>
