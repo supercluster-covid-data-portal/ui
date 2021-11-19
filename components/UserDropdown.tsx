@@ -175,7 +175,7 @@ const UserDropdown = () => {
           `}
         >
           <li>
-            <StyledListLink onClick={() => logout()}>Logout</StyledListLink>
+            <StyledListLink onClick={logout}>Logout</StyledListLink>
           </li>
         </ul>
       )}

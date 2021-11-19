@@ -54,11 +54,14 @@ export const AuthProvider = ({
   children: React.ReactElement;
 }) => {
   const router = useRouter();
-  const { NEXT_PUBLIC_SESSION_TOKEN_KEY } = getConfig();
+  const { NEXT_PUBLIC_DOMAIN_ROOT_URL, NEXT_PUBLIC_SESSION_TOKEN_KEY } = getConfig();
   const [token, setTokenState] = useState<string | undefined>(sessionToken);
   const [userState, setUserState] = useState<WalletUser | undefined>(initialUser);
+  const domain = new URL(NEXT_PUBLIC_DOMAIN_ROOT_URL);
+
   const removeToken = () => {
-    Cookies.remove(NEXT_PUBLIC_SESSION_TOKEN_KEY);
+    // path and domain are necessary to remove a cookie, as per https://www.npmjs.com/package/js-cookie
+    Cookies.remove(NEXT_PUBLIC_SESSION_TOKEN_KEY, { path: '/', domain: domain.hostname });
     setTokenState(undefined);
     setUserState(undefined);
   };
