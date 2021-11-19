@@ -31,8 +31,8 @@ const dimensions = {
     maxWidth: 270,
   },
   labIcon: {
-    height: 35,
-    width: 35,
+    height: 'auto',
+    width: 200,
   },
 };
 
