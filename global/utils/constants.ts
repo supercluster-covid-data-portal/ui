@@ -30,6 +30,7 @@ const OVERTURE_DMS_DOCS_ROOT = 'https://overture.bio/documentation/dms/';
 export const DMS_HELP_URL = urlJoin(OVERTURE_DMS_DOCS_ROOT, 'user-guide');
 export const DMS_INSTALLATION_URL = urlJoin(OVERTURE_DMS_DOCS_ROOT, 'installation');
 export const DMS_EMAIL_SETTING_URL = urlJoin(DMS_INSTALLATION_URL, 'configuration/prereq/emails');
+export const CLOUD_CLI_DOCS_URL = 'https://docs.covidcloud.ca/docs/developer-tools/cli/';
 
 // wallet + auth
 export const AUTH_ENDPOINT = 'auth';

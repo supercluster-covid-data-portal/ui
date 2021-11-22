@@ -28,6 +28,7 @@ import { PageContentProps } from './index';
 import StyledLink from '../../Link';
 import defaultTheme from '../../theme';
 import { getConfig } from '../../../global/config';
+import { CLOUD_CLI_DOCS_URL } from '../../../global/utils/constants';
 
 const Table = dynamic(
   () => import('@caravinci/arranger-components/dist/Arranger').then((comp) => comp.Table),
@@ -231,15 +232,18 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
 
 const RepoTable = (props: PageContentProps) => {
   const theme: typeof defaultTheme = useTheme();
-  const { NEXT_PUBLIC_ARRANGER_API_URL, NEXT_PUBLIC_ARRANGER_MANIFEST_COLUMNS } = getConfig();
-  const manifestColumns = NEXT_PUBLIC_ARRANGER_MANIFEST_COLUMNS.split(',')
-    .filter((field) => field.trim()) // break it into arrays, and ensure there's no empty field names
-    .map((fieldName) => fieldName.replace(/['"]+/g, '').trim());
+  const { NEXT_PUBLIC_ARRANGER_API_URL, NEXT_PUBLIC_FILE_DOWNLOAD_LIMIT } = getConfig();
+
+  // commenting manifest feature out for now
+  // const manifestColumns = NEXT_PUBLIC_ARRANGER_MANIFEST_COLUMNS.split(',')
+  //   .filter((field) => field.trim()) // break it into arrays, and ensure there's no empty field names
+  //   .map((fieldName) => fieldName.replace(/['"]+/g, '').trim());
 
   const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
   const customExporters = [
-    { label: 'File Table', fileName: `data-explorer-table-export.${today}.tsv` }, // exports a TSV with what is displayed on the table (columns selected, etc.)
-    { label: 'File Manifest', fileName: `score-manifest.${today}.tsv`, columns: manifestColumns }, // exports a TSV with the manifest columns
+    { label: 'Export Table to TSV', fileName: `data-explorer-table-export.${today}.tsv` }, // exports a TSV with what is displayed on the table (columns selected, etc.)
+    // { label: 'File Manifest', fileName: `score-manifest.${today}.tsv`, columns: manifestColumns }, // exports a TSV with the manifest columns
+    { label: 'Download Selected', fileName: `TBD` }, // download files for selected sequence ids
     {
       label: () => (
         <span
@@ -255,12 +259,13 @@ const RepoTable = (props: PageContentProps) => {
             }
           `}
         >
-          To download files using a file manifest, please follow these
+          To bulk download files for more than {NEXT_PUBLIC_FILE_DOWNLOAD_LIMIT} query results,
+          please use the command line client with these
           <StyledLink
             css={css`
               line-height: inherit;
             `}
-            href="https://overture.bio/documentation/score/user-guide/download"
+            href={CLOUD_CLI_DOCS_URL}
             rel="noopener noreferrer"
             target="_blank"
           >
