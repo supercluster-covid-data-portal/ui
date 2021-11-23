@@ -34,7 +34,7 @@ const TrackingContext = createContext<TrackingContextType>({
 });
 
 export const TrackingProvider = (props: { children: ReactElement }): ReactElement => {
-  const { NEXT_PUBLIC_GOOGLE_ANALYTICS_ID } = getConfig();
+  const { NEXT_PUBLIC_GOOGLE_ANALYTICS_DEBUG, NEXT_PUBLIC_GOOGLE_ANALYTICS_ID } = getConfig();
   const { user } = useAuthContext();
   const router = useRouter();
 
@@ -95,7 +95,7 @@ export const TrackingProvider = (props: { children: ReactElement }): ReactElemen
 
     if (!isInitialized) {
       ReactGA.initialize(NEXT_PUBLIC_GOOGLE_ANALYTICS_ID, {
-        debug: true,
+        debug: NEXT_PUBLIC_GOOGLE_ANALYTICS_DEBUG,
         gaOptions: {
           ...(user?.id && { userId: user?.id }),
         },

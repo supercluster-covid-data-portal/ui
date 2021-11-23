@@ -19,14 +19,46 @@
  *
  */
 
+import { useEffect, useState } from 'react';
 import { css } from '@emotion/core';
-import RepoTable from './RepoTable';
-import Facets from './Facets';
-import QueryBar from './QueryBar';
+import stringify from 'fast-json-stable-stringify';
+import { isEqual } from 'lodash';
 
+import useUrlParamState from '@/global/hooks/useUrlParamState';
+
+import Facets from './Facets';
 import { PageContentProps } from './index';
+import QueryBar from './QueryBar';
+import RepoTable from './RepoTable';
+import { RepoFiltersType } from './sqonTypes';
+
+const defaultFilters: RepoFiltersType = {
+  op: 'and',
+  content: [],
+};
 
 const PageContent = (props: PageContentProps) => {
+  const [firstRender, setFirstRender] = useState<boolean>(true);
+  const [currentFilters, setCurrentFilters] = useUrlParamState<RepoFiltersType | null>(
+    'filters',
+    null,
+    {
+      deSerialize: (v) => (v ? JSON.parse(v) : null),
+      serialize: (v) => (v ? stringify(v) : ''),
+    },
+  );
+
+  // TODO: abstract these effects into an Arranger integration
+  useEffect(() => {
+    currentFilters && props.setSQON(currentFilters);
+    setFirstRender(false);
+  }, []);
+
+  useEffect(() => {
+    const { sqon } = props;
+    firstRender || isEqual(sqon, currentFilters) || setCurrentFilters(sqon);
+  }, [props.sqon]);
+
   return (
     <div
       css={css`
