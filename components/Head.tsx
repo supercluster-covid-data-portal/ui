@@ -40,7 +40,8 @@ const Head = () => {
 export const PageHead = ({ subtitle }: { subtitle?: string }) => {
   return (
     <NextHead>
-      <title>Overture DMS{subtitle ? ` - ${subtitle}` : ''}</title>
+      {/* <title>COVID Cloud{subtitle ? ` - ${subtitle}` : ''}</title> */}
+      <title>{subtitle}</title>
     </NextHead>
   );
 };
