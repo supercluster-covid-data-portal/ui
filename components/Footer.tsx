@@ -59,7 +59,7 @@ const Footer = () => {
           `
         }
       >
-        powered by
+        Powered by
       </span>
       <a href="https://www.overture.bio/" rel="noopener noreferrer" target="_blank">
         <OvertureLogoWithText width={100} height={18} />
