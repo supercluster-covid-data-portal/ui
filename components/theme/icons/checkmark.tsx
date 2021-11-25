@@ -23,16 +23,14 @@ import { css } from '@emotion/core';
 
 import { IconProps } from './types';
 
-const Checkmark = ({ fill, height, width, style }: IconProps) => {
+const Checkmark = ({ fill, size, style }: IconProps) => {
   return (
     <svg
       css={css`
         ${style};
-        height: ${height};
-        width: ${width};
+        height: ${size};
+        width: ${size};
       `}
-      width={width}
-      height={height}
       viewBox={'0 0 20 20'}
     >
       <g fill="none" fillRule="evenodd">

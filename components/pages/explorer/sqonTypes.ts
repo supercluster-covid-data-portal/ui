@@ -43,20 +43,22 @@ export interface ArrayField {
   value: ArrayFieldValue;
 }
 
-export interface ScalarField {
-  field: string;
-  value: ScalarFieldValue;
-}
-
 export interface ArrayFieldOperator {
   op: ArrayFieldKeys;
   content: ArrayField;
+}
+
+export interface ScalarField {
+  field: string;
+  value: ScalarFieldValue;
 }
 
 export interface ScalarFieldOperator {
   op: ScalarFieldKeys;
   content: ScalarField;
 }
+
+export type Field = FilterField | ArrayField | ScalarField;
 
 export type FieldOperator = ArrayFieldOperator | ScalarFieldOperator;
 

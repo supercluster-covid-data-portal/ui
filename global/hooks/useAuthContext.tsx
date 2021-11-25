@@ -30,6 +30,7 @@ import { getConfig } from '../config';
 
 type T_AuthContext = {
   token?: string;
+  removeToken: () => void;
   logout: () => void;
   user?: WalletUser;
   fetchWithAuth: typeof fetch;
@@ -38,6 +39,7 @@ type T_AuthContext = {
 
 const AuthContext = createContext<T_AuthContext>({
   token: undefined,
+  removeToken: () => {},
   logout: () => {},
   user: undefined,
   fetchWithAuth: fetch,
@@ -91,6 +93,7 @@ export const AuthProvider = ({
 
   const authData = {
     token,
+    removeToken,
     logout,
     user: userState,
     fetchWithAuth,
