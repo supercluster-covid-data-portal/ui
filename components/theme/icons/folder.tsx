@@ -19,58 +19,26 @@
  *
  */
 
-import React, { ReactNode } from 'react';
+import { ReactElement } from 'react';
 import { css } from '@emotion/core';
 
-import NavBar from './NavBar';
-import Footer from './Footer';
-import { PageHead } from './Head';
-import ErrorNotification from './ErrorNotification';
+import { IconProps } from './types';
 
-const PageLayout = ({ children, subtitle }: { children: ReactNode; subtitle?: string }) => {
+const Folder = ({ fill = '#28519D', size = '12px', style }: IconProps): ReactElement => {
   return (
-    <>
-      <PageHead subtitle={subtitle}></PageHead>
-      <div
-        css={(theme) => css`
-          display: grid;
-          grid-template-rows: ${theme.dimensions.navbar.height}px 1fr ${theme.dimensions.footer.height}px;
-          height: 100%;
-          ${theme.typography.regular}
-          color: ${theme.colors.grey_800};
-        `}
-      >
-        <NavBar />
-        {children}
-        <Footer />
-      </div>
-    </>
+    <svg
+      css={css`
+        ${style}
+        height: ${size};
+        width: ${size};
+      `}
+      fill={fill}
+      viewBox="20 10 120 90"
+    >
+      <path d="M127.913,52.8c-0.562-0.801-1.479-1.277-2.456-1.277H51.835c-1.264,0-2.392,0.791-2.821,1.979L33.696,95.828  c-0.332,0.918-0.195,1.942,0.365,2.742c0.562,0.801,1.479,1.277,2.456,1.277h73.621c1.263,0,2.391-0.791,2.821-1.979l15.317-42.326  C128.61,54.624,128.474,53.6,127.913,52.8z"></path>
+      <path d="M23.802,96.72l18.183-50.24c0.859-2.376,3.115-3.958,5.643-3.958h68.219v-5.5c0-3.313-2.687-6-6-6H67.202l-9.916-9.917  c-1.126-1.126-2.651-1.758-4.243-1.758h-26.58c-3.313,0-6,2.687-6,6v66C20.462,93.705,21.825,95.738,23.802,96.72z"></path>
+    </svg>
   );
 };
 
-export const ErrorPageLayout = ({
-  children,
-  subtitle,
-  errorTitle,
-}: {
-  children: ReactNode;
-  subtitle: string;
-  errorTitle: string;
-}) => {
-  return (
-    <PageLayout subtitle={subtitle}>
-      <ErrorNotification
-        size="lg"
-        title={errorTitle}
-        styles={`
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-        `}
-      >
-        {children}
-      </ErrorNotification>
-    </PageLayout>
-  );
-};
-export default PageLayout;
+export default Folder;

@@ -30,9 +30,9 @@ const IconButton = ({
   onClick = () => {},
 }: {
   Icon: React.ComponentType<IconProps>;
-  fill: string;
-  height: number;
-  width: number;
+  fill?: string;
+  height?: number;
+  width?: number;
   onClick: React.MouseEventHandler;
 }) => {
   return (
