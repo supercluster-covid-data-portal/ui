@@ -39,6 +39,9 @@ export type QueryModalTypeName =
   | 'saveQuery'
   | 'saveQuery_success'
   | 'saveQuery_error'
+  | 'deleteQuery'
+  | 'deleteQuery_success'
+  | 'deleteQuery_error';
 
 export type QueryModalPayload = {
   actionType: QueryModalTypeName;

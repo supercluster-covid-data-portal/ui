@@ -73,7 +73,33 @@ const QueryActions = ({ sqon }: { sqon: RepoFiltersType }) => {
 
   const deleteQuery =
     (queryId: string, label: string): MouseEventHandler<Element> =>
-    (event) => {};
+    (event) => {
+      setShowModal({
+        actionType: 'deleteQuery',
+        callback: () => {
+          callQueryStorage({
+            method: 'DELETE',
+            queryId,
+          })
+            .then((data) => {
+              if (data) {
+                return setShowModal({
+                  actionType: 'deleteQuery_success',
+                });
+              }
+
+              throw Error('No data in the response from deleting');
+            })
+            .catch((error) => {
+              setShowModal({
+                actionType: 'deleteQuery_error',
+              });
+
+              console.error(error);
+            });
+        },
+      });
+    };
 
   const editQuery =
     (queryId: string, previousLabel: string): MouseEventHandler<Element> =>
