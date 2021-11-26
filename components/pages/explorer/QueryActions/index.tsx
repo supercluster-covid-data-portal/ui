@@ -36,6 +36,7 @@ import IconButton from '@/components/IconButton';
 import defaultTheme from '@/components/theme';
 import { BinIcon, EditIcon, FolderIcon, SaveIcon } from '@/components/theme/icons';
 import useAuthContext from '@/global/hooks/useAuthContext';
+import { getParamsObj } from '@/global/hooks/useUrlParamState';
 
 import { RepoFiltersType } from '../sqonTypes';
 
@@ -76,7 +77,40 @@ const QueryActions = ({ sqon }: { sqon: RepoFiltersType }) => {
 
   const editQuery =
     (queryId: string, previousLabel: string): MouseEventHandler<Element> =>
-    (event) => {};
+    (event) => {
+      setShowModal({
+        actionType: 'editQuery',
+        callback: (label) => {
+          const data = {
+            label,
+            url: currentQuery,
+          };
+
+          callQueryStorage({
+            data,
+            method: 'PUT',
+            queryId,
+          })
+            .then((data) => {
+              if (data) {
+                return setShowModal({
+                  actionType: 'editQuery_success',
+                });
+              }
+
+              throw Error('No data in the response from editing');
+            })
+            .catch((error) => {
+              setShowModal({
+                actionType: 'editQuery_error',
+              });
+
+              console.error(error);
+            });
+        },
+        currentValue: previousLabel,
+      });
+    };
 
   const saveQuery = (event: SyntheticEvent<HTMLButtonElement, Event>) => {
     setShowModal({

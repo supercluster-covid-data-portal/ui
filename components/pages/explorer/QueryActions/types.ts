@@ -33,6 +33,9 @@ export type AllStoredQueriesObject = Record<'queries', Record<string, StoredQuer
 export type StoredQueriesResponse = AllStoredQueriesObject & EtagObject;
 
 export type QueryModalTypeName =
+  | 'editQuery'
+  | 'editQuery_success'
+  | 'editQuery_error'
   | 'saveQuery'
   | 'saveQuery_success'
   | 'saveQuery_error'
