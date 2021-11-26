@@ -292,7 +292,11 @@ const QueryActions = ({ sqon }: { sqon: RepoFiltersType }) => {
         </Fragment>
       )}
 
-      <ShareButton queryLabel={currentQueryLabel} queryUrl={currentQueryUrl} />
+      <ShareButton
+        queryLabel={currentQueryLabel}
+        queryUrl={currentQueryUrl}
+        title={sqon ? 'Share this query' : "You haven't selected any filters yet"}
+      />
 
       <QueryModals setShowModal={setShowModal} modalProps={showModal} />
     </Wrapper>
