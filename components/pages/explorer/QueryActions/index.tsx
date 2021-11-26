@@ -19,6 +19,7 @@
 
 import {
   Fragment,
+  MouseEventHandler,
   SyntheticEvent,
   useCallback,
   useEffect,
@@ -30,14 +31,16 @@ import { useRouter } from 'next/router';
 import urlJoin from 'url-join';
 
 import Button from '@/components/Button';
-import { DefaultTheme } from '@/components/theme';
-import { SaveIcon } from '@/components/theme/icons';
+import Dropdown from '@/components/Dropdown';
+import IconButton from '@/components/IconButton';
+import defaultTheme from '@/components/theme';
+import { BinIcon, EditIcon, FolderIcon, SaveIcon } from '@/components/theme/icons';
 import useAuthContext from '@/global/hooks/useAuthContext';
 
 import { RepoFiltersType } from '../sqonTypes';
 
 import QueryModals from './Modals';
-import { QueryModalPayload } from './types';
+import { QueryModalPayload, StoredQueryObject } from './types';
 import useQueryStorage from './utils';
 import Wrapper from './Wrapper';
 import filtersToName from './utils/filtersToName';
@@ -45,7 +48,7 @@ import filtersToName from './utils/filtersToName';
 // TODO: pass token in credentials rather than auth bearer
 const QueryActions = ({ sqon }: { sqon: RepoFiltersType }) => {
   const router = useRouter();
-  const theme: DefaultTheme = useTheme();
+  const theme: typeof defaultTheme = useTheme();
   const [currentQuery, setCurrentQuery] = useState<string>(
     // app base URL on first render
     urlJoin(window.location.origin, window.location.pathname),
@@ -53,6 +56,8 @@ const QueryActions = ({ sqon }: { sqon: RepoFiltersType }) => {
   const [currentQueryLabel, setCurrentQueryLabel] = useState<string>('');
   const [firstRender, setFirstRender] = useState<boolean>(true);
   const [hasQueryToStore, setHasQueryToStore] = useState<boolean>(false);
+  const [hasStoredQueries, setHasStoredQueries] = useState<boolean>(false);
+  const [queriesDropdownData, setQueriesDropdownData] = useState<JSX.Element[]>([]);
   const [showModal, setShowModal] = useState<QueryModalPayload | null>(null);
 
   const { token = '', user } = useAuthContext();
@@ -64,6 +69,14 @@ const QueryActions = ({ sqon }: { sqon: RepoFiltersType }) => {
   const getQueries = useCallback(() => {
     return callQueryStorage();
   }, []);
+
+  const deleteQuery =
+    (queryId: string, label: string): MouseEventHandler<Element> =>
+    (event) => {};
+
+  const editQuery =
+    (queryId: string, previousLabel: string): MouseEventHandler<Element> =>
+    (event) => {};
 
   const saveQuery = (event: SyntheticEvent<HTMLButtonElement, Event>) => {
     setShowModal({
@@ -117,10 +130,85 @@ const QueryActions = ({ sqon }: { sqon: RepoFiltersType }) => {
     setCurrentQueryLabel(currentQueryLabel);
   }, [router.asPath]);
 
+  useEffect(() => {
+    const hasData = Object.keys(storedQueries).length > 0;
+    setHasStoredQueries(hasData);
+
+    setQueriesDropdownData(
+      Object.entries(storedQueries).map(([queryId, queryData]) => {
+        const { label } = queryData as StoredQueryObject;
+        return (
+          <div
+            css={css`
+              display: flex;
+              justify-content: space-between;
+            `}
+          >
+            <a
+              css={css`
+                color: ${theme.colors.grey_800};
+                overflow: hidden;
+                text-decoration: none;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+              `}
+              href={queryData.url}
+              title={label}
+            >
+              {label}
+            </a>
+
+            <div
+              css={css`
+                margin-left: 5px;
+                white-space: nowrap;
+              `}
+            >
+              <IconButton
+                Icon={() => (
+                  <EditIcon
+                    style={css`
+                      margin-right: 5px;
+                    `}
+                    fill={theme.colors.grey_800}
+                    size="11px"
+                  />
+                )}
+                onClick={editQuery(queryId, label)}
+              />
+              <IconButton
+                Icon={() => (
+                  <BinIcon data-action="delete" fill={theme.colors.grey_800} size="12px" />
+                )}
+                onClick={deleteQuery(queryId, label)}
+              />
+            </div>
+          </div>
+        );
+      }),
+    );
+  }, [storedQueries]);
+
   return (
     <Wrapper>
       {token && (
         <Fragment>
+          <Dropdown
+            data={queriesDropdownData}
+            title={
+              hasStoredQueries ? 'List your saved queries' : "You haven't saved any queries yet"
+            }
+          >
+            <FolderIcon
+              fill={theme.colors.white}
+              size="10px"
+              style={css`
+                margin-right: 5px;
+              `}
+            />
+            My Queries
+          </Dropdown>
+
           <Button
             disabled={!hasQueryToStore}
             onClick={saveQuery}
