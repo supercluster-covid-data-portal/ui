@@ -64,6 +64,7 @@ const Button = React.forwardRef<
     isAsync?: boolean;
     className?: string;
     isLoading?: boolean;
+    title?: string;
   }
 >(
   (
@@ -74,6 +75,7 @@ const Button = React.forwardRef<
       isAsync = false,
       className,
       isLoading: controlledLoadingState,
+      title = '',
     },
     ref = React.createRef(),
   ) => {
@@ -96,6 +98,7 @@ const Button = React.forwardRef<
         onClick={isAsync ? onClickFn : onClick}
         disabled={disabled || shouldShowLoading}
         className={className}
+        title={title}
       >
         <span
           css={css`
@@ -104,15 +107,18 @@ const Button = React.forwardRef<
         >
           {children}
         </span>
-        <span
-          css={(theme) => css`
-            position: absolute;
-            visibility: ${shouldShowLoading ? 'visible' : 'hidden'};
-            bottom: 1px;
-          `}
-        >
-          <Spinner height={20} width={20} />
-        </span>
+
+        {isAsync && (
+          <span
+            css={(theme) => css`
+              position: absolute;
+              visibility: ${shouldShowLoading ? 'visible' : 'hidden'};
+              bottom: 1px;
+            `}
+          >
+            <Spinner height={20} width={20} />
+          </span>
+        )}
       </ButtonElement>
     );
   },

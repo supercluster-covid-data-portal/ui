@@ -21,22 +21,32 @@
 
 const base = {
   white: '#fff',
-  black: '#282a35',
+  black: '#13131E',
+  pure_black: '#000',
 };
 
 const grey = {
   grey_1: '#f2f5f8',
+  grey_100: '#FBFBFC',
   grey_2: '#f2f3f5',
+  grey_200: '#F9F9FA',
   grey_3: '#dfdfe1',
+  grey_300: '#E9EBEF',
   grey_4: '#cecfd3',
+  grey_400: '#E1E5EE',
   grey_5: '#aeafb3',
+  grey_500: '#C8CEDB',
   grey_6: '#5e6068',
+  grey_600: '#969DAC',
+  grey_700: '#6B7483',
+  grey_800: '#525965',
+  grey_900: '#3A3F48',
   grey_highlight: '#eceff2',
 };
 
 const primary = {
-  primary: '#00ddbe',
-  primary_dark: '#00c4a7',
+  primary: '#0089F6',
+  primary_dark: '#0C74D4',
 };
 
 // dark blues
@@ -74,6 +84,11 @@ const error = {
   error_2: '#e9c1c6',
 };
 
+const success = {
+  success: '#00ddbe',
+  success_dark: '#00c4a7',
+};
+
 const warning = {
   warning: '#f2d021',
   warning_dark: '#e6c104',
@@ -88,5 +103,6 @@ export default {
   ...primary,
   ...secondary,
   ...error,
+  ...success,
   ...warning,
 };

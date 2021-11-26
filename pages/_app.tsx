@@ -31,6 +31,7 @@ import { PageWithConfig } from '../global/utils/pages/types';
 import Loader from '../components/Loader';
 import validateUser from '../global/utils/validateUser';
 import { WalletUser } from '../global/types';
+import useAuthContext from '@/global/hooks/useAuthContext';
 
 const DMSApp = ({
   Component,
@@ -45,6 +46,7 @@ const DMSApp = ({
 }) => {
   const [loadingUser, setLoadingUser] = useState(true);
   const [initialUser, setInitialUser] = useState<WalletUser | undefined>(undefined);
+  const { removeToken } = useAuthContext();
   const { NEXT_PUBLIC_ARRANGER_API_URL } = getConfig();
 
   useEffect(() => {
@@ -56,6 +58,7 @@ const DMSApp = ({
             const userData = await res.json();
             return setInitialUser(validateUser(userData));
           }
+          removeToken();
           throw new Error(res.statusText);
         })
         .catch((err) => console.warn('Could not fetch user info: ', err))

@@ -25,7 +25,7 @@ import React from 'react';
 import IconButton from './IconButton';
 
 import defaultTheme from './theme';
-import { Error as ErrorIcon } from './theme/icons';
+import { ErrorIcon } from './theme/icons';
 import DismissIcon from './theme/icons/dismiss';
 
 type ErrorSize = 'lg' | 'md' | 'sm';
@@ -38,9 +38,9 @@ const ERROR_SIZES = {
 
 const getIconDimensions = (size: ErrorSize) =>
   ({
-    [ERROR_SIZES.LG]: { width: 26, height: 27 },
-    [ERROR_SIZES.MD]: { width: 21, height: 22 },
-    [ERROR_SIZES.SM]: { width: 18, height: 18 },
+    [ERROR_SIZES.LG]: { size: '27px' },
+    [ERROR_SIZES.MD]: { size: '22px' },
+    [ERROR_SIZES.SM]: { size: '18px' },
   }[size]);
 
 const getContainerStyles = (size: ErrorSize) =>
@@ -111,6 +111,7 @@ const ErrorTitle = styled('h1')`
 
 const ErrorNotification = ({
   children,
+  className,
   title,
   size,
   styles = '',
@@ -118,6 +119,7 @@ const ErrorNotification = ({
   dismissible = false,
 }: {
   children: React.ReactNode;
+  className?: string;
   title?: string;
   size: ErrorSize;
   styles?: string;
@@ -125,6 +127,7 @@ const ErrorNotification = ({
   dismissible?: boolean;
 }) => (
   <div
+    className={className}
     css={css`
       display: flex;
       flex: 1;
