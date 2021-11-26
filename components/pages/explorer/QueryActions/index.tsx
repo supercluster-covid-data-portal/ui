@@ -33,10 +33,9 @@ import urlJoin from 'url-join';
 import Button from '@/components/Button';
 import Dropdown from '@/components/Dropdown';
 import IconButton from '@/components/IconButton';
-import defaultTheme from '@/components/theme';
+import { DefaultTheme } from '@/components/theme';
 import { BinIcon, EditIcon, FolderIcon, SaveIcon } from '@/components/theme/icons';
 import useAuthContext from '@/global/hooks/useAuthContext';
-import { getParamsObj } from '@/global/hooks/useUrlParamState';
 
 import { RepoFiltersType } from '../sqonTypes';
 
@@ -45,12 +44,13 @@ import { QueryModalPayload, StoredQueryObject } from './types';
 import useQueryStorage from './utils';
 import Wrapper from './Wrapper';
 import filtersToName from './utils/filtersToName';
+import ShareButton from './ShareButton';
 
 // TODO: pass token in credentials rather than auth bearer
 const QueryActions = ({ sqon }: { sqon: RepoFiltersType }) => {
   const router = useRouter();
-  const theme: typeof defaultTheme = useTheme();
-  const [currentQuery, setCurrentQuery] = useState<string>(
+  const theme: DefaultTheme = useTheme();
+  const [currentQueryUrl, setCurrentQueryUrl] = useState<string>(
     // app base URL on first render
     urlJoin(window.location.origin, window.location.pathname),
   );
@@ -109,7 +109,7 @@ const QueryActions = ({ sqon }: { sqon: RepoFiltersType }) => {
         callback: (label) => {
           const data = {
             label,
-            url: currentQuery,
+            url: currentQueryUrl,
           };
 
           callQueryStorage({
@@ -144,7 +144,7 @@ const QueryActions = ({ sqon }: { sqon: RepoFiltersType }) => {
       callback: (label) => {
         const data = {
           label,
-          url: currentQuery,
+          url: currentQueryUrl,
         };
 
         callQueryStorage({
@@ -186,7 +186,7 @@ const QueryActions = ({ sqon }: { sqon: RepoFiltersType }) => {
     const queryExists = checkExistingQueries(currentQueryLabel, currentUrl);
 
     setHasQueryToStore(!!sqon && !queryExists);
-    setCurrentQuery(currentUrl);
+    setCurrentQueryUrl(currentUrl);
     setCurrentQueryLabel(currentQueryLabel);
   }, [router.asPath]);
 
@@ -291,6 +291,8 @@ const QueryActions = ({ sqon }: { sqon: RepoFiltersType }) => {
           </Button>
         </Fragment>
       )}
+
+      <ShareButton queryLabel={currentQueryLabel} queryUrl={currentQueryUrl} />
 
       <QueryModals setShowModal={setShowModal} modalProps={showModal} />
     </Wrapper>

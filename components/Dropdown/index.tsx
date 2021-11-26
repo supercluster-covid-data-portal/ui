@@ -31,12 +31,14 @@ import Button from '../Button';
 
 const Dropdown = ({
   children,
+  className,
   data,
   disabled,
   onClick,
   title,
 }: {
   children?: ReactNode | ReactNode[];
+  className?: string;
   data: any[];
   disabled?: boolean;
   onClick?: (event?: SyntheticEvent<HTMLButtonElement, Event>) => any;
@@ -81,73 +83,81 @@ const Dropdown = ({
   }, [disabled, hasData]);
 
   return (
-    <Button disabled={disabled || !hasData} onClick={handleClickOnButton} ref={node} title={title}>
-      {children}
-      {open ? (
-        <ChevronDown
-          fill={theme.colors.white}
-          size="12px"
-          style={css`
-            margin-left: 6px;
-            margin-right: -6px;
-            transform: rotate(180deg) translateY(-2px);
-          `}
-        />
-      ) : (
-        <ChevronDown
-          fill={theme.colors.white}
-          size="12px"
-          style={css`
-            margin-left: 6px;
-            margin-right: -6px;
-            transform: translateY(1px);
-          `}
-        />
-      )}
+    <div className={className}>
+      <Button
+        disabled={disabled || !hasData}
+        onClick={handleClickOnButton}
+        ref={node}
+        title={title}
+      >
+        {children}
+        {open ? (
+          <ChevronDown
+            fill={theme.colors.white}
+            size="12px"
+            style={css`
+              margin-left: 6px;
+              margin-right: -6px;
+              transform: rotate(180deg) translateY(-2px);
+            `}
+          />
+        ) : (
+          <ChevronDown
+            fill={theme.colors.white}
+            size="12px"
+            style={css`
+              margin-left: 6px;
+              margin-right: -6px;
+              transform: translateY(1px);
+            `}
+          />
+        )}
 
-      {open && (
-        <ul
-          css={css`
-            background: ${theme.colors.white};
-            box-shadow: 0 8px 21px 0 rgba(0, 0, 0, 0.1), 0 6px 12px 0 rgba(0, 0, 0, 0.1);
-            color: ${theme.colors.grey_800};
-            list-style: none;
-            margin: 0;
-            max-width: 300px;
-            min-width: 100%;
-            padding: 0;
-            position: absolute;
-            right: 0;
-            top: 1.7rem;
-            z-index: 666;
+        {open && (
+          <ul
+            css={css`
+              background: ${theme.colors.white};
+              box-shadow: 0 8px 21px 0 rgba(0, 0, 0, 0.1), 0 6px 12px 0 rgba(0, 0, 0, 0.1);
+              color: ${theme.colors.grey_800};
+              list-style: none;
+              margin: 0;
+              max-width: 300px;
+              min-width: 100%;
+              padding: 0;
+              position: absolute;
+              right: 0;
+              top: 1.7rem;
+              z-index: 666;
 
-            li {
-              box-sizing: border-box;
-              padding: 0 8px;
-              width: 100%;
-            }
-          `}
-        >
-          {data.map((dataItem: ReactNode, index) => (
-            <li
-              css={css`
-                cursor: default;
-                max-width: 300px;
+              li {
+                box-sizing: border-box;
+                height: fit-content;
+                padding: 0 8px;
+                width: 100%;
+              }
+            `}
+          >
+            {data.map((dataItem: ReactNode, index) => (
+              <li
+                css={css`
+                  cursor: default;
+                  max-width: 300px;
 
-                &:focus,
-                &:hover {
-                  background: ${theme.colors.grey_2};
-                }
-              `}
-              key={index}
-              onClick={preventEvent}
-            >
-              {dataItem}
-            </li>
-          ))}
-        </ul>
-      )}
-    </Button>
+                  &:focus,
+                  &:hover {
+                    background: ${theme.colors.grey_2};
+                  }
+                `}
+                key={index}
+                onClick={preventEvent}
+              >
+                {dataItem}
+              </li>
+            ))}
+          </ul>
+        )}
+      </Button>
+    </div>
   );
 };
 
