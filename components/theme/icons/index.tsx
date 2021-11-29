@@ -32,8 +32,13 @@ import OvertureLogoWithText from './overture_logo_with_text';
 import OvertureUser from './overture_user';
 import Checkmark from './checkmark';
 import Spinner from './spinner';
-import Error from './error';
 import Warning from './warning';
+
+export { default as BinIcon } from './bin';
+export { default as EditIcon } from './edit';
+export { default as ErrorIcon } from './error';
+export { default as FolderIcon } from './folder';
+export { default as SaveIcon } from './save';
 
 export {
   GoogleLogo,
@@ -49,6 +54,5 @@ export {
   OvertureUser,
   Checkmark,
   Spinner,
-  Error,
   Warning,
 };

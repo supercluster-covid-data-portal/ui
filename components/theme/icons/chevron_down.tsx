@@ -23,14 +23,14 @@ import { css } from '@emotion/core';
 
 import { IconProps } from './types';
 
-const ChevronDown = ({ fill, width, height, style }: IconProps) => {
+const ChevronDown = ({ fill, height, size, style, width }: IconProps) => {
   return (
     <svg
       css={css`
         ${style}
       `}
-      width={width}
-      height={height}
+      width={size || width}
+      height={size || height}
       viewBox="0 0 12 12"
     >
       <path
