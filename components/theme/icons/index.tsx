@@ -39,6 +39,7 @@ export { default as EditIcon } from './edit';
 export { default as ErrorIcon } from './error';
 export { default as FolderIcon } from './folder';
 export { default as SaveIcon } from './save';
+export { default as ShareIcon } from './share';
 
 export {
   GoogleLogo,

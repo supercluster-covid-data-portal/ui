@@ -7,11 +7,12 @@ const StyledActionsSection = styled('section')`
   margin: 10px 0;
   padding: 0 15px;
 
+  > *:not(:first-child) {
+    margin-left: 10px;
+  }
+
   button {
     height: 25px;
-    &:not(:first-of-type) {
-      margin-left: 10px;
-    }
   }
 `;
 
