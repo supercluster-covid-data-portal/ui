@@ -102,14 +102,18 @@ const QueryActions = ({ sqon }: { sqon: RepoFiltersType }) => {
     };
 
   const editQuery =
-    (queryId: string, previousLabel: string): MouseEventHandler<Element> =>
+    (
+      queryId: string,
+      previousLabel: string,
+      previousQueryUrl: string,
+    ): MouseEventHandler<Element> =>
     (event) => {
       setShowModal({
         actionType: 'editQuery',
         callback: (label) => {
           const data = {
             label,
-            url: currentQueryUrl,
+            url: previousQueryUrl,
           };
 
           callQueryStorage({
@@ -234,7 +238,7 @@ const QueryActions = ({ sqon }: { sqon: RepoFiltersType }) => {
                     size="11px"
                   />
                 )}
-                onClick={editQuery(queryId, label)}
+                onClick={editQuery(queryId, label, queryData.url)}
               />
               <IconButton
                 Icon={() => (

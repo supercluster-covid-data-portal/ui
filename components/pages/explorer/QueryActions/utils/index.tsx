@@ -41,8 +41,8 @@ const useQueryStorage = ({ token = '', userId = '' }: { token?: string; userId?:
       })
         .then((response: AxiosResponse) => {
           if ([200, 204].includes(response.status)) {
-            setCurrentEtag(response.data.etag);
-            setStoredQueries(response.data.queries);
+            response.data.etag && setCurrentEtag(response.data.etag);
+            response.data.queries && setStoredQueries(response.data.queries);
 
             return response.data;
           }
