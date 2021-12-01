@@ -232,8 +232,10 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
 const RepoTable = (props: PageContentProps) => {
   const theme: typeof defaultTheme = useTheme();
   const { NEXT_PUBLIC_ARRANGER_API_URL, NEXT_PUBLIC_ARRANGER_MANIFEST_COLUMNS } = getConfig();
+
+  // break it into an array, and ensure there's no empty field names
   const manifestColumns = NEXT_PUBLIC_ARRANGER_MANIFEST_COLUMNS.split(',')
-    .filter((field) => field.trim()) // break it into arrays, and ensure there's no empty field names
+    .filter((field) => field.trim())
     .map((fieldName) => fieldName.replace(/['"]+/g, '').trim());
 
   const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
@@ -278,6 +280,7 @@ const RepoTable = (props: PageContentProps) => {
         {...props}
         showFilterInput={false}
         columnDropdownText={'Columns'}
+        enableSelectedTableRowsExporterFilter
         exporter={customExporters}
         downloadUrl={urlJoin(NEXT_PUBLIC_ARRANGER_API_URL, 'download')}
       />
