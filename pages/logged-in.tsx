@@ -75,7 +75,7 @@ const LoginLoaderPage = createPage({
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background-color: ${theme.colors.grey_2};
+            background-color: ${theme.colors.grey_200};
           `
         }
       >
