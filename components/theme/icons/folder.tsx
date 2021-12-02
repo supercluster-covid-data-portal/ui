@@ -19,27 +19,26 @@
  *
  */
 
+import { ReactElement } from 'react';
 import { css } from '@emotion/core';
-import theme from '..';
+
 import { IconProps } from './types';
 
-const Dismiss = ({ size = '12px', style, fill }: IconProps) => {
+const Folder = ({ fill = '#28519D', size = '12px', style }: IconProps): ReactElement => {
   return (
     <svg
       css={css`
-        ${style};
+        ${style}
         height: ${size};
         width: ${size};
       `}
-      viewBox={'0 0 20 20'}
+      fill={fill}
+      viewBox="20 10 120 90"
     >
-      <path
-        fill={fill || theme.colors.black}
-        fillRule="evenodd"
-        d="M9.993 13.502l-5.74 5.74c-2.306 2.306-5.79-1.203-3.51-3.484L6.51 9.993.743 4.253c-2.28-2.307 1.204-5.79 3.51-3.51l5.74 5.765L15.758.743c2.281-2.28 5.79 1.203 3.484 3.51l-5.74 5.74 5.74 5.765c2.306 2.28-1.203 5.79-3.484 3.484l-5.765-5.74z"
-      />
+      <path d="M127.913,52.8c-0.562-0.801-1.479-1.277-2.456-1.277H51.835c-1.264,0-2.392,0.791-2.821,1.979L33.696,95.828  c-0.332,0.918-0.195,1.942,0.365,2.742c0.562,0.801,1.479,1.277,2.456,1.277h73.621c1.263,0,2.391-0.791,2.821-1.979l15.317-42.326  C128.61,54.624,128.474,53.6,127.913,52.8z"></path>
+      <path d="M23.802,96.72l18.183-50.24c0.859-2.376,3.115-3.958,5.643-3.958h68.219v-5.5c0-3.313-2.687-6-6-6H67.202l-9.916-9.917  c-1.126-1.126-2.651-1.758-4.243-1.758h-26.58c-3.313,0-6,2.687-6,6v66C20.462,93.705,21.825,95.738,23.802,96.72z"></path>
     </svg>
   );
 };
 
-export default Dismiss;
+export default Folder;

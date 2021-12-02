@@ -237,6 +237,7 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
 
 const RepoTable = (props: PageContentProps) => {
   const theme: typeof defaultTheme = useTheme();
+
   const { NEXT_PUBLIC_ARRANGER_API_URL, NEXT_PUBLIC_FILE_DOWNLOAD_LIMIT } = getConfig();
   const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
   const { selectedTableRows } = props;
@@ -369,6 +370,7 @@ const RepoTable = (props: PageContentProps) => {
         {...props}
         showFilterInput={false}
         columnDropdownText={'Columns'}
+        enableSelectedTableRowsExporterFilter
         exporter={customExporters}
         downloadUrl={urlJoin(NEXT_PUBLIC_ARRANGER_API_URL, 'download')}
       />
