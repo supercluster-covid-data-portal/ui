@@ -22,21 +22,9 @@
 import { ReactNode } from 'react';
 import { css } from '@emotion/core';
 
-import { getConfig } from '../../../global/config';
-
 import { GenericHelpMessage } from '../../DMSAdminContact';
-import StyledLink from '../../Link';
 import theme from '../../theme';
 import { Checkmark, Warning } from '../../theme/icons';
-
-const ArrangerAdminUILink = () => {
-  const { NEXT_PUBLIC_ARRANGER_ADMIN_UI } = getConfig();
-  return (
-    <StyledLink href={NEXT_PUBLIC_ARRANGER_ADMIN_UI} target="_blank">
-      Arranger Admin UI
-    </StyledLink>
-  );
-};
 
 const ListItem = ({
   Icon,
@@ -93,32 +81,30 @@ const getConfigError = ({
   index && graphqlField ? (
     !hasConfig && (
       <span>
-        No active configurations for the DMS portal exist. Please make sure the index and GraphQL
-        field specified in the DMS{' '}
+        No active configurations for the portal exist. Please make sure the index and GraphQL field
+        specified in the API config file{' '}
         <span
           css={css`
             font-weight: bold;
           `}
         >
-          config.yaml
+          base.json
         </span>{' '}
-        file during installation have been created in the <ArrangerAdminUILink />.{' '}
-        <GenericHelpMessage />
+        during installation have been created. <GenericHelpMessage />
       </span>
     )
   ) : (
     <span>
-      One or more of the following values required by the DMS portal do not exist. Please make sure
-      the values are specified in the DMS{' '}
+      One or more of the following values required by the portal do not exist. Please make sure the
+      values are specified in the API config file{' '}
       <span
         css={css`
           font-weight: bold;
         `}
       >
-        config.yaml
+        base.json
       </span>{' '}
-      file during installation and have been used to create your project in the{' '}
-      <ArrangerAdminUILink />. <GenericHelpMessage />
+      during installation and have been used to create your project. <GenericHelpMessage />
       <ul
         css={css`
           list-style-type: none;
