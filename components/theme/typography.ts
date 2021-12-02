@@ -27,7 +27,7 @@ const baseFont = css`
 `;
 
 const headingsFont = css`
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Poppins', sans-serif;
 `;
 
 const regular = css`
