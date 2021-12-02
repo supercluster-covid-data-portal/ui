@@ -29,6 +29,11 @@ import StyledLink from '../../Link';
 import defaultTheme from '../../theme';
 import { getConfig } from '../../../global/config';
 import { CLOUD_CLI_DOCS_URL } from '../../../global/utils/constants';
+import ajax from '../../utils/ajax';
+import createDownloadInWindow from '../../utils/createDownloadInWindow';
+import { useState } from 'react';
+import { AxiosError } from 'axios';
+import SimpleNotification from '../../SimpleNotification';
 
 const Table = dynamic(
   () => import('@caravinci/arranger-components/dist/Arranger').then((comp) => comp.Table),
@@ -233,17 +238,65 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
 const RepoTable = (props: PageContentProps) => {
   const theme: typeof defaultTheme = useTheme();
   const { NEXT_PUBLIC_ARRANGER_API_URL, NEXT_PUBLIC_FILE_DOWNLOAD_LIMIT } = getConfig();
-
-  // commenting manifest feature out for now
-  // const manifestColumns = NEXT_PUBLIC_ARRANGER_MANIFEST_COLUMNS.split(',')
-  //   .filter((field) => field.trim()) // break it into arrays, and ensure there's no empty field names
-  //   .map((fieldName) => fieldName.replace(/['"]+/g, '').trim());
-
   const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  const { selectedTableRows } = props;
+  const [seqFilesDownloading, setSeqFilesDownloading] = useState<boolean>(false);
+  const [seqFilesDownloadError, setSeqFilesDownloadError] = useState<string | null>(null);
+
+  const downloadFilesEnabled =
+    !seqFilesDownloading &&
+    selectedTableRows.length &&
+    selectedTableRows.length <= NEXT_PUBLIC_FILE_DOWNLOAD_LIMIT;
+
   const customExporters = [
     { label: 'Export Table to TSV', fileName: `data-explorer-table-export.${today}.tsv` }, // exports a TSV with what is displayed on the table (columns selected, etc.)
-    // { label: 'File Manifest', fileName: `score-manifest.${today}.tsv`, columns: manifestColumns }, // exports a TSV with the manifest columns
-    { label: 'Download Selected', fileName: `TBD` }, // download files for selected sequence ids
+    {
+      label: () => (
+        <span
+          css={(theme) => css`
+            cursor: ${downloadFilesEnabled ? 'pointer' : 'not-allowed'};
+            color: ${downloadFilesEnabled ? theme.colors.black : theme.colors.grey_1};
+          `}
+          onClick={
+            downloadFilesEnabled
+              ? async () => {
+                  setSeqFilesDownloading(true);
+                  ajax
+                    .post(
+                      urlJoin(NEXT_PUBLIC_ARRANGER_API_URL, 'sequences/download'),
+                      {
+                        ids: selectedTableRows,
+                      },
+                      {
+                        responseType: 'blob',
+                        headers: { accept: '*/*' },
+                      },
+                    )
+                    .then((res) => {
+                      const blob = new Blob([res.data]);
+                      const filename = res.headers['content-disposition'].split('"')[1];
+                      createDownloadInWindow(filename, blob);
+                    })
+                    .catch(async (err: AxiosError) => {
+                      if (err.response) {
+                        const text = await new Response(err.response.data).text();
+                        setSeqFilesDownloadError(
+                          text || 'An unknown error occurred. Please try again',
+                        );
+                      }
+                      console.error(err);
+                    })
+                    .finally(() => {
+                      setSeqFilesDownloading(false);
+                    });
+                }
+              : () => null
+          }
+        >
+          Download Selected
+        </span>
+      ),
+    },
     {
       label: () => (
         <span
@@ -279,6 +332,39 @@ const RepoTable = (props: PageContentProps) => {
 
   return (
     <div css={getTableStyle(theme)}>
+      <div
+        css={css`
+          display: flex;
+          justify-content: center;
+        `}
+      >
+        {seqFilesDownloading && (
+          <SimpleNotification
+            style={`
+              background-color: ${theme.colors.green_accent_1};
+              border: 1px solid ${theme.colors.green_accent_7};
+              color: ${theme.colors.green_accent_8};
+            `}
+          >
+            Downloading sequence files...
+          </SimpleNotification>
+        )}
+        {seqFilesDownloadError && (
+          <SimpleNotification
+            title="Sequence Files Download Error"
+            dismissable
+            onDismiss={() => setSeqFilesDownloadError(null)}
+            style={`
+              background-color: ${theme.colors.error_1};
+              border: 1px solid ${theme.colors.error_dark};
+              color: ${theme.colors.error_dark};
+            `}
+          >
+            {seqFilesDownloadError}
+          </SimpleNotification>
+        )}
+      </div>
+
       <Table
         {...props}
         showFilterInput={false}

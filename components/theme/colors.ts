@@ -67,6 +67,12 @@ const accent3 = {
   accent3: '#d9de3a',
 };
 
+const green_accent = {
+  green_accent_1: '#e9fbf7',
+  green_accent_7: '#15846c',
+  green_accent_8: '#0b5948',
+};
+
 const error = {
   error: '#c86370',
   error_dark: '#ad404e',
@@ -89,4 +95,5 @@ export default {
   ...secondary,
   ...error,
   ...warning,
+  ...green_accent,
 };
