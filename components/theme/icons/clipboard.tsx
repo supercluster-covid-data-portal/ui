@@ -19,42 +19,31 @@
  *
  */
 
-import GoogleLogo from './google';
-import FacebookLogo from './facebook';
-import GitHubLogo from './github';
-import LinkedInLogo from './linkedin';
-import OrcidLogo from './orcid';
-import Illustration from './illustration';
-import Avatar from './avatar';
-import ChevronDown from './chevron_down';
-import OvertureLogo from './overture_logo';
-import OvertureLogoWithText from './overture_logo_with_text';
-import OvertureUser from './overture_user';
-import Checkmark from './checkmark';
-import Spinner from './spinner';
-import Warning from './warning';
+import { ReactElement } from 'react';
+import { css } from '@emotion/core';
 
-export { default as BinIcon } from './bin';
-export { default as ClipboardIcon } from './clipboard';
-export { default as EditIcon } from './edit';
-export { default as ErrorIcon } from './error';
-export { default as FolderIcon } from './folder';
-export { default as SaveIcon } from './save';
-export { default as ShareIcon } from './share';
+import { IconProps } from './types';
 
-export {
-  GoogleLogo,
-  FacebookLogo,
-  GitHubLogo,
-  LinkedInLogo,
-  OrcidLogo,
-  Illustration,
-  Avatar,
-  ChevronDown,
-  OvertureLogo,
-  OvertureLogoWithText,
-  OvertureUser,
-  Checkmark,
-  Spinner,
-  Warning,
+const ClipboardIcon = ({ fill = '#28519D', size = '18px', style }: IconProps): ReactElement => {
+  return (
+    <svg
+      css={css`
+        ${style};
+        height: ${size};
+        width: ${size};
+      `}
+      x="0px"
+      y="0px"
+      viewBox="0 0 100 100"
+    >
+      <g>
+        <path
+          fill={fill}
+          d="M80,25H70V12.5C70,8.4,66.6,5,62.5,5H20c-4.1,0-7.5,3.4-7.5,7.5V65c0,4.1,3.4,7.5,7.5,7.5h10V85   c0,4.1,3.4,7.5,7.5,7.5H80c4.1,0,7.5-3.4,7.5-7.5V32.5C87.5,28.4,84.1,25,80,25z M30,32.5V65H20V12.5h42.5V25h-25   C33.4,25,30,28.4,30,32.5z M80,85H37.5V32.5H80V85z"
+        ></path>
+      </g>
+    </svg>
+  );
 };
+
+export default ClipboardIcon;
