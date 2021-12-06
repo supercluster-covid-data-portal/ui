@@ -24,6 +24,7 @@ import urlJoin from 'url-join';
 export const EXPLORER_PATH = '/explorer';
 export const USER_PATH = '/user';
 export const LOGIN_PATH = '/login';
+export const DOWNLOAD_SEQ_PATH = 'download/sequences';
 
 // external docs links
 const OVERTURE_DMS_DOCS_ROOT = 'https://overture.bio/documentation/dms/';

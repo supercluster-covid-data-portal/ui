@@ -28,11 +28,11 @@ import { PageContentProps } from './index';
 import StyledLink from '../../Link';
 import defaultTheme from '../../theme';
 import { getConfig } from '../../../global/config';
-import { CLOUD_CLI_DOCS_URL } from '../../../global/utils/constants';
+import { CLOUD_CLI_DOCS_URL, DOWNLOAD_SEQ_PATH } from '../../../global/utils/constants';
 import ajax from '../../utils/ajax';
 import createDownloadInWindow from '../../utils/createDownloadInWindow';
-import { useState } from 'react';
-import { AxiosError } from 'axios';
+import React, { useState } from 'react';
+import { AxiosError, AxiosResponse } from 'axios';
 import SimpleNotification from '../../SimpleNotification';
 
 const Table = dynamic(
@@ -235,6 +235,20 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
   }
 `;
 
+const getDownloadError = (status: number, errText?: string) => {
+  switch (status) {
+    case 400:
+      if (errText === 'No files found.') {
+        return 'The selected sequences do not have files associated with them. Please try again with different sequences.';
+      }
+      return 'Failed to download files for the requested sequences. If the problem persists, contact support for assistance.';
+    case 500:
+      return `Download failed due to an internal error [${status}]. If the problem persists, contact support for assistance.`;
+    default:
+      return 'An unknown error occurred. Please try again.';
+  }
+};
+
 const RepoTable = (props: PageContentProps) => {
   const theme: typeof defaultTheme = useTheme();
 
@@ -264,7 +278,7 @@ const RepoTable = (props: PageContentProps) => {
                   setSeqFilesDownloading(true);
                   ajax
                     .post(
-                      urlJoin(NEXT_PUBLIC_ARRANGER_API_URL, 'sequences/download'),
+                      urlJoin(NEXT_PUBLIC_ARRANGER_API_URL, DOWNLOAD_SEQ_PATH),
                       {
                         ids: selectedTableRows,
                       },
@@ -273,19 +287,19 @@ const RepoTable = (props: PageContentProps) => {
                         headers: { accept: '*/*' },
                       },
                     )
-                    .then((res) => {
+                    .then((res: AxiosResponse) => {
                       const blob = new Blob([res.data]);
                       const filename = res.headers['content-disposition'].split('"')[1];
                       createDownloadInWindow(filename, blob);
                     })
                     .catch(async (err: AxiosError) => {
-                      if (err.response) {
-                        const text = await new Response(err.response.data).text();
-                        setSeqFilesDownloadError(
-                          text || 'An unknown error occurred. Please try again',
-                        );
+                      if (err) {
+                        const code = err.response?.status || 500;
+                        const text = await new Response(err.response?.data).text();
+                        const displayError = getDownloadError(code, text);
+                        return setSeqFilesDownloadError(displayError);
                       }
-                      console.error(err);
+                      setSeqFilesDownloadError('An unknown error occurred. Please try again');
                     })
                     .finally(() => {
                       setSeqFilesDownloading(false);
@@ -359,6 +373,7 @@ const RepoTable = (props: PageContentProps) => {
               background-color: ${theme.colors.error_1};
               border: 1px solid ${theme.colors.error_dark};
               color: ${theme.colors.error_dark};
+              width: auto;
             `}
           >
             {seqFilesDownloadError}

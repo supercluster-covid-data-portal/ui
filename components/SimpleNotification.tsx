@@ -50,13 +50,19 @@ const SimpleNotification = ({
           {children}
         </div>
         {dismissable && (
-          <IconButton
-            onClick={(e: React.MouseEvent) => (onDismiss ? onDismiss() : () => null)}
-            Icon={DismissIcon}
-            height={12}
-            width={12}
-            fill={defaultTheme.colors.error_dark}
-          />
+          <span
+            css={css`
+              margin-left: 15px;
+            `}
+          >
+            <IconButton
+              onClick={(e: React.MouseEvent) => (onDismiss ? onDismiss() : () => null)}
+              Icon={DismissIcon}
+              height={12}
+              width={20}
+              fill={defaultTheme.colors.error_dark}
+            />
+          </span>
         )}
       </div>
     </div>
