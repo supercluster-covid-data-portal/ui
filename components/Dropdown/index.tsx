@@ -123,7 +123,7 @@ const Dropdown = ({
               margin: 0;
               max-width: 300px;
               min-width: 100%;
-              padding: 0;
+              padding: 2px 0 1px;
               position: absolute;
               right: 0;
               top: 1.7rem;
