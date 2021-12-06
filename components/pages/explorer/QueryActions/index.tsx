@@ -199,57 +199,63 @@ const QueryActions = ({ sqon }: { sqon: RepoFiltersType }) => {
     setHasStoredQueries(hasData);
 
     setQueriesDropdownData(
-      Object.entries(storedQueries).map(([queryId, queryData]) => {
-        const { label } = queryData as StoredQueryObject;
-        return (
-          <div
-            css={css`
-              display: flex;
-              justify-content: space-between;
-            `}
-          >
-            <a
-              css={css`
-                color: ${theme.colors.grey_800};
-                overflow: hidden;
-                text-decoration: none;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-              `}
-              href={queryData.url}
-              title={label}
-            >
-              {label}
-            </a>
-
+      Object.entries(storedQueries)
+        .sort(([A, queryA], [B, queryB]) =>
+          // done as "quick and far from ideal" response to the request in ticket comment:
+          // https://github.com/supercluster-covid-data-portal/ui/issues/10#issuecomment-986834479
+          queryA.label < queryB.label ? -1 : queryA.label > queryB.label ? 1 : 0,
+        )
+        .map(([queryId, queryData]) => {
+          const { label } = queryData as StoredQueryObject;
+          return (
             <div
               css={css`
-                margin-left: 5px;
-                white-space: nowrap;
+                display: flex;
+                justify-content: space-between;
               `}
             >
-              <IconButton
-                Icon={() => (
-                  <EditIcon
-                    style={css`
-                      margin-right: 5px;
-                    `}
-                    fill={theme.colors.grey_800}
-                    size="11px"
-                  />
-                )}
-                onClick={editQuery(queryId, label, queryData.url)}
-              />
-              <IconButton
-                Icon={() => (
-                  <BinIcon data-action="delete" fill={theme.colors.grey_800} size="12px" />
-                )}
-                onClick={deleteQuery(queryId, label)}
-              />
+              <a
+                css={css`
+                  color: ${theme.colors.grey_800};
+                  overflow: hidden;
+                  text-decoration: none;
+                  text-overflow: ellipsis;
+                  white-space: nowrap;
+                `}
+                href={queryData.url}
+                title={label}
+              >
+                {label}
+              </a>
+
+              <div
+                css={css`
+                  margin-left: 5px;
+                  white-space: nowrap;
+                `}
+              >
+                <IconButton
+                  Icon={() => (
+                    <EditIcon
+                      style={css`
+                        margin-right: 5px;
+                      `}
+                      fill={theme.colors.grey_800}
+                      size="11px"
+                    />
+                  )}
+                  onClick={editQuery(queryId, label, queryData.url)}
+                />
+                <IconButton
+                  Icon={() => (
+                    <BinIcon data-action="delete" fill={theme.colors.grey_800} size="12px" />
+                  )}
+                  onClick={deleteQuery(queryId, label)}
+                />
+              </div>
             </div>
-          </div>
-        );
-      }),
+          );
+        }),
     );
   }, [storedQueries]);
 

@@ -41,7 +41,7 @@
     "@types/js-cookie": "^3.0.0",
     "@types/node": "^14.10.1",
     "@types/react": "^16.9.49",
-    "@types/react-dom": "^17.0.11",
+    "@types/react-dom": "^16.9.14",
     "caniuse-lite": "^1.0.30001275",
     "concurrently": "^6.4.0",
     "jest": "^26.5.3",
