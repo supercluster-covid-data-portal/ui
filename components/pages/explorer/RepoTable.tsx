@@ -268,9 +268,10 @@ const RepoTable = (props: PageContentProps) => {
     {
       label: () => (
         <span
+          // TODO: disabled style will be fixed in theming ticket https://github.com/supercluster-covid-data-portal/ui/issues/1
           css={(theme) => css`
             cursor: ${downloadFilesEnabled ? 'pointer' : 'not-allowed'};
-            color: ${downloadFilesEnabled ? theme.colors.black : theme.colors.grey_1};
+            color: ${downloadFilesEnabled ? theme.colors.black : theme.colors.grey_5};
           `}
           onClick={
             downloadFilesEnabled
