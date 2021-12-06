@@ -33,5 +33,6 @@ const defaultTheme = {
 
 export default defaultTheme;
 
+export type DefaultColors = keyof typeof colors;
 export type DefaultTheme = typeof defaultTheme;
 export type DefaultThemeObject = { theme: DefaultTheme };

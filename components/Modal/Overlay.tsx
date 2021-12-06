@@ -10,7 +10,7 @@ const ModalOverlay = styled('div')`
   justify-content: center;
   align-items: center;
   background: ${({ theme }: DefaultThemeObject) =>
-    Color(theme.colors.grey_5).alpha(0.7).hsl().string()};
+    Color(theme.colors.grey_500).alpha(0.7).hsl().string()};
 `;
 
 const Overlay = (props: any) => <ModalOverlay {...props} />;

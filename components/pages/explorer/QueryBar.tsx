@@ -39,11 +39,11 @@ const getCss = (theme: typeof defaultTheme) => css`
     background-color: transparent;
     display: flex;
     flex: 1;
+    font-size: 14px;
     align-items: center;
     padding: 12px 0 12px 12px;
     margin: 0;
-    font-family: Lato, sans-serif;
-    color: ${theme.colors.accent_dark};
+    color: ${theme.colors.grey_700};
     & .sqon-group {
       flex-wrap: wrap;
       margin-top: 3px;
@@ -64,11 +64,11 @@ const getCss = (theme: typeof defaultTheme) => css`
       flex: none;
     }
     & .sqon-bubble.sqon-clear {
-      border: solid 1px ${theme.colors.grey_5};
+      border: solid 1px ${theme.colors.grey_400};
       background-color: ${theme.colors.white};
-      color: ${theme.colors.accent_dark};
+      color: ${theme.colors.grey_800};
       &:hover {
-        background-color: ${theme.colors.secondary_light};
+        background-color: ${theme.colors.grey_200};
       }
       padding: 0 12px;
       font-weight: 600;
@@ -96,6 +96,9 @@ const getCss = (theme: typeof defaultTheme) => css`
       margin-right: 6px;
       ${css(theme.typography.label)};
       cursor: pointer;
+      &:hover {
+        background-color: ${theme.colors.accent_light};
+      }
     }
     & .sqon-less,
     .sqon-more {
