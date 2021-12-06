@@ -23,7 +23,11 @@
 import { css } from '@emotion/core';
 
 const baseFont = css`
-  font-family: Lato, sans-serif;
+  font-family: 'Roboto', sans-serif;
+`;
+
+const headingsFont = css`
+  font-family: 'Poppins', sans-serif;
 `;
 
 const regular = css`
@@ -47,7 +51,7 @@ const button = css`
 `;
 
 const heading = css`
-  ${baseFont}
+  ${headingsFont}
   font-size: 18px;
   font-weight: bold;
   font-style: normal;
@@ -57,7 +61,7 @@ const heading = css`
 `;
 
 const subheading = css`
-  ${baseFont}
+  ${headingsFont}
   font-size: 16px;
   font-weight: bold;
   font-style: normal;
@@ -67,7 +71,7 @@ const subheading = css`
 `;
 
 const subheading2 = css`
-  ${baseFont}
+  ${headingsFont}
   font-size: 14px;
   font-weight: bold;
   font-style: normal;
