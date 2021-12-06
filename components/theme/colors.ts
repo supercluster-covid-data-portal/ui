@@ -77,6 +77,7 @@ const accent3 = {
   accent3: '#d9de3a',
 };
 
+// TODO: unify in theming ticket: https://github.com/supercluster-covid-data-portal/ui/issues/1
 const green_accent = {
   green_accent_1: '#e9fbf7',
   green_accent_7: '#15846c',
