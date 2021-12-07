@@ -241,9 +241,9 @@ const getDownloadError = (status: number, errText?: string) => {
       if (errText === 'No files found.') {
         return 'The selected sequences do not have files associated with them. Please try again with different sequences.';
       }
-      return 'Failed to download files for the requested sequences. If the problem persists, contact support for assistance.';
+      return 'Failed to download files for the requested sequences. Please try again later.';
     case 500:
-      return `Download failed due to an internal error [${status}]. If the problem persists, contact support for assistance.`;
+      return `Download failed due to an internal error [${status}]. Please try again later.`;
     default:
       return 'An unknown error occurred. Please try again.';
   }
