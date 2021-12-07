@@ -30,7 +30,7 @@ import defaultTheme from '../../theme';
 import { getConfig } from '../../../global/config';
 
 const Table = dynamic(
-  () => import('@arranger/components/dist/Arranger').then((comp) => comp.Table),
+  () => import('@caravinci/arranger-components/dist/Arranger').then((comp) => comp.Table),
   { ssr: false },
 ) as any;
 
@@ -231,47 +231,47 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
 
 const RepoTable = (props: PageContentProps) => {
   const theme: typeof defaultTheme = useTheme();
-  const {
-    NEXT_PUBLIC_ARRANGER_API,
-    NEXT_PUBLIC_ARRANGER_PROJECT_ID,
-    NEXT_PUBLIC_ARRANGER_MANIFEST_COLUMNS,
-  } = getConfig();
+  const { NEXT_PUBLIC_ARRANGER_API_URL, NEXT_PUBLIC_ARRANGER_MANIFEST_COLUMNS } = getConfig();
+
+  // break it into an array, and ensure there's no empty field names
   const manifestColumns = NEXT_PUBLIC_ARRANGER_MANIFEST_COLUMNS.split(',')
-    .filter((field) => field.trim()) // break it into arrays, and ensure there's no empty field names
+    .filter((field) => field.trim())
     .map((fieldName) => fieldName.replace(/['"]+/g, '').trim());
 
   const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
   const customExporters = [
     { label: 'File Table', fileName: `data-explorer-table-export.${today}.tsv` }, // exports a TSV with what is displayed on the table (columns selected, etc.)
     { label: 'File Manifest', fileName: `score-manifest.${today}.tsv`, columns: manifestColumns }, // exports a TSV with the manifest columns
-    { label: () => (
-      <span
-        css={css`
-          border-top: 1px solid ${theme.colors.grey_3};
-          margin-top: -3px;
-          padding-top: 7px;
-          white-space: pre-line;
-          width: 140px;
-
-          a {
-            margin-left: 3px;
-          }
-        `}
-      >
-        To download files using a file manifest, please follow these
-        <StyledLink
+    {
+      label: () => (
+        <span
           css={css`
-            line-height: inherit;
+            border-top: 1px solid ${theme.colors.grey_3};
+            margin-top: -3px;
+            padding-top: 7px;
+            white-space: pre-line;
+            width: 140px;
+
+            a {
+              margin-left: 3px;
+            }
           `}
-          href="https://overture.bio/documentation/score/user-guide/download"
-          rel="noopener noreferrer"
-          target="_blank"
         >
-          instructions
-        </StyledLink>
-        .
-      </span>
-    ), },
+          To download files using a file manifest, please follow these
+          <StyledLink
+            css={css`
+              line-height: inherit;
+            `}
+            href="https://overture.bio/documentation/score/user-guide/download"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            instructions
+          </StyledLink>
+          .
+        </span>
+      ),
+    },
   ];
 
   return (
@@ -280,8 +280,9 @@ const RepoTable = (props: PageContentProps) => {
         {...props}
         showFilterInput={false}
         columnDropdownText={'Columns'}
+        enableSelectedTableRowsExporterFilter
         exporter={customExporters}
-        downloadUrl={urlJoin(NEXT_PUBLIC_ARRANGER_API, NEXT_PUBLIC_ARRANGER_PROJECT_ID, 'download')}
+        downloadUrl={urlJoin(NEXT_PUBLIC_ARRANGER_API_URL, 'download')}
       />
     </div>
   );

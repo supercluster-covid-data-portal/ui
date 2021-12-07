@@ -23,59 +23,48 @@ import React, { useEffect } from 'react';
 import urlJoin from 'url-join';
 import { css } from '@emotion/core';
 
-import { getConfig } from '../global/config';
 import { createPage } from '../global/utils/pages';
-import { EGO_JWT_KEY, EXPLORER_PATH, LOGIN_PATH } from '../global/utils/constants';
-import Router from 'next/router';
-import { isValidJwt } from '../global/utils/egoTokenUtils';
 import PageLayout from '../components/PageLayout';
-import getInternalLink from '../global/utils/getInternalLink';
 import Loader from '../components/Loader';
-
-const fetchEgoToken = () => {
-  const { NEXT_PUBLIC_EGO_API_ROOT, NEXT_PUBLIC_EGO_CLIENT_ID } = getConfig();
-  const egoLoginUrl = urlJoin(
-    NEXT_PUBLIC_EGO_API_ROOT,
-    `/oauth/ego-token?client_id=${NEXT_PUBLIC_EGO_CLIENT_ID}`,
-  );
-
-  fetch(egoLoginUrl, {
-    credentials: 'include',
-    headers: { accept: '*/*' },
-    body: null,
-    method: 'POST',
-  })
-    .then((res) => {
-      if (res.status !== 200) {
-        throw new Error();
-      }
-      return res.text();
-    })
-    .then((jwt) => {
-      if (isValidJwt(jwt)) {
-        localStorage.setItem(EGO_JWT_KEY, jwt);
-        setTimeout(() => Router.push(getInternalLink({ path: EXPLORER_PATH })), 2000);
-      } else {
-        throw new Error('Invalid jwt, cannot login.');
-      }
-    })
-    .catch((err) => {
-      console.warn(err);
-      localStorage.removeItem(EGO_JWT_KEY);
-      Router.push(getInternalLink({ path: LOGIN_PATH }));
-    });
-};
+import { getConfig } from '../global/config';
+import { EXPLORER_PATH, TOKEN_ENDPOINT } from '../global/utils/constants';
+import { useRouter } from 'next/router';
+import useAuthContext from '../global/hooks/useAuthContext';
+import { WalletUser } from '../global/types';
+import validateUser from '../global/utils/validateUser';
 
 const LoginLoaderPage = createPage({
   getInitialProps: async (ctx) => {
-    const { egoJwt, asPath, query } = ctx;
-    return { egoJwt, query, asPath };
+    const { walletToken, asPath, query } = ctx;
+    return { walletToken, query, asPath };
   },
   isPublic: true,
-})(() => {
+})(({ query }) => {
+  const router = useRouter();
+  const { NEXT_PUBLIC_ARRANGER_API_URL } = getConfig();
+  const { setUser } = useAuthContext();
+
   useEffect(() => {
-    fetchEgoToken();
-  });
+    if (query.code) {
+      const loginUrl = new URL(urlJoin(NEXT_PUBLIC_ARRANGER_API_URL, TOKEN_ENDPOINT));
+      loginUrl.searchParams.append('code', query.code);
+
+      fetch(loginUrl.href, { method: 'POST', credentials: 'include' })
+        .then(async (res) => {
+          if (res.status !== 200) {
+            throw Error('Token request failed');
+          }
+          // set userinfo in auth context
+          const userData = await res.json();
+          setUser(validateUser(userData));
+          router.push(EXPLORER_PATH);
+        })
+        .catch((err) => {
+          console.warn('Login failed: ', err);
+          router.push('/');
+        });
+    }
+  }, []);
 
   return (
     <PageLayout>
@@ -86,7 +75,7 @@ const LoginLoaderPage = createPage({
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background-color: ${theme.colors.grey_2};
+            background-color: ${theme.colors.grey_200};
           `
         }
       >

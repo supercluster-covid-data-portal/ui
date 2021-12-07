@@ -23,16 +23,14 @@ import { css } from '@emotion/core';
 import theme from '..';
 import { IconProps } from './types';
 
-const Dismiss = ({ height, width, style, fill }: IconProps) => {
+const Dismiss = ({ size = '12px', style, fill }: IconProps) => {
   return (
     <svg
       css={css`
         ${style};
-        height: ${height}px;
-        width: ${width}px;
+        height: ${size};
+        width: ${size};
       `}
-      width={width}
-      height={height}
       viewBox={'0 0 20 20'}
     >
       <path

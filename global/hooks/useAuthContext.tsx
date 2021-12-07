@@ -21,40 +21,51 @@
 
 import React, { createContext, useState } from 'react';
 import { useRouter } from 'next/router';
+import Cookies from 'js-cookie';
 
-import { EGO_JWT_KEY, EXPLORER_PATH } from '../utils/constants';
-import { decodeToken, extractUser, isValidJwt } from '../utils/egoTokenUtils';
-import { UserWithId } from '../../global/types';
+import { EXPLORER_PATH } from '../utils/constants';
 import getInternalLink from '../utils/getInternalLink';
+import { WalletUser } from '../types';
+import { getConfig } from '../config';
 
 type T_AuthContext = {
   token?: string;
+  removeToken: () => void;
   logout: () => void;
-  user?: UserWithId;
+  user?: WalletUser;
   fetchWithAuth: typeof fetch;
+  setUser: (user: WalletUser) => void;
 };
 
 const AuthContext = createContext<T_AuthContext>({
   token: undefined,
+  removeToken: () => {},
   logout: () => {},
   user: undefined,
   fetchWithAuth: fetch,
+  setUser: () => {},
 });
 
 export const AuthProvider = ({
-  egoJwt,
+  sessionToken,
+  initialUser,
   children,
 }: {
-  egoJwt?: string;
+  sessionToken?: string;
+  initialUser?: WalletUser;
   children: React.ReactElement;
 }) => {
   const router = useRouter();
-  // TODO: typing this state as `string` causes a compiler error. the same setup exists in argo but does not cause
-  // a type issue. using `any` for now
-  const [token, setTokenState] = useState<any>(egoJwt);
+  const { NEXT_PUBLIC_DOMAIN_ROOT_URL, NEXT_PUBLIC_SESSION_TOKEN_KEY } = getConfig();
+  const [token, setTokenState] = useState<string | undefined>(sessionToken);
+  const [userState, setUserState] = useState<WalletUser | undefined>(initialUser);
+  const domain = new URL(NEXT_PUBLIC_DOMAIN_ROOT_URL);
+
   const removeToken = () => {
-    localStorage.removeItem(EGO_JWT_KEY);
-    setTokenState(null);
+    // path and domain are necessary to remove a cookie, as per https://www.npmjs.com/package/js-cookie
+    Cookies.remove(NEXT_PUBLIC_SESSION_TOKEN_KEY, { path: '/', domain: domain.hostname });
+    setTokenState(undefined);
+    setUserState(undefined);
   };
 
   const logout = () => {
@@ -62,18 +73,14 @@ export const AuthProvider = ({
     router.push(getInternalLink({ path: EXPLORER_PATH }));
   };
 
-  if (!token) {
-    if (isValidJwt(egoJwt)) {
-      setTokenState(egoJwt);
-    }
-  } else {
-    if (!isValidJwt(token)) {
-      if (egoJwt && token === egoJwt) {
-        removeToken();
-      }
-    } else if (!egoJwt) {
-      setTokenState(null);
-    }
+  if (sessionToken && !token) {
+    setTokenState(sessionToken);
+  } else if (!sessionToken && token) {
+    removeToken();
+  }
+
+  if (initialUser && !userState) {
+    setUserState(initialUser);
   }
 
   const fetchWithAuth: T_AuthContext['fetchWithAuth'] = (url, options) => {
@@ -84,13 +91,13 @@ export const AuthProvider = ({
     });
   };
 
-  const userInfo = token ? decodeToken(token) : null;
-  const user = userInfo ? extractUser(userInfo) : undefined;
   const authData = {
     token,
+    removeToken,
     logout,
-    user,
+    user: userState,
     fetchWithAuth,
+    setUser: setUserState,
   };
 
   return <AuthContext.Provider value={authData}>{children}</AuthContext.Provider>;

@@ -1,1 +1,1 @@
-declare module '@arranger/components/dist/Arranger';
+declare module '@caravinci/arranger-components/dist/Arranger';

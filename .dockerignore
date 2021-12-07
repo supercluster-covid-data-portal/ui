@@ -1,6 +1,5 @@
-.env.local
-.env.test
-.env.schema
+.DS_Store
+.env*
 .next
 node_modules
 Dockerfile

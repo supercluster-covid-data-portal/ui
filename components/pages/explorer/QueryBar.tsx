@@ -23,11 +23,13 @@ import { css } from '@emotion/core';
 import dynamic from 'next/dynamic';
 import { Row } from 'react-grid-system';
 
-import defaultTheme from '../../theme';
+import defaultTheme from '@/components/theme';
+
+import QueryActions from './QueryActions';
 import { PageContentProps } from '.';
 
 const CurrentSQON = dynamic(
-  import('@arranger/components/dist/Arranger').then((comp) => comp.CurrentSQON),
+  import('@caravinci/arranger-components/dist/Arranger').then((comp) => comp.CurrentSQON),
   { ssr: false },
 ) as any;
 
@@ -159,6 +161,7 @@ const QueryBar = (props: PageContentProps) => {
       `}
     >
       <CurrentSQON {...props} />
+      <QueryActions sqon={props.sqon} />
     </Row>
   );
 };

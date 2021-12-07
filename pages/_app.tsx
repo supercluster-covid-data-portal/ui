@@ -21,55 +21,72 @@
 
 import Root from '../components/Root';
 import { AppContext } from 'next/app';
-
-import { EGO_JWT_KEY, LOGIN_PATH } from '../global/utils/constants';
-import { PageWithConfig } from '../global/utils/pages/types';
 import { useEffect, useState } from 'react';
-import Router from 'next/router';
-import getInternalLink from '../global/utils/getInternalLink';
-import { isValidJwt } from '../global/utils/egoTokenUtils';
+import nextCookies from 'next-cookies';
+import { getConfig } from '../global/config';
+import urlJoin from 'url-join';
+
+import { USERINFO_ENDPOINT } from '../global/utils/constants';
+import { PageWithConfig } from '../global/utils/pages/types';
+import Loader from '../components/Loader';
+import validateUser from '../global/utils/validateUser';
+import { WalletUser } from '../global/types';
+import useAuthContext from '@/global/hooks/useAuthContext';
 
 const DMSApp = ({
   Component,
   pageProps,
   ctx,
+  walletToken,
 }: {
   Component: PageWithConfig;
   pageProps: { [k: string]: any };
   ctx: any;
+  walletToken: string;
 }) => {
-  const [initialToken, setInitialToken] = useState<string>();
+  const [loadingUser, setLoadingUser] = useState(true);
+  const [initialUser, setInitialUser] = useState<WalletUser | undefined>(undefined);
+  const { removeToken } = useAuthContext();
+  const { NEXT_PUBLIC_ARRANGER_API_URL } = getConfig();
+
   useEffect(() => {
-    const egoJwt = localStorage.getItem(EGO_JWT_KEY) || undefined;
-    if (isValidJwt(egoJwt)) {
-      setInitialToken(egoJwt);
+    if (!initialUser && walletToken) {
+      console.info('Fetching user info');
+      fetch(urlJoin(NEXT_PUBLIC_ARRANGER_API_URL, USERINFO_ENDPOINT), { credentials: 'include' })
+        .then(async (res) => {
+          if (res.ok) {
+            const userData = await res.json();
+            return setInitialUser(validateUser(userData));
+          }
+          removeToken();
+          throw new Error(res.statusText);
+        })
+        .catch((err) => console.warn('Could not fetch user info: ', err))
+        .finally(() => setLoadingUser(false));
     } else {
-      setInitialToken(undefined);
-      // redirect to logout when token is expired/missing only if user is on a non-public page
-      if (!Component.isPublic) {
-        Router.push({
-          pathname: getInternalLink({ path: LOGIN_PATH }),
-          query: { session_expired: true },
-        });
-      }
+      setLoadingUser(false);
     }
-  });
+  }, []);
 
   return (
-    <Root pageContext={ctx} egoJwt={initialToken}>
-      <Component {...pageProps} />
+    <Root pageContext={ctx} sessionToken={walletToken} initialUser={initialUser}>
+      {/* TODO: verify loading behaviour */}
+      {loadingUser ? <Loader /> : <Component {...pageProps} />}
     </Root>
   );
 };
 
 DMSApp.getInitialProps = async ({ ctx, Component }: AppContext & { Component: PageWithConfig }) => {
   const pageProps = await Component.getInitialProps({ ...ctx });
+  const cookies = nextCookies(ctx);
+  const { NEXT_PUBLIC_SESSION_TOKEN_KEY } = getConfig();
   return {
     ctx: {
       pathname: ctx.pathname,
       query: ctx.query,
       asPath: ctx.asPath,
     },
+    walletToken: cookies[NEXT_PUBLIC_SESSION_TOKEN_KEY],
     pageProps,
   };
 };

@@ -22,17 +22,16 @@
 import { css } from '@emotion/core';
 import { IconProps } from './types';
 
-const Error = ({ height, width, style }: IconProps) => {
+// 'Error' IS A RESERVED KEYWORD IN JS
+const ErrorIcon = ({ size, style }: IconProps) => {
   return (
     <svg
       css={css`
         ${style};
-        height: ${height}px;
-        width: ${width}px;
+        height: ${size};
+        width: ${size};
       `}
-      width={width}
-      height={height}
-      viewBox={'0 0 26 27'}
+      viewBox={'0 0 26 26'}
     >
       <g fill="none" fillRule="evenodd">
         <g>
@@ -63,4 +62,4 @@ const Error = ({ height, width, style }: IconProps) => {
   );
 };
 
-export default Error;
+export default ErrorIcon;

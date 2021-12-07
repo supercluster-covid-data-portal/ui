@@ -75,3 +75,9 @@ export type EgoJwtData = {
 export interface UserWithId extends User {
   id: string;
 }
+
+export interface WalletUser {
+  name: string;
+  email: string;
+  id: string;
+}

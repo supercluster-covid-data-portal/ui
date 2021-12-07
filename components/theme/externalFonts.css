@@ -19,15 +19,4 @@
  *
  */
 
-import React from 'react';
-import Login from '../../components/pages/login';
-import { createPage } from '../../global/utils/pages';
-
-const LoginPage = createPage({
-  getInitialProps: async () => {},
-  isPublic: true,
-})(() => {
-  return <Login />;
-});
-
-export default LoginPage;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Roboto&display=swap');

@@ -21,19 +21,25 @@
 
 import React from 'react';
 import { ThemeProvider } from 'emotion-theming';
+
 import defaultTheme from './theme';
 import Head from './Head';
 import { AuthProvider } from '../global/hooks/useAuthContext';
 import { PageContext } from '../global/hooks/usePageContext';
+import { TrackingProvider } from '../global/hooks/useTrackingContext';
 import { ClientSideGetInitialPropsContext } from '../global/utils/pages/types';
+import { WalletUser } from '../global/types';
+import { ModalPortalProvider } from './Modal/Portal';
 
 const Root = ({
   children,
-  egoJwt,
+  sessionToken,
+  initialUser,
   pageContext,
 }: {
   children: React.ReactElement;
-  egoJwt?: string;
+  sessionToken?: string;
+  initialUser?: WalletUser;
   pageContext: ClientSideGetInitialPropsContext;
 }) => {
   return (
@@ -58,9 +64,15 @@ const Root = ({
       `}
       </style>
       <Head />
-      <AuthProvider egoJwt={egoJwt}>
+      <AuthProvider sessionToken={sessionToken} initialUser={initialUser}>
         <PageContext.Provider value={pageContext}>
-          <ThemeProvider theme={defaultTheme}>{children}</ThemeProvider>
+          <TrackingProvider>
+            <ThemeProvider theme={defaultTheme}>
+              <ModalPortalProvider />
+
+              {children}
+            </ThemeProvider>
+          </TrackingProvider>
         </PageContext.Provider>
       </AuthProvider>
     </>

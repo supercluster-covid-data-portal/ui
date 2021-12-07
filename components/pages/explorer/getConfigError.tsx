@@ -22,22 +22,9 @@
 import { ReactNode } from 'react';
 import { css } from '@emotion/core';
 
-import { Checkmark, Warning } from '../../theme/icons';
-import theme from '../../theme';
-import StyledLink from '../../Link';
-
-import { getConfig } from '../../../global/config';
-import { Project } from '.';
 import { GenericHelpMessage } from '../../DMSAdminContact';
-
-const ArrangerAdminUILink = () => {
-  const { NEXT_PUBLIC_ARRANGER_ADMIN_UI } = getConfig();
-  return (
-    <StyledLink href={NEXT_PUBLIC_ARRANGER_ADMIN_UI} target="_blank">
-      Arranger Admin UI
-    </StyledLink>
-  );
-};
+import theme from '../../theme';
+import { Checkmark, Warning } from '../../theme/icons';
 
 const ListItem = ({
   Icon,
@@ -83,142 +70,59 @@ const WarningListItem = ({ fieldName }: { fieldName: string }) => (
 );
 
 const getConfigError = ({
-  availableProjects,
-  projectId,
-  index,
+  hasConfig,
   graphqlField,
+  index,
 }: {
-  availableProjects: Project[];
-  projectId: string;
-  index: string;
+  hasConfig: boolean;
   graphqlField: string;
-}) => {
-  if (!(projectId && index && graphqlField)) {
-    return (
+  index: string;
+}) =>
+  index && graphqlField ? (
+    !hasConfig && (
       <span>
-        One or more of the following values required by the DMS portal do not exist. Please make
-        sure the values are specified in the DMS{' '}
+        No active configurations for the portal exist. Please make sure the index and GraphQL field
+        specified in the API config file{' '}
         <span
           css={css`
             font-weight: bold;
           `}
         >
-          config.yaml
+          base.json
         </span>{' '}
-        file during installation and have been used to create your project in the{' '}
-        <ArrangerAdminUILink />. <GenericHelpMessage />
-        <ul
-          css={css`
-            list-style-type: none;
-            padding-left: 0px;
-          `}
-        >
-          {[
-            { field: 'Project ID', value: projectId },
-            { field: 'Alias name', value: graphqlField },
-            { field: 'Elasticsearch index', value: index },
-          ].map(({ field, value }) => {
-            return value ? (
-              <ListItem key={`${field}-${value}`} fieldName={field} value={value} />
-            ) : (
-              <WarningListItem key={`${field}-${value}`} fieldName={field} />
-            );
-          })}
-        </ul>
+        during installation have been created. <GenericHelpMessage />
       </span>
-    );
-  }
-
-  if (!availableProjects.filter((project) => project.active).length) {
-    return (
-      <span>
-        No active projects for the DMS portal exist. Please make sure the project specified in the
-        DMS{' '}
-        <span
-          css={css`
-            font-weight: bold;
-          `}
-        >
-          config.yaml
-        </span>{' '}
-        file during installation has been created in the <ArrangerAdminUILink />.{' '}
-        <GenericHelpMessage />
-      </span>
-    );
-  }
-
-  const foundProject =
-    availableProjects.length && availableProjects.find((project) => project.id === projectId);
-
-  if (!foundProject) {
-    return (
-      <span>
-        The project ID:{' '}
-        <span
-          css={css`
-            font-weight: bold;
-          `}
-        >
-          "{projectId}"
-        </span>{' '}
-        configured for the DMS portal does not match any existing project. Please make sure the
-        project ID specified in the DMS{' '}
-        <span
-          css={css`
-            font-weight: bold;
-          `}
-        >
-          config.yaml
-        </span>{' '}
-        file during installation has been created in the <ArrangerAdminUILink />.{' '}
-        <GenericHelpMessage />
-      </span>
-    );
-  }
-
-  const aliasFromList = foundProject.indices.find((i) => i.id.match(projectId))?.graphqlField;
-  const matchesConfiguredAlias = graphqlField === aliasFromList;
-
-  if (!matchesConfiguredAlias) {
-    return (
-      <div>
-        The Elasticsearch alias name (graphQL field):{' '}
-        <span
-          css={css`
-            font-weight: bold;
-          `}
-        >
-          "{aliasFromList}"
-        </span>{' '}
-        required by the DMS portal for project ID:{' '}
-        <span
-          css={css`
-            font-weight: bold;
-          `}
-        >
-          "{projectId}"
-        </span>{' '}
-        does not match your configured alias name:{' '}
-        <span
-          css={css`
-            font-weight: bold;
-          `}
-        >
-          "{graphqlField}"
-        </span>
-        . Please make sure the value specified in the DMS{' '}
-        <span
-          css={css`
-            font-weight: bold;
-          `}
-        >
-          config.yaml
-        </span>{' '}
-        file during installation has been used to create your project in the <ArrangerAdminUILink />
-        . <GenericHelpMessage />
-      </div>
-    );
-  }
-};
+    )
+  ) : (
+    <span>
+      One or more of the following values required by the portal do not exist. Please make sure the
+      values are specified in the API config file{' '}
+      <span
+        css={css`
+          font-weight: bold;
+        `}
+      >
+        base.json
+      </span>{' '}
+      during installation and have been used to create your project. <GenericHelpMessage />
+      <ul
+        css={css`
+          list-style-type: none;
+          padding-left: 0px;
+        `}
+      >
+        {[
+          { field: 'Alias name', value: graphqlField },
+          { field: 'Elasticsearch index', value: index },
+        ].map(({ field, value }) => {
+          return value ? (
+            <ListItem key={`${field}-${value}`} fieldName={field} value={value} />
+          ) : (
+            <WarningListItem key={`${field}-${value}`} fieldName={field} />
+          );
+        })}
+      </ul>
+    </span>
+  );
 
 export default getConfigError;

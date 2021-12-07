@@ -24,8 +24,8 @@ import Explorer from '../../components/pages/explorer';
 import { createPage } from '../../global/utils/pages';
 
 const ExplorerPage = createPage({
-  getInitialProps: async ({ query, egoJwt }) => {
-    return { query, egoJwt };
+  getInitialProps: async ({ query, walletToken }) => {
+    return { query, walletToken };
   },
   isPublic: true,
 })(() => {

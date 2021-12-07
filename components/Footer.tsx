@@ -47,28 +47,6 @@ const Footer = () => {
         right: 0px;
       `}
     >
-      <StyledLink
-        css={(theme) => css`
-          ${theme.typography.subheading2};
-          padding-right: 13px;
-        `}
-        href={DMS_HELP_URL}
-        target="_blank"
-      >
-        Help
-      </StyledLink>
-      |
-      <StyledLink
-        css={(theme) => css`
-          ${theme.typography.subheading2};
-          padding-left: 13px;
-          padding-right: 5px;
-        `}
-        href={DMS_INSTALLATION_URL}
-        target="_blank"
-      >
-        DMS
-      </StyledLink>
       <span
         css={(theme) =>
           css`
@@ -81,9 +59,9 @@ const Footer = () => {
           `
         }
       >
-        powered by
+        Powered by
       </span>
-      <a href="https://www.overture.bio/" target="_blank">
+      <a href="https://www.overture.bio/" rel="noopener noreferrer" target="_blank">
         <OvertureLogoWithText width={100} height={18} />
       </a>
     </div>

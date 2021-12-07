@@ -19,17 +19,18 @@
  *
  */
 
-import React from 'react';
+import { event } from 'react-ga';
 
-import User from '../../components/pages/user';
-import { createPage } from '../../global/utils/pages';
+export type LogEventFunctionType = typeof event;
 
-const UserPage = createPage({
-  getInitialProps: async ({ egoJwt }) => {
-    return { egoJwt };
-  },
-})(() => {
-  return <User />;
-});
+export type TrackingContextType = {
+  addTracker: (trackerId: string, trackerName: string) => void;
+  logEvent: LogEventFunctionType;
+  removeTracker: (trackerName: string) => void;
+};
 
-export default UserPage;
+export type TrackingStateType = {
+  isInitialized: boolean;
+  hasUser: boolean;
+  trackers: string[];
+};
