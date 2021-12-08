@@ -109,7 +109,7 @@ spec:
         container('docker') {
           withCredentials([usernamePassword(credentialsId: 'supercluster-jenkins', passwordVariable: 'GITHUB_ACCESS_TOKEN', usernameVariable: 'GITHUB_APP')]) {
             sh "git tag ${version}"
-            sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${githubRepo} --tags"
+            sh "git push https://x-access-token:${GITHUB_ACCESS_TOKEN}@github.com/${githubRepo} --tags"
           }
           withCredentials([usernamePassword(credentialsId:'argoContainers', passwordVariable: 'GITHUB_ACCESS_TOKEN', usernameVariable: 'GITHUB_APP', )]) {
             sh 'echo $GITHUB_ACCESS_TOKEN | docker login ghcr.io -u $GITHUB_APP --password-stdin'
