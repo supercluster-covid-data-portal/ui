@@ -22,10 +22,14 @@
 // /** @jsx jsx */ import { css } from '@emotion/core';
 import { css } from '@emotion/core';
 
+// Regular: 400
 const baseFont = css`
   font-family: 'Roboto', sans-serif;
 `;
 
+// Medium: 500
+// Semi-Bold: 600
+// Bold: 700
 const headingsFont = css`
   font-family: 'Poppins', sans-serif;
 `;
@@ -42,11 +46,11 @@ const regular = css`
 
 const button = css`
   ${baseFont}
-  font-size: 16px;
-  font-weight: bold;
+  font-size: 14px;
+  font-weight: normal;
   font-style: normal;
   font-stretch: normal;
-  line-height: 18px;
+  line-height: 16px;
   letter-spacing: normal;
 `;
 
@@ -63,7 +67,7 @@ const heading = css`
 const subheading = css`
   ${headingsFont}
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 600;
   font-style: normal;
   font-stretch: normal;
   line-height: 24px;
@@ -73,7 +77,7 @@ const subheading = css`
 const subheading2 = css`
   ${headingsFont}
   font-size: 14px;
-  font-weight: bold;
+  font-weight: 600;
   font-style: normal;
   font-stretch: normal;
   line-height: 16px;

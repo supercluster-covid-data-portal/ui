@@ -25,6 +25,7 @@ import urlJoin from 'url-join';
 import { IconProps } from './theme/icons/types';
 import { getConfig } from '../global/config';
 import { AUTHORIZE_ENDPOINT } from '../global/utils/constants';
+import Button from './Button';
 
 const LoginButton = ({ Icon, title }: { Icon?: React.ComponentType<IconProps>; title: string }) => {
   const {
@@ -49,24 +50,7 @@ const LoginButton = ({ Icon, title }: { Icon?: React.ComponentType<IconProps>; t
         text-decoration: none;
       `}
     >
-      <div
-        css={(theme) => css`
-          display: flex;
-          flex: 1;
-          padding: 0.6rem 2rem;
-          border-radius: 5px;
-          cursor: pointer;
-          justify-content: center;
-          align-items: center;
-          background-color: ${theme.colors.accent};
-          color: ${theme.colors.white};
-          ${theme.typography.button}
-          &:hover {
-            background-color: ${theme.colors.accent_dark};
-            color: ${theme.colors.white};
-          }}
-        `}
-      >
+      <Button>
         {Icon && (
           <span
             css={css`
@@ -80,7 +64,7 @@ const LoginButton = ({ Icon, title }: { Icon?: React.ComponentType<IconProps>; t
           </span>
         )}
         {title}
-      </div>
+      </Button>
     </a>
   );
 };

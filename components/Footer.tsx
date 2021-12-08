@@ -34,7 +34,7 @@ const Footer = () => {
       css={(theme: typeof defaultTheme) => css`
         height: ${theme.dimensions.footer.height}px;
         background-color: ${theme.colors.white};
-        border-top: 1px solid ${theme.colors.grey_3};
+        border-top: 1px solid ${theme.colors.grey_300};
         display: flex;
         justify-content: flex-end;
         align-items: center;
@@ -50,7 +50,6 @@ const Footer = () => {
       <span
         css={(theme) =>
           css`
-            color: ${theme.colors.accent_dark};
             ${theme.typography.subheading2}
             line-height: 24px;
             font-weight: normal;

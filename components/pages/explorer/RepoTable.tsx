@@ -51,14 +51,14 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
       & .buttonWrapper button,
       & .dropDownHeader button {
         align-items: center;
-        border-radius: 5px;
-        border: solid 1px ${theme.colors.grey_5};
-        height: 26px;
+        border-radius: 4px;
+        border: solid 1px ${theme.colors.grey_400};
         background-color: ${theme.colors.white};
-        color: ${theme.colors.accent_dark};
-        ${theme.typography.subheading2};
+        color: ${theme.colors.grey_800};
+        ${theme.typography.button};
+        padding: 6px 15px;
         &:hover {
-          background-color: ${theme.colors.secondary_light};
+          background-color: ${theme.colors.grey_100};
         }
         &:focus {
           outline: none;
@@ -82,14 +82,14 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
       }
       & div.dropDownContent {
         right: 7px !important;
-        border-radius: 5px;
+        border-radius: 4px;
         ${theme.shadow.default};
       }
       & .dropDownContent {
         max-width: 200px;
         max-height: 285px;
         overflow-y: scroll;
-        top: 82%;
+        top: 90%;
 
         ${theme.typography.label};
         font-weight: normal;
@@ -119,11 +119,14 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
       }
     }
     & .rt-tbody {
-      border: 1px solid ${theme.colors.grey_3};
+      border: 1px solid ${theme.colors.grey_300};
       border-right: none;
       & .rt-td {
-        border-right: 1px solid ${theme.colors.grey_3};
-        ${theme.typography.data};
+        ${theme.typography.data}
+        align-items: center;
+        border-right: none;
+        display: flex;
+        height: 40px;
         padding-bottom: 2px;
         & div {
           text-align: left !important;
@@ -132,17 +135,26 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
       }
     }
     & .rt-thead {
-      border-top: 1px solid ${theme.colors.grey_3};
-      border-left: 1px solid ${theme.colors.grey_3};
       & .rt-tr .rt-th {
-        border-right: 1px solid ${theme.colors.grey_3};
+        align-items: center;
+        border: 1px solid transparent;
+        border-bottom: none;
+        border-top: none;
+        display: flex;
+        height: 40px;
         padding: 6px 5px 2px;
+
         &.-sort-asc {
-          box-shadow: inset 0 3px 0 0 ${theme.colors.secondary};
+          box-shadow: inset 0 3px 0 0 ${theme.colors.grey_500};
         }
         &.-sort-desc {
-          box-shadow: inset 0 -3px 0 0 ${theme.colors.secondary};
+          box-shadow: inset 0 -3px 0 0 ${theme.colors.grey_500};
         }
+
+        &:hover {
+          border-color: ${theme.colors.grey_400};
+        }
+
         &:focus {
           outline: none;
         }
@@ -150,9 +162,10 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
     }
     & .rt-thead .rt-th {
       ${theme.typography.data};
-      font-weight: bold;
+      font-size: 14px;
+      font-weight: 600;
       text-align: left;
-      color: ${theme.colors.accent_dark};
+      color: ${theme.colors.grey_800};
     }
     & .rt-td .td-actions {
       width: 100%;
@@ -163,18 +176,18 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
       border-bottom: none;
       border-top: none;
       &:hover {
-        background: ${theme.colors.grey_highlight};
+        background: ${theme.colors.grey_200};
       }
     }
     & .rt-tr-group .rt-tr.-even {
       &:hover {
-        background: ${theme.colors.grey_highlight};
+        background: ${theme.colors.grey_200};
       }
     }
     & .rt-tr-group .rt-tr.-odd {
-      background-color: ${theme.colors.grey_1};
+      background-color: ${theme.colors.white};
       &:hover {
-        background: ${theme.colors.grey_highlight};
+        background: ${theme.colors.grey_200};
       }
     }
     & .pagination-bottom {
@@ -202,7 +215,8 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
             padding-top: 3px;
           }
           & .-pagination_button.-current {
-            background-color: ${theme.colors.secondary_1};
+            background-color: ${theme.colors.accent};
+            color: ${theme.colors.white};
           }
           & .-toStart,
           & .-previous,
@@ -246,7 +260,7 @@ const RepoTable = (props: PageContentProps) => {
       label: () => (
         <span
           css={css`
-            border-top: 1px solid ${theme.colors.grey_3};
+            border-top: 1px solid ${theme.colors.grey_500};
             margin-top: -3px;
             padding-top: 7px;
             white-space: pre-line;

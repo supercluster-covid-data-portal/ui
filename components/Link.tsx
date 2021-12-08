@@ -28,11 +28,11 @@ import getInternalLink from '../global/utils/getInternalLink';
 
 const StyledLink = styled('a')`
   ${({ theme }: { theme: typeof defaultTheme }) => css`
-    color: ${theme.colors.secondary_accessible};
+    color: ${theme.colors.accent};
     ${theme.typography.regular};
     line-height: 24px;
     &:hover {
-      color: ${theme.colors.accent};
+      color: ${theme.colors.accent_light};
     }
   `}
 `;

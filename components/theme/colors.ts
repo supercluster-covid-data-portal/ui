@@ -26,55 +26,28 @@ const base = {
 };
 
 const grey = {
-  grey_1: '#f2f5f8',
   grey_100: '#FBFBFC',
-  grey_2: '#f2f3f5',
   grey_200: '#F9F9FA',
-  grey_3: '#dfdfe1',
   grey_300: '#E9EBEF',
-  grey_4: '#cecfd3',
   grey_400: '#E1E5EE',
-  grey_5: '#aeafb3',
   grey_500: '#C8CEDB',
-  grey_6: '#5e6068',
   grey_600: '#969DAC',
   grey_700: '#6B7483',
   grey_800: '#525965',
   grey_900: '#3A3F48',
-  grey_highlight: '#eceff2',
 };
 
 const primary = {
-  primary: '#0089F6',
-  primary_dark: '#0C74D4',
+  primary: base.black,
+  primary_dark: base.pure_black,
+  primary_light: grey.grey_900,
 };
 
-// dark blues
+// blues
 const accent = {
-  accent: '#04518c',
-  accent_light: '#4f85ae',
-  accent_dark: '#003055',
-  accent_1: '#e5edf3',
-};
-
-// light blues
-const secondary = {
-  secondary: '#4bc6f0',
-  secondary_light: '#edf9fd',
-  secondary_dark: '#109ed9',
-  secondary_accessible: '#0c7cac',
-  secondary_1: '#d2f1fb',
-  secondary_2: '#aee5f8',
-};
-
-const accent2 = {
-  accent2_dark: '#9e005d',
-  accent2: '#b74a89',
-  accent2_light: '#f7ecf3',
-};
-
-const accent3 = {
-  accent3: '#d9de3a',
+  accent: '#0089F6',
+  accent_dark: '#0C74D4',
+  accent_light: '#1095FF',
 };
 
 const error = {
@@ -98,10 +71,7 @@ export default {
   ...base,
   ...grey,
   ...accent,
-  ...accent2,
-  ...accent3,
   ...primary,
-  ...secondary,
   ...error,
   ...success,
   ...warning,

@@ -67,7 +67,7 @@ const FocusWrapper = styled('button')`
   align-items: center;
   background: none;
   border: none;
-  box-shadow: 0px 0px 4px 0px ${({ theme }: DefaultThemeObject) => theme.colors.secondary_1};
+  box-shadow: 0px 0px 4px 0px ${({ theme }: DefaultThemeObject) => theme.colors.grey_300};
   cursor: pointer;
   display: flex;
   height: 1rem;
@@ -79,7 +79,7 @@ const FocusWrapper = styled('button')`
 
   &:focus,
   &:hover {
-    box-shadow: 0px 0px 4px 0px ${({ theme }: DefaultThemeObject) => theme.colors.grey_5};
+    box-shadow: 0px 0px 4px 0px ${({ theme }: DefaultThemeObject) => theme.colors.grey_500};
   }
 `;
 
@@ -124,7 +124,7 @@ export const ModalContainer = styled('div')`
 `;
 
 const ModalFooter = styled('div')`
-  border-top: 1px solid ${({ theme }: DefaultThemeObject) => theme.colors.grey_4};
+  border-top: 1px solid ${({ theme }: DefaultThemeObject) => theme.colors.grey_400};
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
@@ -133,7 +133,7 @@ const ModalFooter = styled('div')`
 
 const ModalTitle = styled('div')`
   align-items: center;
-  border-bottom: 1px solid ${({ theme }: DefaultThemeObject) => theme.colors.grey_4};
+  border-bottom: 1px solid ${({ theme }: DefaultThemeObject) => theme.colors.grey_400};
   display: flex;
   flex-direction: row;
   justify-content: space-between;
