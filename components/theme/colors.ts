@@ -50,6 +50,13 @@ const accent = {
   accent_light: '#1095FF',
 };
 
+// TODO: unify in theming ticket: https://github.com/supercluster-covid-data-portal/ui/issues/1
+const green_accent = {
+  green_accent_1: '#e9fbf7',
+  green_accent_7: '#15846c',
+  green_accent_8: '#0b5948',
+};
+
 const error = {
   error: '#c86370',
   error_dark: '#ad404e',
@@ -75,4 +82,5 @@ export default {
   ...error,
   ...success,
   ...warning,
+  ...green_accent,
 };
