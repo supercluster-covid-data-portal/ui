@@ -235,6 +235,67 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
   }
 `;
 
+const DownloadSequences = ({
+  ids,
+  loadingState,
+  setLoadingState,
+  setErrorState,
+}: {
+  ids: string[];
+  loadingState: boolean;
+  setLoadingState: (isLoading: boolean) => void;
+  setErrorState: (errorState: string | null) => void;
+}) => {
+  const { NEXT_PUBLIC_ARRANGER_API_URL, NEXT_PUBLIC_FILE_DOWNLOAD_LIMIT } = getConfig();
+  const downloadFilesEnabled =
+    !loadingState && ids.length && ids.length <= NEXT_PUBLIC_FILE_DOWNLOAD_LIMIT;
+  return (
+    <span
+      // TODO: disabled style will be fixed in theming ticket https://github.com/supercluster-covid-data-portal/ui/issues/1
+      css={(theme) => css`
+        cursor: ${downloadFilesEnabled ? 'pointer' : 'not-allowed'};
+        color: ${downloadFilesEnabled ? theme.colors.black : theme.colors.grey_5};
+      `}
+      onClick={
+        downloadFilesEnabled
+          ? async () => {
+              setLoadingState(true);
+              ajax
+                .post(
+                  urlJoin(NEXT_PUBLIC_ARRANGER_API_URL, DOWNLOAD_SEQ_PATH),
+                  {
+                    ids,
+                  },
+                  {
+                    responseType: 'blob',
+                    headers: { accept: '*/*' },
+                  },
+                )
+                .then((res: AxiosResponse) => {
+                  const blob = new Blob([res.data]);
+                  const filename = res.headers['content-disposition'].split('"')[1];
+                  createDownloadInWindow(filename, blob);
+                })
+                .catch(async (err: AxiosError) => {
+                  if (err) {
+                    const code = err.response?.status || 500;
+                    const text = await new Response(err.response?.data).text();
+                    const displayError = getDownloadError(code, text);
+                    return setErrorState(displayError);
+                  }
+                  setErrorState('An unknown error occurred. Please try again');
+                })
+                .finally(() => {
+                  setLoadingState(false);
+                });
+            }
+          : () => null
+      }
+    >
+      Download Selected
+    </span>
+  );
+};
 const getDownloadError = (status: number, errText?: string) => {
   switch (status) {
     case 400:
@@ -258,59 +319,16 @@ const RepoTable = (props: PageContentProps) => {
   const [seqFilesDownloading, setSeqFilesDownloading] = useState<boolean>(false);
   const [seqFilesDownloadError, setSeqFilesDownloadError] = useState<string | null>(null);
 
-  const downloadFilesEnabled =
-    !seqFilesDownloading &&
-    selectedTableRows.length &&
-    selectedTableRows.length <= NEXT_PUBLIC_FILE_DOWNLOAD_LIMIT;
-
   const customExporters = [
     { label: 'Export Table to TSV', fileName: `data-explorer-table-export.${today}.tsv` }, // exports a TSV with what is displayed on the table (columns selected, etc.)
     {
       label: () => (
-        <span
-          // TODO: disabled style will be fixed in theming ticket https://github.com/supercluster-covid-data-portal/ui/issues/1
-          css={(theme) => css`
-            cursor: ${downloadFilesEnabled ? 'pointer' : 'not-allowed'};
-            color: ${downloadFilesEnabled ? theme.colors.black : theme.colors.grey_5};
-          `}
-          onClick={
-            downloadFilesEnabled
-              ? async () => {
-                  setSeqFilesDownloading(true);
-                  ajax
-                    .post(
-                      urlJoin(NEXT_PUBLIC_ARRANGER_API_URL, DOWNLOAD_SEQ_PATH),
-                      {
-                        ids: selectedTableRows,
-                      },
-                      {
-                        responseType: 'blob',
-                        headers: { accept: '*/*' },
-                      },
-                    )
-                    .then((res: AxiosResponse) => {
-                      const blob = new Blob([res.data]);
-                      const filename = res.headers['content-disposition'].split('"')[1];
-                      createDownloadInWindow(filename, blob);
-                    })
-                    .catch(async (err: AxiosError) => {
-                      if (err) {
-                        const code = err.response?.status || 500;
-                        const text = await new Response(err.response?.data).text();
-                        const displayError = getDownloadError(code, text);
-                        return setSeqFilesDownloadError(displayError);
-                      }
-                      setSeqFilesDownloadError('An unknown error occurred. Please try again');
-                    })
-                    .finally(() => {
-                      setSeqFilesDownloading(false);
-                    });
-                }
-              : () => null
-          }
-        >
-          Download Selected
-        </span>
+        <DownloadSequences
+          ids={selectedTableRows}
+          loadingState={seqFilesDownloading}
+          setLoadingState={setSeqFilesDownloading}
+          setErrorState={setSeqFilesDownloadError}
+        />
       ),
     },
     {
