@@ -100,6 +100,10 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
         ${theme.typography.label};
         font-weight: normal;
 
+        .dropDownContentElement.clickable:hover {
+          background: ${theme.colors.grey_300};
+        }
+
         /* left-orient checkboxes */
         &.multiple {
           .dropDownContentElement {
@@ -125,15 +129,12 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
       }
     }
     & .rt-tbody {
-      border: 1px solid ${theme.colors.grey_300};
       border-right: none;
       & .rt-td {
         ${theme.typography.data}
-        align-items: center;
-        border-right: none;
-        display: flex;
+        border: 1px solid ${theme.colors.grey_400};
         height: 40px;
-        padding-bottom: 2px;
+        line-height: 1.6rem;
         & div {
           text-align: left !important;
           vertical-align: middle;
@@ -143,9 +144,8 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
     & .rt-thead {
       & .rt-tr .rt-th {
         align-items: center;
-        border: 1px solid transparent;
+        border: 1px solid ${theme.colors.grey_400};
         border-bottom: none;
-        border-top: none;
         display: flex;
         height: 40px;
         padding: 6px 5px 2px;
@@ -155,10 +155,6 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
         }
         &.-sort-desc {
           box-shadow: inset 0 -3px 0 0 ${theme.colors.grey_500};
-        }
-
-        &:hover {
-          border-color: ${theme.colors.grey_400};
         }
 
         &:focus {
@@ -249,7 +245,7 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
   }
 `;
 
-const DownloadSequences = ({
+const downloadSequences = ({
   ids,
   loadingState,
   setLoadingState,
@@ -263,53 +259,43 @@ const DownloadSequences = ({
   const { NEXT_PUBLIC_ARRANGER_API_URL, NEXT_PUBLIC_FILE_DOWNLOAD_LIMIT } = getConfig();
   const downloadFilesEnabled =
     !loadingState && ids.length && ids.length <= NEXT_PUBLIC_FILE_DOWNLOAD_LIMIT;
-  return (
-    <span
-      // TODO: disabled style will be fixed in theming ticket https://github.com/supercluster-covid-data-portal/ui/issues/1
-      css={(theme) => css`
-        cursor: ${downloadFilesEnabled ? 'pointer' : 'not-allowed'};
-        color: ${downloadFilesEnabled ? theme.colors.black : theme.colors.grey_5};
-      `}
-      onClick={
-        downloadFilesEnabled
-          ? async () => {
-              setLoadingState(true);
-              ajax
-                .post(
-                  urlJoin(NEXT_PUBLIC_ARRANGER_API_URL, DOWNLOAD_SEQ_PATH),
-                  {
-                    ids,
-                  },
-                  {
-                    responseType: 'blob',
-                    headers: { accept: '*/*' },
-                  },
-                )
-                .then((res: AxiosResponse) => {
-                  const blob = new Blob([res.data]);
-                  const filename = res.headers['content-disposition'].split('"')[1];
-                  createDownloadInWindow(filename, blob);
-                })
-                .catch(async (err: AxiosError) => {
-                  if (err) {
-                    const code = err.response?.status || 500;
-                    const text = await new Response(err.response?.data).text();
-                    const displayError = getDownloadError(code, text);
-                    return setErrorState(displayError);
-                  }
-                  setErrorState('An unknown error occurred. Please try again');
-                })
-                .finally(() => {
-                  setLoadingState(false);
-                });
+  console.log('calling?', downloadFilesEnabled);
+
+  return downloadFilesEnabled
+    ? async () => {
+        setLoadingState(true);
+        ajax
+          .post(
+            urlJoin(NEXT_PUBLIC_ARRANGER_API_URL, DOWNLOAD_SEQ_PATH),
+            {
+              ids,
+            },
+            {
+              responseType: 'blob',
+              headers: { accept: '*/*' },
+            },
+          )
+          .then((res: AxiosResponse) => {
+            const blob = new Blob([res.data]);
+            const filename = res.headers['content-disposition'].split('"')[1];
+            createDownloadInWindow(filename, blob);
+          })
+          .catch(async (err: AxiosError) => {
+            if (err) {
+              const code = err.response?.status || 500;
+              const text = await new Response(err.response?.data).text();
+              const displayError = getDownloadError(code, text);
+              return setErrorState(displayError);
             }
-          : () => null
+            setErrorState('An unknown error occurred. Please try again');
+          })
+          .finally(() => {
+            setLoadingState(false);
+          });
       }
-    >
-      Download Selected
-    </span>
-  );
+    : () => null;
 };
+
 const getDownloadError = (status: number, errText?: string) => {
   switch (status) {
     case 400:
@@ -336,14 +322,13 @@ const RepoTable = (props: PageContentProps) => {
   const customExporters = [
     { label: 'Export Table to TSV', fileName: `data-explorer-table-export.${today}.tsv` }, // exports a TSV with what is displayed on the table (columns selected, etc.)
     {
-      label: () => (
-        <DownloadSequences
-          ids={selectedTableRows}
-          loadingState={seqFilesDownloading}
-          setLoadingState={setSeqFilesDownloading}
-          setErrorState={setSeqFilesDownloadError}
-        />
-      ),
+      label: 'Download Selected',
+      function: downloadSequences({
+        ids: selectedTableRows,
+        loadingState: seqFilesDownloading,
+        setLoadingState: setSeqFilesDownloading,
+        setErrorState: setSeqFilesDownloadError,
+      }),
     },
     {
       label: () => (
@@ -397,6 +382,7 @@ const RepoTable = (props: PageContentProps) => {
             Downloading sequence files...
           </SimpleNotification>
         )}
+
         {seqFilesDownloadError && (
           <SimpleNotification
             title="Sequence Files Download Error"

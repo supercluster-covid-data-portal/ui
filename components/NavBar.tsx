@@ -152,7 +152,7 @@ const NavBar: React.ComponentType = () => {
               justify-content: center;
             `}
           >
-            <LoginButton title="Log in" />
+            <LoginButton title="Login" />
           </div>
         )}
       </div>

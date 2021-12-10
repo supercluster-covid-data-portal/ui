@@ -50,19 +50,10 @@ const getFacetStyles = (theme: typeof defaultTheme) => css`
   .aggregations {
     .aggregation-card {
       border-bottom: 1px solid ${theme.colors.grey_300};
+      border-left: 3px solid transparent;
       padding-right: 8px;
       &:first-of-type {
         margin-top: 0;
-      }
-      border-left: 3px solid;
-      &:nth-of-type(5n + 1) {
-        border-left-color: ${theme.colors.primary};
-      }
-      &:nth-of-type(5n + 2) {
-        border-left-color: ${theme.colors.accent};
-      }
-      &:nth-of-type(5n + 3) {
-        border-left-color: ${theme.colors.warning};
       }
       .header {
         padding: 5px 0 6px 6px;
@@ -82,7 +73,7 @@ const getFacetStyles = (theme: typeof defaultTheme) => css`
           }
           & .title {
             ${theme.typography.subheading}
-
+            font-size: 14px;
             margin-left: 8px;
             display: inline-block;
             width: 90%;

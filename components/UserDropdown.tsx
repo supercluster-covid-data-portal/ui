@@ -83,7 +83,7 @@ const StyledListLink = styled('a')`
     cursor: pointer;
     width: 100%;
     &:hover {
-      background-color: ${theme.colors.grey_100};
+      background-color: ${theme.colors.grey_300};
     }
   `}
 `;

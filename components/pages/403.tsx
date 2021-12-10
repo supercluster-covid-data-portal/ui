@@ -35,7 +35,7 @@ enum EgoLoginError {
 
 const errorSubtitles: { [k in EgoLoginError]: string } = {
   no_primary_email: 'No Primary Email Found',
-  access_denied: 'Unable to log in',
+  access_denied: 'Unable to login',
 };
 
 const isValidProviderType = (providerType: ProviderType) =>
@@ -55,7 +55,7 @@ const Error403 = ({ query }: { query: { error_type: EgoLoginError; provider_type
           errorTitle={`${errorSubtitles[errorType]}`}
         >
           No primary email could be found on your {providerTypeDisplayName} profile. An email is
-          required to log in to the Data Explorer. Make sure an email exists on your{' '}
+          required to login to the Data Explorer. Make sure an email exists on your{' '}
           {providerTypeDisplayName} profile and that it is accessible by external parties (i.e. not
           private). See{' '}
           <StyledLink href={DMS_EMAIL_SETTING_URL} target="_blank">
@@ -71,7 +71,7 @@ const Error403 = ({ query }: { query: { error_type: EgoLoginError; provider_type
           errorTitle={`${errorSubtitles[errorType]}`}
         >
           You have denied the DMS access to your {providerTypeDisplayName} profile or cancelled your
-          log in attempt. Please try again and approve access for {providerTypeDisplayName}, or log
+          login attempt. Please try again and approve access for {providerTypeDisplayName}, or log
           in with a different provider for which you would prefer to allow access.
         </ErrorPageLayout>
       );

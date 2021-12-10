@@ -145,7 +145,7 @@ const Dropdown = ({
 
                   &:focus,
                   &:hover {
-                    background: ${theme.colors.grey_500};
+                    background: ${theme.colors.grey_300};
                   }
                 `}
                 key={index}
