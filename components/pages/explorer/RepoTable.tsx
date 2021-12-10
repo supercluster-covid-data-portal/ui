@@ -100,7 +100,7 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
         ${theme.typography.label};
         font-weight: normal;
 
-        .dropDownContentElement.clickable:hover {
+        .dropDownContentElement.clickable:not([disabled]):hover {
           background: ${theme.colors.grey_300};
         }
 
@@ -128,11 +128,11 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
         background-color: pink;
       }
     }
-    & .rt-tbody {
+    .rt-tbody {
       border-right: none;
-      & .rt-td {
+      .rt-td {
         ${theme.typography.data}
-        border: 1px solid ${theme.colors.grey_400};
+        border: 1px solid ${theme.colors.grey_300};
         height: 40px;
         line-height: 1.6rem;
         & div {
@@ -175,8 +175,8 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
       text-align: center;
     }
     & .rt-tr-group {
-      border-bottom: none;
-      border-top: none;
+      border: none !important;
+
       &:hover {
         background: ${theme.colors.grey_200};
       }
@@ -328,6 +328,7 @@ const RepoTable = (props: PageContentProps) => {
         setLoadingState: setSeqFilesDownloading,
         setErrorState: setSeqFilesDownloadError,
       }),
+      requiresRowSelection: true,
     },
     {
       label: () => (
