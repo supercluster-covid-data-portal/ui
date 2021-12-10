@@ -36,7 +36,7 @@ import { css } from '@emotion/core';
 import sleep from '../../utils/sleep';
 
 const Arranger = dynamic(
-  () => import('@caravinci/arranger-components/dist/Arranger').then((comp) => comp.Arranger),
+  () => import('@overture-stack/arranger-components/dist/Arranger').then((comp) => comp.Arranger),
   { ssr: false },
 ) as any;
 

@@ -36,7 +36,7 @@ import { AxiosError, AxiosResponse } from 'axios';
 import SimpleNotification from '../../SimpleNotification';
 
 const Table = dynamic(
-  () => import('@caravinci/arranger-components/dist/Arranger').then((comp) => comp.Table),
+  () => import('@overture-stack/arranger-components/dist/Arranger').then((comp) => comp.Table),
   { ssr: false },
 ) as any;
 
@@ -407,6 +407,7 @@ const RepoTable = (props: PageContentProps) => {
         enableSelectedTableRowsExporterFilter
         exporter={customExporters}
         downloadUrl={urlJoin(NEXT_PUBLIC_ARRANGER_API_URL, 'download')}
+        selectedRowsFilterPropertyName="sequence_id"
       />
     </div>
   );

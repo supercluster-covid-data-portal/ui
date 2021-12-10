@@ -26,7 +26,7 @@ import { PageContentProps } from '.';
 import defaultTheme from '../../theme';
 
 const Aggregations = dynamic(
-  import('@caravinci/arranger-components/dist/Arranger').then((comp) => comp.Aggregations),
+  import('@overture-stack/arranger-components/dist/Arranger').then((comp) => comp.Aggregations),
   { ssr: false },
 ) as any;
 
