@@ -28,9 +28,15 @@ import { PageContentProps } from './index';
 import StyledLink from '../../Link';
 import defaultTheme from '../../theme';
 import { getConfig } from '../../../global/config';
+import { CLOUD_CLI_DOCS_URL, DOWNLOAD_SEQ_PATH } from '../../../global/utils/constants';
+import ajax from '../../utils/ajax';
+import createDownloadInWindow from '../../utils/createDownloadInWindow';
+import React, { useState } from 'react';
+import { AxiosError, AxiosResponse } from 'axios';
+import SimpleNotification from '../../SimpleNotification';
 
 const Table = dynamic(
-  () => import('@caravinci/arranger-components/dist/Arranger').then((comp) => comp.Table),
+  () => import('@overture-stack/arranger-components/dist/Arranger').then((comp) => comp.Table),
   { ssr: false },
 ) as any;
 
@@ -51,14 +57,14 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
       & .buttonWrapper button,
       & .dropDownHeader button {
         align-items: center;
-        border-radius: 5px;
-        border: solid 1px ${theme.colors.grey_5};
-        height: 26px;
+        border-radius: 4px;
+        border: solid 1px ${theme.colors.grey_400};
         background-color: ${theme.colors.white};
-        color: ${theme.colors.accent_dark};
-        ${theme.typography.subheading2};
+        color: ${theme.colors.grey_800};
+        ${theme.typography.button};
+        padding: 6px 15px;
         &:hover {
-          background-color: ${theme.colors.secondary_light};
+          background-color: ${theme.colors.grey_100};
         }
         &:focus {
           outline: none;
@@ -82,17 +88,21 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
       }
       & div.dropDownContent {
         right: 7px !important;
-        border-radius: 5px;
+        border-radius: 4px;
         ${theme.shadow.default};
       }
       & .dropDownContent {
         max-width: 200px;
         max-height: 285px;
         overflow-y: scroll;
-        top: 82%;
+        top: 90%;
 
         ${theme.typography.label};
         font-weight: normal;
+
+        .dropDownContentElement.clickable:not([disabled]):hover {
+          background: ${theme.colors.grey_300};
+        }
 
         /* left-orient checkboxes */
         &.multiple {
@@ -118,13 +128,13 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
         background-color: pink;
       }
     }
-    & .rt-tbody {
-      border: 1px solid ${theme.colors.grey_3};
+    .rt-tbody {
       border-right: none;
-      & .rt-td {
-        border-right: 1px solid ${theme.colors.grey_3};
-        ${theme.typography.data};
-        padding-bottom: 2px;
+      .rt-td {
+        ${theme.typography.data}
+        border: 1px solid ${theme.colors.grey_300};
+        height: 40px;
+        line-height: 1.6rem;
         & div {
           text-align: left !important;
           vertical-align: middle;
@@ -132,17 +142,21 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
       }
     }
     & .rt-thead {
-      border-top: 1px solid ${theme.colors.grey_3};
-      border-left: 1px solid ${theme.colors.grey_3};
       & .rt-tr .rt-th {
-        border-right: 1px solid ${theme.colors.grey_3};
+        align-items: center;
+        border: 1px solid ${theme.colors.grey_400};
+        border-bottom: none;
+        display: flex;
+        height: 40px;
         padding: 6px 5px 2px;
+
         &.-sort-asc {
-          box-shadow: inset 0 3px 0 0 ${theme.colors.secondary};
+          box-shadow: inset 0 3px 0 0 ${theme.colors.grey_500};
         }
         &.-sort-desc {
-          box-shadow: inset 0 -3px 0 0 ${theme.colors.secondary};
+          box-shadow: inset 0 -3px 0 0 ${theme.colors.grey_500};
         }
+
         &:focus {
           outline: none;
         }
@@ -150,9 +164,10 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
     }
     & .rt-thead .rt-th {
       ${theme.typography.data};
-      font-weight: bold;
+      font-size: 14px;
+      font-weight: 600;
       text-align: left;
-      color: ${theme.colors.accent_dark};
+      color: ${theme.colors.grey_800};
     }
     & .rt-td .td-actions {
       width: 100%;
@@ -160,21 +175,21 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
       text-align: center;
     }
     & .rt-tr-group {
-      border-bottom: none;
-      border-top: none;
+      border: none !important;
+
       &:hover {
-        background: ${theme.colors.grey_highlight};
+        background: ${theme.colors.grey_200};
       }
     }
     & .rt-tr-group .rt-tr.-even {
       &:hover {
-        background: ${theme.colors.grey_highlight};
+        background: ${theme.colors.grey_200};
       }
     }
     & .rt-tr-group .rt-tr.-odd {
-      background-color: ${theme.colors.grey_1};
+      background-color: ${theme.colors.white};
       &:hover {
-        background: ${theme.colors.grey_highlight};
+        background: ${theme.colors.grey_200};
       }
     }
     & .pagination-bottom {
@@ -202,7 +217,8 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
             padding-top: 3px;
           }
           & .-pagination_button.-current {
-            background-color: ${theme.colors.secondary_1};
+            background-color: ${theme.colors.accent};
+            color: ${theme.colors.white};
           }
           & .-toStart,
           & .-previous,
@@ -229,24 +245,96 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
   }
 `;
 
+const downloadSequences = ({
+  ids,
+  loadingState,
+  setLoadingState,
+  setErrorState,
+}: {
+  ids: string[];
+  loadingState: boolean;
+  setLoadingState: (isLoading: boolean) => void;
+  setErrorState: (errorState: string | null) => void;
+}) => {
+  const { NEXT_PUBLIC_ARRANGER_API_URL, NEXT_PUBLIC_FILE_DOWNLOAD_LIMIT } = getConfig();
+  const downloadFilesEnabled =
+    !loadingState && ids.length && ids.length <= NEXT_PUBLIC_FILE_DOWNLOAD_LIMIT;
+
+  return downloadFilesEnabled
+    ? async () => {
+        setLoadingState(true);
+        ajax
+          .post(
+            urlJoin(NEXT_PUBLIC_ARRANGER_API_URL, DOWNLOAD_SEQ_PATH),
+            {
+              ids,
+            },
+            {
+              responseType: 'blob',
+              headers: { accept: '*/*' },
+            },
+          )
+          .then((res: AxiosResponse) => {
+            const blob = new Blob([res.data]);
+            const filename = res.headers['content-disposition'].split('"')[1];
+            createDownloadInWindow(filename, blob);
+          })
+          .catch(async (err: AxiosError) => {
+            if (err) {
+              const code = err.response?.status || 500;
+              const text = await new Response(err.response?.data).text();
+              const displayError = getDownloadError(code, text);
+              return setErrorState(displayError);
+            }
+            setErrorState('An unknown error occurred. Please try again');
+          })
+          .finally(() => {
+            setLoadingState(false);
+          });
+      }
+    : () => null;
+};
+
+const getDownloadError = (status: number, errText?: string) => {
+  switch (status) {
+    case 400:
+      if (errText === 'No files found.') {
+        return 'The selected sequences do not have files associated with them. Please try again with different sequences.';
+      }
+      return 'Failed to download files for the requested sequences. Please try again later.';
+    case 500:
+      return `Download failed due to an internal error [${status}]. Please try again later.`;
+    default:
+      return 'An unknown error occurred. Please try again.';
+  }
+};
+
 const RepoTable = (props: PageContentProps) => {
   const theme: typeof defaultTheme = useTheme();
-  const { NEXT_PUBLIC_ARRANGER_API_URL, NEXT_PUBLIC_ARRANGER_MANIFEST_COLUMNS } = getConfig();
 
-  // break it into an array, and ensure there's no empty field names
-  const manifestColumns = NEXT_PUBLIC_ARRANGER_MANIFEST_COLUMNS.split(',')
-    .filter((field) => field.trim())
-    .map((fieldName) => fieldName.replace(/['"]+/g, '').trim());
-
+  const { NEXT_PUBLIC_ARRANGER_API_URL, NEXT_PUBLIC_FILE_DOWNLOAD_LIMIT } = getConfig();
   const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  const { selectedTableRows } = props;
+  const [seqFilesDownloading, setSeqFilesDownloading] = useState<boolean>(false);
+  const [seqFilesDownloadError, setSeqFilesDownloadError] = useState<string | null>(null);
+
   const customExporters = [
-    { label: 'File Table', fileName: `data-explorer-table-export.${today}.tsv` }, // exports a TSV with what is displayed on the table (columns selected, etc.)
-    { label: 'File Manifest', fileName: `score-manifest.${today}.tsv`, columns: manifestColumns }, // exports a TSV with the manifest columns
+    { label: 'Export Table to TSV', fileName: `data-explorer-table-export.${today}.tsv` }, // exports a TSV with what is displayed on the table (columns selected, etc.)
+    {
+      label: 'Download Selected',
+      function: downloadSequences({
+        ids: selectedTableRows,
+        loadingState: seqFilesDownloading,
+        setLoadingState: setSeqFilesDownloading,
+        setErrorState: setSeqFilesDownloadError,
+      }),
+      requiresRowSelection: true,
+    },
     {
       label: () => (
         <span
           css={css`
-            border-top: 1px solid ${theme.colors.grey_3};
+            border-top: 1px solid ${theme.colors.grey_500};
             margin-top: -3px;
             padding-top: 7px;
             white-space: pre-line;
@@ -257,12 +345,13 @@ const RepoTable = (props: PageContentProps) => {
             }
           `}
         >
-          To download files using a file manifest, please follow these
+          To bulk download files for more than {NEXT_PUBLIC_FILE_DOWNLOAD_LIMIT} query results,
+          please use the command line client with these
           <StyledLink
             css={css`
               line-height: inherit;
             `}
-            href="https://overture.bio/documentation/score/user-guide/download"
+            href={CLOUD_CLI_DOCS_URL}
             rel="noopener noreferrer"
             target="_blank"
           >
@@ -276,6 +365,41 @@ const RepoTable = (props: PageContentProps) => {
 
   return (
     <div css={getTableStyle(theme)}>
+      <div
+        css={css`
+          display: flex;
+          justify-content: center;
+        `}
+      >
+        {seqFilesDownloading && (
+          <SimpleNotification
+            style={`
+              background-color: ${theme.colors.green_accent_1};
+              border: 1px solid ${theme.colors.green_accent_7};
+              color: ${theme.colors.green_accent_8};
+            `}
+          >
+            Downloading sequence files...
+          </SimpleNotification>
+        )}
+
+        {seqFilesDownloadError && (
+          <SimpleNotification
+            title="Sequence Files Download Error"
+            dismissable
+            onDismiss={() => setSeqFilesDownloadError(null)}
+            style={`
+              background-color: ${theme.colors.error_1};
+              border: 1px solid ${theme.colors.error_dark};
+              color: ${theme.colors.error_dark};
+              width: auto;
+            `}
+          >
+            {seqFilesDownloadError}
+          </SimpleNotification>
+        )}
+      </div>
+
       <Table
         {...props}
         showFilterInput={false}
@@ -283,6 +407,7 @@ const RepoTable = (props: PageContentProps) => {
         enableSelectedTableRowsExporterFilter
         exporter={customExporters}
         downloadUrl={urlJoin(NEXT_PUBLIC_ARRANGER_API_URL, 'download')}
+        selectedRowsFilterPropertyName="sequence_id"
       />
     </div>
   );

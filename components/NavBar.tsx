@@ -19,17 +19,15 @@
  *
  */
 
-import React from 'react';
 import { css } from '@emotion/core';
 import { useTheme } from 'emotion-theming';
 import { useRouter } from 'next/router';
 import urlJoin from 'url-join';
 
 import UserDropdown from './UserDropdown';
-import defaultTheme from './theme';
-import { OvertureLogo } from './theme/icons';
+import { DefaultTheme } from './theme';
 import useAuthContext from '../global/hooks/useAuthContext';
-import { StyledLinkAsButton, InternalLink as Link } from './Link';
+import { InternalLink as Link } from './Link';
 import { EXPLORER_PATH, USER_PATH } from '../global/utils/constants';
 import { getConfig } from '../global/config';
 import LoginButton from './LoginButton';
@@ -37,13 +35,13 @@ import LoginButton from './LoginButton';
 const NavBar: React.ComponentType = () => {
   const { token } = useAuthContext();
   const router = useRouter();
-  const theme: typeof defaultTheme = useTheme();
+  const theme: DefaultTheme = useTheme();
 
-  const { NEXT_PUBLIC_LAB_NAME, NEXT_PUBLIC_LOGO_FILENAME, NEXT_PUBLIC_BASE_PATH } = getConfig();
+  const { NEXT_PUBLIC_LAB_NAME, NEXT_PUBLIC_BASE_PATH } = getConfig();
 
   const activeLinkStyle = `
-    background-color: ${theme.colors.grey_2};
-    color: ${theme.colors.accent2_dark};
+    background-color: ${theme.colors.grey_200};
+    color: ${theme.colors.accent_dark};
   `;
 
   const labIcon = (
@@ -54,9 +52,10 @@ const NavBar: React.ComponentType = () => {
       height={theme.dimensions.labIcon.height}
     />
   );
+
   return (
     <div
-      css={(theme: typeof defaultTheme) => css`
+      css={css`
         display: flex;
         justify-content: space-between;
         height: ${theme.dimensions.navbar.height}px;
@@ -79,7 +78,7 @@ const NavBar: React.ComponentType = () => {
       >
         <Link path={EXPLORER_PATH}>
           <a
-            css={(theme) => css`
+            css={css`
               display: flex;
               align-items: center;
               text-decoration: none;
@@ -99,7 +98,7 @@ const NavBar: React.ComponentType = () => {
         `}
       >
         <div
-          css={(theme) => css`
+          css={css`
             display: flex;
             align-items: center;
             justify-content: center;
@@ -107,21 +106,21 @@ const NavBar: React.ComponentType = () => {
             background-color: ${theme.colors.white};
             height: 100%;
             &:hover {
-              background-color: ${theme.colors.grey_2};
+              background-color: ${theme.colors.grey_200};
             }
             border-right: 2px solid ${theme.colors.white};
           `}
         >
           <Link path={EXPLORER_PATH}>
             <a
-              css={(theme) => css`
+              css={css`
                 display: flex;
                 flex: 1;
                 height: 100%;
                 justify-content: center;
                 align-items: center;
                 text-decoration: none;
-                color: ${theme.colors.accent_dark};
+                color: ${theme.colors.accent};
                 cursor: pointer;
                 ${router.pathname === EXPLORER_PATH ? activeLinkStyle : ''}
               `}
@@ -132,13 +131,13 @@ const NavBar: React.ComponentType = () => {
         </div>
         {token ? (
           <div
-            css={(theme) => css`
+            css={css`
               width: 195px;
               height: 100%;
               display: flex;
               ${router.pathname === USER_PATH ? activeLinkStyle : ''}
               &:hover {
-                background-color: ${theme.colors.grey_2};
+                background-color: ${theme.colors.grey_200};
               }
             `}
           >
@@ -153,7 +152,7 @@ const NavBar: React.ComponentType = () => {
               justify-content: center;
             `}
           >
-            <LoginButton title="Log in" />
+            <LoginButton title="Login" />
           </div>
         )}
       </div>

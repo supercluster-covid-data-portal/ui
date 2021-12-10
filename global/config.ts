@@ -39,6 +39,7 @@ type AppConfig = {
   NEXT_PUBLIC_LOGO_FILENAME: string;
   NEXT_PUBLIC_SESSION_TOKEN_KEY: string;
   NEXT_PUBLIC_SSO_PROVIDERS: string;
+  NEXT_PUBLIC_FILE_DOWNLOAD_LIMIT: number;
 };
 
 export const getConfig = (): AppConfig => {
@@ -67,5 +68,6 @@ export const getConfig = (): AppConfig => {
     NEXT_PUBLIC_SESSION_TOKEN_KEY:
       publicConfig.NEXT_PUBLIC_SESSION_TOKEN_KEY || 'wallet-session-token',
     NEXT_PUBLIC_SSO_PROVIDERS: publicConfig.NEXT_PUBLIC_SSO_PROVIDERS || '',
+    NEXT_PUBLIC_FILE_DOWNLOAD_LIMIT: Number(publicConfig.NEXT_PUBLIC_FILE_DOWNLOAD_LIMIT) || 10,
   };
 };

@@ -77,15 +77,13 @@ const StyledListLink = styled('a')`
     align-items: center;
     background: (theme.colors.white)};
     padding: 6px 12px;
-    color: ${theme.colors.black};
     background-color: ${theme.colors.white};
-    border: 1px solid ${theme.colors.grey_3};
+    border: 1px solid ${theme.colors.grey_300};
     outline: none;
-    font-size: 16px;
     cursor: pointer;
     width: 100%;
     &:hover {
-      background-color: ${theme.colors.grey_1};
+      background-color: ${theme.colors.grey_300};
     }
   `}
 `;
@@ -116,8 +114,7 @@ const UserDropdown = () => {
   const theme: typeof defaultTheme = useTheme();
   const { logout } = useAuthContext();
   const router = useRouter();
-  const fillColor =
-    router.pathname === USER_PATH ? theme.colors.accent2_dark : theme.colors.accent_dark;
+  const fillColor = open ? theme.colors.primary_dark : theme.colors.primary_light;
 
   return (
     <div
@@ -164,7 +161,7 @@ const UserDropdown = () => {
       )}
       {open && (
         <ul
-          css={theme => css`
+          css={(theme) => css`
             width: 100%;
             list-style: none;
             padding: 0;

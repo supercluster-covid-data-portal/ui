@@ -26,7 +26,7 @@ import { PageContentProps } from '.';
 import defaultTheme from '../../theme';
 
 const Aggregations = dynamic(
-  import('@caravinci/arranger-components/dist/Arranger').then((comp) => comp.Aggregations),
+  import('@overture-stack/arranger-components/dist/Arranger').then((comp) => comp.Aggregations),
   { ssr: false },
 ) as any;
 
@@ -35,13 +35,13 @@ const getFacetStyles = (theme: typeof defaultTheme) => css`
   .input-range-wrapper div {
     ${theme.typography.label2}
     font-weight: bold;
-    background-color: ${theme.colors.grey_3};
+    background-color: ${theme.colors.grey_300};
     border-radius: 3px;
     padding: 0 4px;
     &:last-of-type,
     &:nth-of-type(4) {
       background-color: ${theme.colors.white};
-      color: ${theme.colors.grey_6};
+      color: ${theme.colors.grey_600};
     }
     &:nth-of-type(3) {
       background-color: ${theme.colors.white};
@@ -49,32 +49,17 @@ const getFacetStyles = (theme: typeof defaultTheme) => css`
   }
   .aggregations {
     .aggregation-card {
-      border-bottom: 1px solid ${theme.colors.grey_3};
+      border-bottom: 1px solid ${theme.colors.grey_300};
+      border-left: 3px solid transparent;
       padding-right: 8px;
       &:first-of-type {
         margin-top: 0;
-      }
-      border-left: 3px solid;
-      &:nth-of-type(5n + 1) {
-        border-left-color: ${theme.colors.secondary};
-      }
-      &:nth-of-type(5n + 2) {
-        border-left-color: ${theme.colors.accent2};
-      }
-      &:nth-of-type(5n + 3) {
-        border-left-color: ${theme.colors.warning};
-      }
-      &:nth-of-type(5n + 4) {
-        border-left-color: ${theme.colors.primary};
-      }
-      &:nth-of-type(5n + 5) {
-        border-left-color: ${theme.colors.accent3};
       }
       .header {
         padding: 5px 0 6px 6px;
         .title-wrapper {
           align-items: flex-start;
-          border-bottom: 1px solid ${theme.colors.grey_2};
+          border-bottom: 1px solid ${theme.colors.grey_300};
           padding-bottom: 5px;
           .title-control {
             flex: 1;
@@ -82,13 +67,13 @@ const getFacetStyles = (theme: typeof defaultTheme) => css`
             padding-top: 2px;
           }
           &.collapsed {
-            background-color: ${theme.colors.grey_2};
+            background-color: ${theme.colors.grey_100};
             margin: -5px -8px -6px -7px;
             padding: 5px 8px 6px 6px;
           }
           & .title {
             ${theme.typography.subheading}
-            color: ${theme.colors.accent_dark};
+            font-size: 14px;
             margin-left: 8px;
             display: inline-block;
             width: 90%;
@@ -126,7 +111,7 @@ const getFacetStyles = (theme: typeof defaultTheme) => css`
           & .bucket-count {
             ${theme.typography.label2}
             display: inline-block;
-            background-color: ${theme.colors.grey_3};
+            background-color: ${theme.colors.grey_300};
             padding: 0 3px;
             border-radius: 3px;
             margin: 2px 0;
@@ -165,12 +150,12 @@ const getFacetStyles = (theme: typeof defaultTheme) => css`
       & .filter .inputWrapper {
         border-radius: 5px;
         box-shadow: 0 0 4px 1px rgba(155, 199, 237, 0.8);
-        border: 1px solid ${theme.colors.secondary};
+        border: 1px solid ${theme.colors.grey_400};
         margin: 6px 5px 7px 0;
         & input {
           ${theme.typography.data}
           &::placeholder {
-            color: ${theme.colors.black};
+            color: ${theme.colors.grey_600};
             margin-left: 5px;
           }
         }
@@ -186,14 +171,14 @@ const getFacetStyles = (theme: typeof defaultTheme) => css`
         }
 
         .input-range__track.input-range__track--background {
-          background-color: ${theme.colors.grey_4};
+          background-color: ${theme.colors.grey_400};
           .input-range__track--active {
-            background-color: ${theme.colors.secondary};
+            background-color: ${theme.colors.accent};
           }
           .input-range__slider-container {
             .input-range__slider {
               background-color: ${theme.colors.white};
-              border-color: ${theme.colors.grey_5};
+              border-color: ${theme.colors.grey_500};
               ${theme.shadow.default}
               padding: 0;
               border-radius: 100%;
@@ -206,7 +191,7 @@ const getFacetStyles = (theme: typeof defaultTheme) => css`
         padding: 2px 5px 8px 5px;
         margin-left: 5px;
         .toggle-button-option {
-          border: 1px solid ${theme.colors.grey_5};
+          border: 1px solid ${theme.colors.grey_500};
           &:nth-of-type(2) {
             border-left: 0px;
             border-right: 0px;
@@ -215,19 +200,19 @@ const getFacetStyles = (theme: typeof defaultTheme) => css`
         .toggle-button-option .bucket-count {
           ${theme.typography.label2}
           display: inline-block;
-          background-color: ${theme.colors.grey_3};
+          background-color: ${theme.colors.grey_300};
           padding: 0 3px;
           border-radius: 3px;
         }
         .toggle-button-option.active {
-          background-color: ${theme.colors.secondary_light};
+          background-color: ${theme.colors.accent};
           .bucket-count {
-            background-color: ${theme.colors.secondary_2};
+            background-color: ${theme.colors.accent};
           }
         }
         .toggle-button-option.disabled {
-          background-color: ${theme.colors.grey_2};
-          color: ${theme.colors.grey_6};
+          background-color: ${theme.colors.grey_400};
+          color: ${theme.colors.grey_600};
         }
       }
 
@@ -235,7 +220,7 @@ const getFacetStyles = (theme: typeof defaultTheme) => css`
         margin-left: 5px;
         margin-top: 2px;
         svg {
-          fill: ${theme.colors.secondary};
+          fill: ${theme.colors.grey_800};
           width: 14px;
           height: 14px;
           padding-bottom: 3px;
@@ -253,7 +238,7 @@ const Facets = (props: PageContentProps) => {
           ${theme.typography.subheading}
           padding: 6px 0 2px 8px;
           margin: 0;
-          border-bottom: 1px solid ${theme.colors.grey_3};
+          border-bottom: 1px solid ${theme.colors.grey_300};
         `}
       >
         Filters

@@ -94,20 +94,20 @@ const Dropdown = ({
         {open ? (
           <ChevronDown
             fill={theme.colors.white}
-            size="12px"
+            size="11px"
             style={css`
               margin-left: 6px;
-              margin-right: -6px;
+              /* margin-right: -6px; */
               transform: rotate(180deg) translateY(-2px);
             `}
           />
         ) : (
           <ChevronDown
             fill={theme.colors.white}
-            size="12px"
+            size="11px"
             style={css`
               margin-left: 6px;
-              margin-right: -6px;
+              /* margin-right: -6px; */
               transform: translateY(1px);
             `}
           />
@@ -126,7 +126,7 @@ const Dropdown = ({
               padding: 2px 0 1px;
               position: absolute;
               right: 0;
-              top: 1.7rem;
+              top: 90%;
               z-index: 666;
 
               li {
@@ -145,7 +145,7 @@ const Dropdown = ({
 
                   &:focus,
                   &:hover {
-                    background: ${theme.colors.grey_2};
+                    background: ${theme.colors.grey_300};
                   }
                 `}
                 key={index}

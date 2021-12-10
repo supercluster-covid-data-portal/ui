@@ -21,34 +21,45 @@
 
 import React, { ReactNode, ReactNodeArray } from 'react';
 import { css } from '@emotion/core';
+import isPropValid from '@emotion/is-prop-valid';
 import styled from '@emotion/styled';
 
-import defaultTheme from './theme';
+import { DefaultColors, DefaultThemeObject } from './theme';
 import { Spinner } from './theme/icons';
 
-const ButtonElement = styled('button')`
-  ${({ theme }: { theme: typeof defaultTheme }) => css`
+const ButtonElement = styled('button', {
+  shouldForwardProp: (prop) => isPropValid(prop) && prop !== 'variant',
+})`
+  ${({ theme, variant }: DefaultThemeObject & { variant?: 'accent' }) => css`
     color: ${theme.colors.white};
-    background-color: ${theme.colors.accent};
-    ${theme.typography.subheading2};
+    background-color: ${variant ? theme.colors[variant] : theme.colors.primary};
+    ${theme.typography.button};
     line-height: 24px;
     border-radius: 5px;
-    border: 1px solid ${theme.colors.accent};
+    border: 1px solid ${variant ? theme.colors[variant] : theme.colors.primary};
     padding: 6px 15px;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     position: relative;
+
     &:hover {
-      background-color: ${theme.colors.accent_dark};
+      background-color: ${variant
+        ? theme.colors[`${variant}_light` as DefaultColors]
+        : theme.colors.primary_light};
     }
+
     &:disabled,
     &:disabled:hover {
-      background-color: ${theme.colors.grey_4};
+      background-color: ${theme.colors.grey_400};
+      border: 1px solid ${theme.colors.grey_400};
+      color: ${theme.colors.grey_600};
       cursor: not-allowed;
-      color: ${theme.colors.white};
-      border: 1px solid ${theme.colors.grey_4};
+
+      path {
+        fill: ${theme.colors.grey_600};
+      }
     }
   `}
 `;
@@ -65,6 +76,7 @@ const Button = React.forwardRef<
     className?: string;
     isLoading?: boolean;
     title?: string;
+    variant?: 'accent';
   }
 >(
   (
@@ -76,6 +88,7 @@ const Button = React.forwardRef<
       className,
       isLoading: controlledLoadingState,
       title = '',
+      variant,
     },
     ref = React.createRef(),
   ) => {
@@ -99,6 +112,7 @@ const Button = React.forwardRef<
         disabled={disabled || shouldShowLoading}
         className={className}
         title={title}
+        variant={variant}
       >
         <span
           css={css`

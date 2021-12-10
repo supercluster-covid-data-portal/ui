@@ -10,10 +10,6 @@ const StyledActionsSection = styled('section')`
   > *:not(:first-child) {
     margin-left: 10px;
   }
-
-  button {
-    height: 25px;
-  }
 `;
 
 export default StyledActionsSection;
