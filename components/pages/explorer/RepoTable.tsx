@@ -259,7 +259,6 @@ const downloadSequences = ({
   const { NEXT_PUBLIC_ARRANGER_API_URL, NEXT_PUBLIC_FILE_DOWNLOAD_LIMIT } = getConfig();
   const downloadFilesEnabled =
     !loadingState && ids.length && ids.length <= NEXT_PUBLIC_FILE_DOWNLOAD_LIMIT;
-  console.log('calling?', downloadFilesEnabled);
 
   return downloadFilesEnabled
     ? async () => {
