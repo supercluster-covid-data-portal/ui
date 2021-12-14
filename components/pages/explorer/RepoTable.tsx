@@ -264,6 +264,7 @@ const DownloadSequences = ({
     <div
       // to match arranger menu item styles
       css={(theme) => css`
+        cursor: ${downloadFilesEnabled ? 'pointer' : 'auto'};
         color: ${downloadFilesEnabled ? theme.colors.grey_800 : theme.colors.grey_disabled};
         padding: 5px;
         margin: -5px -5px 0 -5px;
