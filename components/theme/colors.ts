@@ -35,6 +35,7 @@ const grey = {
   grey_700: '#6B7483',
   grey_800: '#525965',
   grey_900: '#3A3F48',
+  grey_disabled: '#999', // to match arranger disabled grey
 };
 
 const primary = {

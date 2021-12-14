@@ -245,7 +245,7 @@ const getTableStyle = (theme: typeof defaultTheme) => css`
   }
 `;
 
-const downloadSequences = ({
+const DownloadSequences = ({
   ids,
   loadingState,
   setLoadingState,
@@ -260,39 +260,57 @@ const downloadSequences = ({
   const downloadFilesEnabled =
     !loadingState && ids.length && ids.length <= NEXT_PUBLIC_FILE_DOWNLOAD_LIMIT;
 
-  return downloadFilesEnabled
-    ? async () => {
-        setLoadingState(true);
-        ajax
-          .post(
-            urlJoin(NEXT_PUBLIC_ARRANGER_API_URL, DOWNLOAD_SEQ_PATH),
-            {
-              ids,
-            },
-            {
-              responseType: 'blob',
-              headers: { accept: '*/*' },
-            },
-          )
-          .then((res: AxiosResponse) => {
-            const blob = new Blob([res.data]);
-            const filename = res.headers['content-disposition'].split('"')[1];
-            createDownloadInWindow(filename, blob);
-          })
-          .catch(async (err: AxiosError) => {
-            if (err) {
-              const code = err.response?.status || 500;
-              const text = await new Response(err.response?.data).text();
-              const displayError = getDownloadError(code, text);
-              return setErrorState(displayError);
+  return (
+    <div
+      // to match arranger menu item styles
+      css={(theme) => css`
+        color: ${downloadFilesEnabled ? theme.colors.grey_800 : theme.colors.grey_disabled};
+        padding: 5px;
+        margin: -5px -5px 0 -5px;
+        width: 100%;
+        &:hover {
+          background: ${downloadFilesEnabled ? theme.colors.grey_300 : theme.colors.white};
+        }
+      `}
+      onClick={
+        downloadFilesEnabled
+          ? async () => {
+              setLoadingState(true);
+              ajax
+                .post(
+                  urlJoin(NEXT_PUBLIC_ARRANGER_API_URL, DOWNLOAD_SEQ_PATH),
+                  {
+                    ids,
+                  },
+                  {
+                    responseType: 'blob',
+                    headers: { accept: '*/*' },
+                  },
+                )
+                .then((res: AxiosResponse) => {
+                  const blob = new Blob([res.data]);
+                  const filename = res.headers['content-disposition'].split('"')[1];
+                  createDownloadInWindow(filename, blob);
+                })
+                .catch(async (err: AxiosError) => {
+                  if (err) {
+                    const code = err.response?.status || 500;
+                    const text = await new Response(err.response?.data).text();
+                    const displayError = getDownloadError(code, text);
+                    return setErrorState(displayError);
+                  }
+                  setErrorState('An unknown error occurred. Please try again');
+                })
+                .finally(() => {
+                  setLoadingState(false);
+                });
             }
-            setErrorState('An unknown error occurred. Please try again');
-          })
-          .finally(() => {
-            setLoadingState(false);
-          });
+          : () => null
       }
-    : () => null;
+    >
+      Download Selected
+    </div>
+  );
 };
 
 const getDownloadError = (status: number, errText?: string) => {
@@ -321,14 +339,14 @@ const RepoTable = (props: PageContentProps) => {
   const customExporters = [
     { label: 'Export Table to TSV', fileName: `data-explorer-table-export.${today}.tsv` }, // exports a TSV with what is displayed on the table (columns selected, etc.)
     {
-      label: 'Download Selected',
-      function: downloadSequences({
-        ids: selectedTableRows,
-        loadingState: seqFilesDownloading,
-        setLoadingState: setSeqFilesDownloading,
-        setErrorState: setSeqFilesDownloadError,
-      }),
-      requiresRowSelection: true,
+      label: () => (
+        <DownloadSequences
+          ids={selectedTableRows}
+          loadingState={seqFilesDownloading}
+          setLoadingState={setSeqFilesDownloading}
+          setErrorState={setSeqFilesDownloadError}
+        />
+      ),
     },
     {
       label: () => (
